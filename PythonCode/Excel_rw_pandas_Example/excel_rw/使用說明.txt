@@ -1,0 +1,7 @@
+cmd => pip install pandas
+cmd => pip install openpyxl
+
+
+setp1: 將處資料命名為 'QQQ歷史資料.xlsx'
+setp2: 將處理分頁名設定為 'Sheet1'
+setp3: 執行 Start.bat
