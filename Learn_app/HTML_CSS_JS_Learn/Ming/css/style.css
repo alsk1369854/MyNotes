@@ -1,0 +1,155 @@
+html{
+	width:100%;
+	height:100%;
+
+}
+body{
+	width:100%;
+	height:100px;
+	margin:0;
+	overflow-x;hidden;
+	position:relative;
+	font-size;100%;
+	line-height;100%;
+	font-weight;normal;
+	font-family:'標楷體';
+}
+
+body{
+	position:relative;
+	background:#dedede;
+}
+a{ 
+  text-decoration:none;
+}
+a:active, a:hover { 
+  outline: 0; 
+}
+.wrapper{
+	position:relation;
+	width:100%;
+	max-width:1172px;
+	margin:auto;
+	box-shadow:0px 0px 31px 2px #CCC;
+	background:#FFF;
+	height:auto;
+	
+}
+.wrapperINN{
+	position:relative;
+	width:92%;
+	max-width:1040px;
+	margin:auto;
+	padding-bottom:30px;
+
+}
+
+.menu{
+	padding-top:15px;
+	positon:relative;
+
+}
+.menu .logo, .menu .menuList{
+	display:inline-block;
+	vertioal-align:top;
+}
+.menu .logo{
+	display:inline-block;
+	vertical-a;lign:top;
+}
+.menu .menuList{
+	float:right;
+	padding-top:15px;
+}
+.menu .menuList:after{
+	content:'';
+	display:block;
+	clear:both;
+}
+.menuList .top{
+	padding-top:10px;
+}
+.topMenu, .global, .lang{
+	display:inline-block;
+	vertical-align:middle;
+	font-family:'微軟正黑體';
+}
+.topMenu{
+	margin-right:20px;
+	margin-left:60px;
+	padding-top:5px;
+}
+.topMenu li{
+	font-size:11px;
+	display:inline-block;
+	vertical-align:top;
+}
+.topMenu li:after{
+	content:'';
+	display:inline-block;
+	width:1px;
+	height:10px;
+	background:#e5dfe5;
+	margin:0 20px;
+}
+.topMenu li:last-child:after{
+	display:none;
+	
+}
+.topMenu li a{
+	color:#999;
+}
+.topMenu li:hover a{
+	color:#4d4d4d;
+}
+.bottomMenu{
+  padding-top:0px;
+}
+.bottomMenu li{
+  display:inline-block;
+  vertioal-align:top;
+  font-famliy:'標楷體';
+  margin-right:39px;
+}
+.bottomMenu li:last-child{
+  margin-right:0px;
+}
+.bottomMenu li a{
+    font-size:1rem;
+    color:#000;
+}
+.images{
+	position:relative;
+	top:-55px;
+	width:1033px;
+	height:630px;
+	background: url(../upload/index_photo_002.jpg);
+	background-repeat: no-repeat;
+	background-size: 1033px 630px;
+}
+.images p{
+	position:relative;
+	top:490px;
+	margin-left:50px;
+	line-height:10px;
+	font-family:'標楷體';
+	font-size:10px;
+}
+table{
+	width:100%;
+	height:100%;
+	margin:left:10px;
+}
+table td{
+	width:33%;
+	padding:0 30px 0 30px;
+	line-height:25px;
+	font-size:16px;
+}
+table td img{
+	 float: left;
+}
+table .head{
+	font-size:20px;
+	padding-bottom:10px;
+}

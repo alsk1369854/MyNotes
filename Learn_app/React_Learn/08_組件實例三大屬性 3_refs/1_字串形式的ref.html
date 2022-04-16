@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <!-- <meta name="viewport" content="width=device-width, initial-scale=1.0"> -->
+    <title>1_字串形式的ref</title>
+</head>
+<body>
+    <!-- 容器 -->
+    <div id="test"></div>
+
+    <!-- React 核心庫 -->
+    <script src="https://unpkg.com/react@17/umd/react.development.js" crossorigin></script>
+    <!-- React 拓展功能: 用於支持React與DOM溝通 -->
+    <script src="https://unpkg.com/react-dom@17/umd/react-dom.development.js" crossorigin></script>
+    <!-- 語言翻譯: ES6 => ES5 ; jsx => js -->
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+    <script type="text/babel"> // type="text/babel" 一定要寫babel
+        class Demo extends React.Component{
+            render(){
+                return(
+                    <div>
+                        <input ref="input1" type="text" placeholder="點擊按鈕顯示"/>&nbsp;
+                        <button onClick={this.showMsg1}>點擊顯示左側文字</button>&nbsp;
+                        <input ref="input2" onBlur={this.showMsg2} type="text" placeholder="失去焦點顯示"/>
+                    </div>
+                )
+              }
+            
+            // 點擊按鈕顯示函數
+            showMsg1 = () =>{
+                const {input1} = this.refs;
+                alert(input1.value);
+            }
+
+            // 失去焦點顯示函數
+            showMsg2 = () =>{
+                const {input2} = this.refs;
+                alert(input2.value);
+            }
+        }
+
+        ReactDOM.render(<Demo/>, document.getElementById('test'));
+
+
+    </script>
+</body>
+</html>

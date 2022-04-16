@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <!-- <meta name="viewport" content="width=device-width, initial-scale=1.0"> -->
+    <title>Class Component</title>
+</head>
+<body>
+    <!-- 容器 -->
+    <div id="test"></div>
+
+    <!-- React 核心庫 -->
+    <script src="https://unpkg.com/react@17/umd/react.development.js" crossorigin></script>
+    <!-- React 拓展功能: 用於支持React與DOM溝通 -->
+    <script src="https://unpkg.com/react-dom@17/umd/react-dom.development.js" crossorigin></script>
+    <!-- 語言翻譯: ES6 => ES5 ; jsx => js -->
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+    <!-- classNames tool -->
+    <script src="https://unpkg.com/classnames@2.3.1/index.js"></script>
+    
+    <script type="text/babel"> // type="text/babel" 一定要寫babel
+        // 1. 創建類式組件
+        class Weather extends React.Component{
+            // 初始狀態
+            state = {
+                    isHot: false,
+                    wind: '微風'
+                }
+
+            render(){
+                // 讀取狀態
+                const {isHot, wind} = this.state
+                return(
+                    <h1 onClick={this.changeWeather}>今天天氣很{isHot ? '炎熱' : '涼爽'}, {wind}</h1>
+                )
+            }
+
+            // 自定義方法 => 要用賦值語句的形式+箭頭函數
+            changeWeather = () => {
+                console.log(this);
+                this.setState({isHot: !this.state.isHot});
+            }
+        }
+        // 2. 渲染組件到頁面
+        ReactDOM.render(<Weather/>, document.getElementById('test'))
+
+    </script>
+</body>
+</html>
