@@ -106,22 +106,26 @@ class Main {
 
 # 直執行緒安全問題
 ### 在Java中，我們透過同步機制，來解決執行緒安全問題
-## 方式一: 同步代碼塊
+## 方式一: 同步代碼塊 synchronized(){}
     synchronized(同步監視器){
         // 需要被同步的代碼
     }
-    說明:   1. 操作共享數據的代碼，即為需要被同步的代碼
+    說明:   1. 操作共享數據的代碼，即為需要被同步的代碼。 -->不能包含代碼多了，也不能包含代碼少了
            2. 共享數據: 多個執行緒共同操作的變量，比如: ticket是共享數據
            3. 同步監視器，俗稱: 鎖。任何一個類的對象，都可以充當鎖。
                 要求: 多個線程必須要共用同一把鎖。
-### 範例
+
+            補充: 在實現Runnable接口創建多線程的方式中，我們可以考慮使用this充當同步監視器。
+### 實現Runnable接口 範例 
 ```java
 class MyThread implements Runnable{
+    // 本身創建就是同一個類 所有都是共用，不須加 static
     private int ticket = 100;
     Object obj = new Object();
-    run(){
+    public void run(){
         while(true){
             // 需要同步的代碼區域
+            // synchronized(this){
             synchronized(obj){
                 if(ticket > 0){
                     System.out.println('我的票號' + ticket);
@@ -134,3 +138,82 @@ class MyThread implements Runnable{
     }
 }
 ``` 
+
+<br/>
+
+### 繼承Thread類 範例
+```java
+class MyThread extends Thread{
+    // 加上 static 讓對象為同一對象
+    private static Object obj = new Object();
+    private static int ticket = 100;
+    public void run(){
+        while(true){
+            // 需要同步的代碼區域
+            // synchronized(MyThread.class){
+            synchronized(obj){
+                if(ticket > 0){
+                    System.out.println('我的票號' + ticket);
+                    ticket--;
+                }else{
+                    break;
+                }
+            }
+        }
+    }
+}
+
+```
+
+<br/>
+
+## 方式二: 同步方法 private synchronized void method(){}
+
+### 實現Runnable接口 範例
+```java
+class MyThread implements Runnable{
+    // 本身創建就是同一個類 所有都是共用，不須加 static
+    private int ticket = 100;
+    public void run(){
+        while(true){
+            // 調用同步方法
+            show();
+        }
+    }
+
+    // 創建同步方法 
+    private synchronized void show(){// 此時的鎖是 this
+        if(ticket > 0){
+            System.out.println('我的票號' + ticket);
+            ticket--;
+        }
+    }
+}
+```
+
+
+<br/>
+
+### 繼承Thread類 範例
+```java
+class MyThread extends Thread{
+    // 加上 static 讓對象為同一對象
+    private static Object obj = new Object();
+    private static int ticket = 100;
+    public void run(){
+        while(true){
+            // 調用同步方法
+            show();
+        }
+    }
+
+    // 創建同步方法 加上 static 
+    private static synchronized void show(){// 此時的鎖是 MyThread.class
+        if(ticket > 0){
+            System.out.println(Thread.currentThread().getName() + '我的票號' + ticket);
+            ticket--;
+        }
+    }
+}
+
+```
