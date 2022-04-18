@@ -106,7 +106,46 @@ class Main {
 
 # 直執行緒安全問題
 ### 在Java中，我們透過同步機制，來解決執行緒安全問題
-## 方式一: 同步代碼塊 synchronized(){}
+#### 使用推薦順序
+    1. ReentrantLock (新方法，靈活性高)
+    2. 同步代碼塊 synchronized(){}
+    3. 同步方法 private synchronized void method(){}
+
+## 方式一: Lock鎖 --- JDK5.0新增
+### ReentrantLock 與 synchronized 差異處
+    相同: 兩者都可以解決線程安全問提
+    不同: 
+       1. synchronized機制在執行完成相應的同步代碼以後，自動釋放同步監視器
+       2. Lock需要手動的同步(lock())，同時結束同步也需要手動實現(unLock())
+    
+### 使用 Lock鎖 範例
+```java
+class MyThread implements Runnable{
+    private int ticket = 100;
+    // 實例化ReentrantLock
+    private ReentrantLock lock = new ReentrantLock();
+
+    public void run(){
+        while(true){
+            try{
+                // 調用上鎖方法: lock()
+                lock.lock()
+                if(ticket > 0){
+                    System.out.println(Thread.currentThread().getName() + " 我的票號: " + ticket);
+                    ticket--;
+                }
+            }finally{
+                // 調用解鎖方法: unlock()
+                lock.unlock();
+            }
+        }
+    }
+}
+
+
+```
+
+## 方式二: 同步代碼塊 synchronized(){}
     synchronized(同步監視器){
         // 需要被同步的代碼
     }
@@ -167,7 +206,7 @@ class MyThread extends Thread{
 
 <br/>
 
-## 方式二: 同步方法 private synchronized void method(){}
+## 方式三: 同步方法 private synchronized void method(){}
 
 ### 實現Runnable接口 範例
 ```java
@@ -216,4 +255,66 @@ class MyThread extends Thread{
     }
 }
 
+```
+
+<br/>
+
+# 線程通信 涉及wait(), notify(), notifyAll()
+```
+涉及到的三個方法:
+    1. wait(): 一旦執行此方法，當前線程就會進入阻塞狀態，並 "釋放同步監視器"。
+    2. notify(): 一旦執行此方法，就會喚醒被wait的一個線程。如果有多個線程被wait，就喚醒優先級高的線程。
+    3. notifyAll(): 一旦執行此方法，就會喚醒所有被wait的線程
+
+說明:
+    1. wait(), notify(), notifyAll()三個方法必須使用在同步代碼塊或同步方法中。
+    2. wait(), notify(), notifyAll()三個方法的調用者必須是同步代碼塊或同步方法中的同步監視器否則，會出現IllegalMonitorStateException異常
+    3. wait(), notify(), notifyAll()三個方法是定義在java.loan.Object類中。
+
+sleep() 和 wait() 的相異處?
+    1. 相同點:
+        一但執行方法，都可以使得當前線程進入阻塞狀態。
+    2. 不同點:
+        1) 兩個方法聲明的位置不同: 
+            Thread類中聲明sleep()。
+            Object類中聲明wait()。
+        2) 調用的要求不同: 
+            sleep()可以在任何需要的場景下調用()。
+            wait()必須使用在同步代碼塊或同步方法中。
+        3) 關於是否釋放同步監視器: 如果兩個方法都使用在同步代碼塊或同步方法中
+            sleep()不會釋放同步鎖。
+            wait()會釋放同步鎖。
+```
+
+### 交換累加至1000 範例
+```java
+class MyThread implements Runnable {
+    private int number = 1;
+    @Override
+    public void run() {
+        while (number <= 1000) {
+            synchronized (this) {
+                notify();
+                System.out.println(Thread.currentThread().getName() + ": Number: " + number);
+                number++;
+                try {
+                    wait();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
+}
+public class Main {
+    public static void main(String[] args) {
+        MyThread mt = new MyThread();
+        Thread t1 = new Thread(mt);
+        t1.setName("Thread 1");
+        Thread t2 = new Thread(mt);
+        t2.setName("Thread 2");
+        t1.start();
+        t2.start();
+    }
+}
 ```
