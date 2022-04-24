@@ -318,3 +318,159 @@ public class Main {
     }
 }
 ```
+
+
+
+# 創建 執行緒的第三種方式 "Callable" -> JDK5 新增
+### 就由 FutureTask 類 獲取call()回傳值
+```java
+FutureTask ft = new FutureTask(new Callable(){
+    public Object call() throws Exception{
+        ....
+        return Object
+    }
+})
+```
+### 實現Callable比實現Runnable更強大
+```
+1. call()可以有返回值。
+2. call()可以拋出異常，被外面的操作捕獲，獲取異常訊息
+3. Callable支持泛型
+```
+
+<br/>
+
+### 範例代碼 獲得1~100偶數合
+```java
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.FutureTask;
+
+// 1. 創建一個實現Callable的實現類
+class MyThread implements Callable {
+    // 2. 實現call方法，將此線程需要執行的操作聲明在call()中
+    @Override
+    public Object call() throws Exception {
+        int num = 0;
+        for (int i = 1; i <= 100; i++) {
+            if (i % 2 == 0) {
+                System.out.println(Thread.currentThread().getName() + " : " + i);
+                num += i;
+            }
+        }
+        return num;
+    }
+}
+
+
+public class Main {
+    public static void main(String[] args) {
+        // 3. 創建 Callable 對象
+        MyThread myThread = new MyThread();
+        // 4. 將此 Callable 接口實現類的對象作為參數傳遞FutureTask溝造器中，創建FutureTask的對象
+        // 查看構造器快捷鍵:ctrl + alt + / ; KotKeyName:parameter info
+        FutureTask futureTask = new FutureTask(myThread);
+
+        // 5. 將FutureTask的對象作為參數傳遞到Thread類構造器中，創建Thread對象，並調用start()
+        new Thread(futureTask).start();
+
+        try {
+            // 6. 獲取Callable中call方法的返回值
+            // get()返回值即為futureTask構造器參數Callable實現類重寫的call()的返回值。
+            Object output = futureTask.get();
+            System.out.println("Outpub: " + output);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        }
+    }
+}
+
+```
+
+<br/>
+
+# 創建 執行緒的第四種方式 "線程池" --> JDK5.0 新增
+### 好處:
+  + 提高響應速度(減少創建線程的時間)
+  + 將低資源消耗(重複利用線程池中線程，不需要每次都創建)
+  + 便於線程管理
+    + corePoolSize: 核心池的大小
+    + maximumPoolSize: 最大線程數
+    + keepAliveTime: 線程沒有任務時最多保持多長時間後會終止
+    + ....
+
+### 線程池相關API: ExecutorService 和 Executors
++ ExecutorService: 真正的線程池接口。 常見子類ThreadPoolExecutor
+  +  void execute(Runnable command): 執行任務/命令，沒有返回值，一般用來執行Runnable
+  +  <T> Future<T> submit(Callable<T> task): 執行任務，有返回值，一般來執行Callable
+  +  void shutdown(): 關閉連接池
+  
++ Executors: 工具類、線程池的工廠類，用於創建並返回不同類型的線程池
+  + Executors.newCachedThreadPool(): 創建一個可根據需要創建新線程的線程池
+  + Executors.newFixedThreadPool(n): 創建一個可重用固定線程數的線程池
+  + Executors.newSingleThreadExecutor(): 創建一個只有一個線程的線程池
+  + Executors.newScheduledThreadPool(n): 創建一個線程池，它可安排在給定延遲後運行命令或者定期地運行。
+
+### 範例代碼 創建Executors.newFixedThreadPool
+```java
+import java.util.concurrent.*;
+class RunThread implements Runnable {
+    public void run() {
+        for (int i = 0; i < 10; i++) {
+
+            try {
+                Thread.sleep(100);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            System.out.println(Thread.currentThread().getName() + ": 0");
+        }
+    }
+}
+
+class CallThread implements Callable {
+    public Object call() {
+        int sum = 0;
+        for (int i = 0; i < 10; i++) {
+            try {
+                Thread.sleep(100);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            System.out.println(Thread.currentThread().getName() + ": 1");
+            sum += 1;
+        }
+        return sum;
+    }
+}
+
+public class ThreadPool {
+    public static void main(String[] args) {
+        // 1. 提供指定線程數量的線程池
+        ExecutorService service = Executors.newFixedThreadPool(10);
+        // 設置線程屬性
+        ThreadPoolExecutor service1 = (ThreadPoolExecutor) service;
+        service1.setCorePoolSize(2);
+        // service1.setKeepAliveTime();
+
+        // 2. 執行指定的線程的操作，須提供Runnable接口或Callable接口實現類的對象
+        service.execute(new RunThread());// 適用於Runnable
+
+        Future future = service.submit(new CallThread());// 適用於Callable
+        FutureTask futureTask = (FutureTask) future;
+        try {
+            System.out.println(futureTask.get());
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        }
+
+        // 3. 關閉連接池
+        service.shutdown();
+    }
+}
+
+```
