@@ -97,10 +97,8 @@ public class Main{
             str = replace(matcher.group(), "A");
         }
         System.out.println(str) // output: hAllA wArld!
-
     }
 }
-
 
 ```
 
