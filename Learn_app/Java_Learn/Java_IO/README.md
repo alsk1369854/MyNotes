@@ -8,12 +8,12 @@
 > ### 字符編碼的轉換
 
 <p align="center">
-<img height="900px" src="/Learn_app/Java_Learn/Java_IO/Java_IO_體系圖.png"/>
+<img height="500px" src="/Learn_app/Java_Learn/Java_IO/Java_IO_體系圖.png"/>
 </p>
 
 <br/>
 
-## File
+> ## File
 ```java
 // 相對路徑: 根目錄與src平行
 String relative = "File.txt"
@@ -31,7 +31,7 @@ new File("file.txt").renameTo("dir/fileMove.txt")
 
 <br/>
 
-## 字節流(8 bit)
+> ## 字節流(8 bit)
 ```java
 static void copyNotTextFile(String srcPath, String destPath) {
     BufferedInputStream bis = null;
@@ -82,7 +82,7 @@ static void copyNotTextFile(String srcPath, String destPath) {
 
 <br/>
 
-## 字符流/文本流(16 bit)
+> ## 字符流/文本流(16 bit)
 ```java
 static void copyTextFile(String srcPath, String destPath) {
     BufferedReader br = null;
@@ -140,10 +140,10 @@ static void copyTextFile(String srcPath, String destPath) {
 
 <br/>
 
-## 字符編碼的轉換
+> ## 字符編碼的轉換
 
 <p align="center">
-<img height="900px" src="/Learn_app/Java_Learn/Java_IO/編碼的轉換.png"/>
+<img height="500px" src="/Learn_app/Java_Learn/Java_IO/編碼的轉換.png"/>
 </p>
 
 ```java
