@@ -31,7 +31,7 @@ new File("file.txt").renameTo("dir/fileMove.txt")
 
 <br/>
 
-> ## 字節流(8 bit)
+> ## 字節流(8 bit) : 圖片、影片等等 I/O 處理
 ```java
 static void copyNotTextFile(String srcPath, String destPath) {
     BufferedInputStream bis = null;
@@ -82,7 +82,7 @@ static void copyNotTextFile(String srcPath, String destPath) {
 
 <br/>
 
-> ## 字符流/文本流(16 bit)
+> ## 字符流/文本流(16 bit) : 文本 I/O 處理
 ```java
 static void copyTextFile(String srcPath, String destPath) {
     BufferedReader br = null;
