@@ -8,8 +8,8 @@
 > ### 字符編碼的轉換
 
 <p align = center>
-<!-- ![](Java_IO_體系圖.png) -->
-<img height = '300px' src= '/Java_IO_體系圖.png'/>
+
+![](Java_IO_體系圖.png)
 </p>
 
 <br/>
