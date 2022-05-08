@@ -7,11 +7,8 @@
 >
 > ### 字符編碼的轉換
 
-<p align = center>
-
-<img height="300px" src="/Learn_app/Java_Learn/Java_IO/Java_IO_體系圖.png"/>
-
-![](Java_IO_體系圖.png)
+<p align="center">
+<img height="900px" src="/Learn_app/Java_Learn/Java_IO/Java_IO_體系圖.png"/>
 </p>
 
 <br/>
@@ -94,7 +91,7 @@ static void copyTextFile(String srcPath, String destPath) {
         // 造文件
         File srcFile = new File(srcPath);
         File destFile = new File(destPath);
-        // 造字節流
+        // 造字符流
         FileReader fr = new FileReader(srcFile);
         FileWriter fw = new FileWriter(destFile); // 直接覆蓋寫入
         // FileWriter fw = new FileWriter(destFile, true); // 從文本最末端開始寫入
@@ -140,3 +137,58 @@ static void copyTextFile(String srcPath, String destPath) {
     }
 }
 ```
+
+<br/>
+
+## 字符編碼的轉換
+
+<p align="center">
+<img height="900px" src="/Learn_app/Java_Learn/Java_IO/編碼的轉換.png"/>
+</p>
+
+```java
+// 範例: 使用"utf-8"讀取; 使用"gbk"寫入
+static void inputStreamReaderAndOutputStreamWriter(String srcPath, String destPath) {
+    InputStreamReader isr = null;
+    OutputStreamWriter isw = null;
+    try {
+        // 造文件
+        File srcFile = new File(srcPath);
+        File destFile = new File(destPath);
+        // 造字節流
+        FileInputStream fis = new FileInputStream(srcFile);
+        FileOutputStream fos = new FileOutputStream(destFile); // 直接覆蓋寫入
+        // 造處理流
+        isr = new InputStreamReader(fis, "utf-8"); // 第二參數沒給: 默認"utf-8"
+        isw = new OutputStreamWriter(fos, "gbk"); // 採用 "gbk" 字符集編碼輸出
+
+        char[] cbuf = new char[1024];
+        int len;
+        while ((len = isr.read(cbuf)) != -1) {
+            isw.write(cbuf, 0, len);
+        }
+    } catch (IOException e) {
+        e.printStackTrace();
+    } finally {
+        if (isr != null) {
+            try {
+                isr.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        if (isw != null) {
+            try {
+                isw.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+}
+```
+
+<br/>
+<br/>
+
+#### _END_
