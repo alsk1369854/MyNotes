@@ -10,6 +10,14 @@
 > ### 物件的序列化
 >  + 物件的寫出
 >  + 物件的讀入
+> 
+> ### 隨機訪問文本流 RandomAccessFile
+>   + 可讀可寫
+>       + "r"
+>       + "w"
+>       + "rw"
+>   + seek(int pos): 移動角標方法 
+>   
 
 
 <p align="center">
@@ -322,6 +330,48 @@ static void demoObjectInputStream(String srcPath) {
         if (ois != null) {
             try {
                 ois.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+}
+```
+
+<br/>
+
+##　隨機訪問文本流 RandomAccessFile
+```java
+// String srcPath = "testFile.txt";
+static void demoRandomAccessFile(String srcPath){
+    srcPath = "testFile.txt";
+    RandomAccessFile raf = null;
+    try{
+        File file = new File(srcPath);
+        raf = new RandomAccessFile(file, "rw");
+
+        // 寫入數據
+        raf.write("abcdefg".getBytes());
+
+        // 讀取數據
+        raf.seek(0); // 將角標移動到0，因為前面剛寫完角標停留在文本末端
+        StringBuilder sb = new StringBuilder((int)file.length());
+        byte[] buffer = new byte[1024];
+        int len;
+        while((len = raf.read(buffer)) != -1){
+            sb.append(new String(buffer, 0, len));
+        }
+        // 打印讀取數據
+        System.out.println(sb);
+        // Output:
+        // abcdefg
+    } catch (IOException e) {
+        e.printStackTrace();
+    }finally{
+        // 關閉資源
+        if(raf != null){
+            try {
+                raf.close();
             } catch (IOException e) {
                 e.printStackTrace();
             }
