@@ -6,6 +6,11 @@
 >  + 文本 I/O 處理
 >
 > ### 字符編碼的轉換
+>
+> ### 物件的序列化
+>  + 物件的寫出
+>  + 物件的讀入
+
 
 <p align="center">
 <img height="500px" src="/Learn_app/Java_Learn/Java_IO/Java_IO_體系圖.png"/>
@@ -180,6 +185,143 @@ static void inputStreamReaderAndOutputStreamWriter(String srcPath, String destPa
         if (isw != null) {
             try {
                 isw.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+}
+```
+
+<br/>
+
+> ## 物件的序列化
+
+### 物件需要滿足如下要求，方可序列化
+
+> 1. 需要實現接口: Serializable
+> 2. 當前類提供一個全局長量: serialVersionUID
+> 3. 除了當前類需要實現 Serializable 接口之外，還必須保證其內部所有屬性也必須是可序列化的(默認情況下，基本數據類型可以序列化)
+> 補充: ObjectOutputStream 和 ObjectInputStream 不能序列化 static 和 transient 修飾的成員變量
+
+
+### Demo 用物件
++ class Account
++ class Person
+
+```java
+// 使物件可序列化: 實現 Serializable 並提供一個全局長量 serialVersionUID
+static class Account implements java.io.Serializable {
+    private static final long serialVersionUID = 123123123L;
+    int id;
+
+    public Account(int id) {
+        this.id = id;
+    }
+
+    @Override
+    public String toString() {
+        return "Account{" +
+                "id=" + id +
+                '}';
+    }
+}
+
+// 使物件可序列化: 實現 Serializable 並提供一個全局長量 serialVersionUID
+static class Person implements java.io.Serializable {
+    private static final long serialVersionUID = 321321321L;
+    String name;
+    int age;
+    transient boolean isMale; // transient 修飾數據將部會序列化(讀出來的會是預設值false)
+    Account account;
+
+    public Person(String name, int age, boolean isMale) {
+        this.name = name;
+        this.age = age;
+        this.isMale = isMale;
+    }
+
+    public Person(String name, int age, boolean isMale, Account account) {
+        this(name, age, isMale);
+        this.account = account;
+    }
+
+
+    @Override
+    public String toString() {
+        return "Person{" +
+                "name='" + name + '\'' +
+                ", age=" + age +
+                ", isMale=" + isMale +
+                ", account=" + account +
+                '}';
+    }
+}
+```
+
+<br/>
+
+### 物件的寫出
+```java
+// String destPath = "data.dat";
+static void demoObjectOutputStream(String destPath) {
+    // destPath = "data.dat";
+    ObjectOutputStream oos = null;
+    try {
+        // 造流
+        oos = new ObjectOutputStream(new FileOutputStream(destPath));
+        // 寫入物件
+        oos.writeObject(new String("A String Object")); // 將物件讀入緩衝區
+        oos.flush(); // 刷新緩衝區，將物件寫入
+        oos.writeObject(new Person("張三", 18, true));
+        oos.flush();
+        oos.writeObject(new Person("李四", 23, true, new Account(123)));
+        oos.flush();
+    } catch (IOException e) {
+        e.printStackTrace();
+    } finally {
+        // 關閉資源
+        if (oos != null) {
+            try {
+                oos.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+}
+```
+
+<br/>
+
+### 物件的讀入
+```java
+// String srcPath = data.dat
+static void demoObjectInputStream(String srcPath) {
+    ObjectInputStream ois = null;
+    try {
+        // 造流
+        ois = new ObjectInputStream(new FileInputStream(srcPath));
+        // 讀取物件數據
+        Object obj = ois.readObject();
+        String str = (String) obj;
+        Person person1 = (Person) ois.readObject();
+        Person person2 = (Person) ois.readObject();
+        // 打印讀取物件
+        System.out.println(str);
+        System.out.println(person1);
+        System.out.println(person2);
+        // Output:
+        // A String Object
+        // Person{name='張三', age=18, isMale=false, account=null}
+        // Person{name='李四', age=23, isMale=false, account=Account{id=123}}
+    } catch (IOException | ClassNotFoundException e) {
+        e.printStackTrace();
+    } finally {
+        // 關閉資源
+        if (ois != null) {
+            try {
+                ois.close();
             } catch (IOException e) {
                 e.printStackTrace();
             }
