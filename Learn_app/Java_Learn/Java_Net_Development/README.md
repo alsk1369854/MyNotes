@@ -7,9 +7,12 @@
 >  + 每個進程用不同的端口號做標示
 >  + 範圍: 0 ~ 65535
 
+> tomcat cli
+>   + $ catalina run -> 啟動 tomcat server
 
 > Demo TCP
->
+> Demo UDP
+> Demo URL
 
 <br/>
 
@@ -40,6 +43,7 @@ public void testGetIP(){
 <br/>
 
 > ## Demo TCP
+### 連接導向傳送(三次握手，四次揮手)
 ### 先開 Server 在開 Client
 ```java
 // Demo TCP
@@ -136,6 +140,136 @@ public void testTCPServer() {
     }
 }
 ```
+
+<br/>
+
+> ## Demo UDP
+### 非連接導向傳送
+```java
+// Demo UDP
+// Sender
+@Test
+public void testUDPSender(){
+    DatagramSocket socket = null;
+    try {
+        // 建立 DatagramSocket
+        socket = new DatagramSocket();
+
+        // 建立傳送封包 DatagramPacket
+        String msg = "UDP sender message!";
+        byte[] buffer = msg.getBytes();
+        InetAddress inet = InetAddress.getLocalHost();
+        DatagramPacket packet = new DatagramPacket(buffer, 0, buffer.length, inet, 3000);
+
+        // 發送封包
+        socket.send(packet);
+    } catch (IOException e) {
+        e.printStackTrace();
+    }finally{
+        // 關閉資源
+        if(socket != null){
+            socket.close();
+        }
+    }
+
+}
+
+// Receiver
+@Test
+public void testUDPReceiver(){
+    DatagramSocket socket = null;
+    try {
+        // 建立 DatagramSocket 聆聽3000端口
+        socket = new DatagramSocket(3000);
+
+        // 建立接收封包容器 DatagramPacket
+        byte[] buffer = new byte[1024];
+        DatagramPacket packet = new DatagramPacket(buffer, 0, buffer.length);
+
+        // 讀取封包
+        socket.receive(packet);
+        System.out.println(new String(packet.getData(), 0, packet.getLength()));
+
+    } catch (IOException e) {
+        e.printStackTrace();
+    }finally{
+        // 關閉資源
+        if(socket != null){
+            socket.close();
+        }
+    }
+}
+```
+<br/>
+
+
+> ## Demo URL
+
+### URL 類
+```java
+@Test
+public void testURL() {
+    try {
+        URL url = new URL("http://localhost:8080/myapp?name=ming");
+        System.out.println(url.getProtocol()); // http
+        System.out.println(url.getHost()); // localhost
+        System.out.println(url.getPort()); // 8080
+        System.out.println(url.getPath()); // /myapp
+        System.out.println(url.getFile()); // /myapp?name=ming
+        System.out.println(url.getQuery()); // name=ming
+    } catch (MalformedURLException e) {
+        e.printStackTrace();
+    }
+}
+```
+
+<br/>
+
+### URL Download web img
+```java
+@Test
+public void testDownloadImg() {
+    HttpURLConnection urlConnection = null;
+    InputStream is = null;
+    FileOutputStream fos = null;
+    try {
+        // 設定網址
+        URL url = new URL("https://raw.githubusercontent.com/alsk1369854/Ming_Home_Google_Sites/master/Technical_Article/Python_Crawler/Urllib/images/download_demo_img.png");
+        // 訪問網址
+        urlConnection = (HttpURLConnection) url.openConnection();
+        urlConnection.connect();
+        // 賭取數據
+        is = urlConnection.getInputStream();
+        fos = new FileOutputStream(new File("test_download_img.png"));
+        byte[] buffer = new byte[1024];
+        int len;
+        while ((len = is.read(buffer)) != -1) {
+            fos.write(buffer, 0, len);
+        }
+    } catch (IOException e) {
+        e.printStackTrace();
+    } finally {
+        if (fos != null) {
+            try {
+                fos.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        if (is != null) {
+            try {
+                is.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        if (urlConnection != null) {
+            urlConnection.disconnect();
+        }
+    }
+}
+```
+
 
 <br/>
 <br/>
