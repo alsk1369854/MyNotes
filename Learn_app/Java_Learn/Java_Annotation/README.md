@@ -13,7 +13,7 @@
 > ## 1. 文檔相關註解
 
 <p align="center">
-<img height="500px" src="Learn_app\Java_Learn\Java_Annotation\自定義註解_Retention.png"/>
+<img height="500px" src="/Learn_app/Java_Learn/Java_Annotation/自定義註解_Retention.png"/>
 </p>
 
 <br/>
@@ -21,7 +21,7 @@
 > ## 2. 編譯相關註解
 
 <p align="center">
-<img height="500px" src="Learn_app\Java_Learn\Java_Annotation\Java_編譯相關註解.png"/>
+<img height="500px" src="/Learn_app\Java_Learn\Java_Annotation\Java_編譯相關註解.png"/>
 </p>
 
 <br/>
@@ -57,8 +57,8 @@
             - ANNOTATION_TYPE: 標示可修飾 -> 註解類型
             - PACKAGE: 標示可修飾 -> 包
         ********** 出現平率較低 *************
-        3. Documented: 表示所修飾的註解在被 javadoc 解釋時，保留下來
-        4. Inherited: (物件子類也會將註解一並繼承) 被他修飾的 Annotation 將具有繼承性
+        1. Documented: 表示所修飾的註解在被 javadoc 解釋時，保留下來
+        2. Inherited: (物件子類也會將註解一並繼承) 被他修飾的 Annotation 將具有繼承性
 
     - jdk 8 新增
         1. Repeatable: 可重複註解
