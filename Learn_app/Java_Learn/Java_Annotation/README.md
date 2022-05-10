@@ -13,7 +13,7 @@
 > ## 1. 文檔相關註解
 
 <p align="center">
-<img height="500px" src="/Learn_app/Java_Learn/Java_Annotation/自定義註解_Retention.png"/>
+<img height="500px" src="/Learn_app\Java_Learn\Java_Annotation\Java_文檔相關註解.png"/>
 </p>
 
 <br/>
