@@ -10,6 +10,34 @@
 >       + 4-1. Get Generic Superclass (獲取帶泛型的父類和interface的泛型型別)
 >       + 4-2. Get Annotation (獲取註解)
 
+> ## Demo Object
+```java
+import Java_Annotation.MyAnnotation;
+interface MyInterface<E> {}
+class Animal<E> {}
+@MyAnnotation(value = "Person")
+public class Person extends Animal<String> implements MyInterface<Integer> {
+    private String name;
+    public int age;
+    public Person() {}
+    public Person(String name, int age) {
+        this.age = age;
+        this.name = name;
+    }
+    private String sayHi(String msg) {
+        return name + ": " + msg;
+    }
+    static void doDesc(){
+        System.out.println("I'm a Person class");
+    }
+    public String toString() {
+        return "Person{" +
+                "name='" + name + '\'' +
+                ", age=" + age +
+                '}';
+    }
+}
+```
 
 <br/>
 
@@ -28,11 +56,13 @@ public void testReflection() throws Exception {
     System.out.println(temp); // Person{name='null', age=0}
     // new Person("Ming", 20);
     Constructor<Person> cons = personClass.getDeclaredConstructor(String.class, int.class);
+    cons.setAccessible(true); // 確保元素可訪問(預設只有public可以直接訪問)
     Person person = cons.newInstance("Ming", 20);
     System.out.println(person); // Person{name='Ming', age=20}
 
     // 反射實現: int personAge = person.age;
     Field age = personClass.getDeclaredField("age");
+    age.setAccessible(true); // 確保元素可訪問(預設只有public可以直接訪問)
     // get
     int personAge = (int) age.get(person);
     System.out.println(personAge); // 20
@@ -42,9 +72,18 @@ public void testReflection() throws Exception {
 
     // 反射實現(private 私有調用): String returnValue = person.sayHi("Hi~");
     Method sayHi = personClass.getDeclaredMethod("sayHi", String.class);
-    sayHi.setAccessible(true); // 如是被 private 所修飾，需要設定此
+    sayHi.setAccessible(true); // 確保元素可訪問(預設只有public可以直接訪問)
     String returnValue = (String) sayHi.invoke(person, "Hi~");
     System.out.println(returnValue); // Ming: Hi~
+
+    // 靜態方法調用: Person.doDesc();
+    Method doDesc = personClass.getDeclaredMethod("doDesc");
+    doDesc.setAccessible(true); // 確保元素可訪問(預設只有public可以直接訪問)
+    // 方式一 // void 的回傳值為 "null"
+    // Object doDescReturnValue = doDesc.invoke(null);
+    // 方式二 // void 的回傳值為 "null"
+    Object doDescReturnValue = doDesc.invoke(Person.class);
+    System.out.println(doDescReturnValue); // null
 }
 ```
 
@@ -101,32 +140,6 @@ public class DemoClassLoader {
 <br/>
 
 > ## 4. Get Class Information
-> ### Demo Object
-```java
-import Java_Annotation.MyAnnotation;
-interface MyInterface<E> {}
-class Animal<E> {}
-@MyAnnotation(value = "Person")
-public class Person extends Animal<String> implements MyInterface<Integer> {
-    private String name;
-    public int age;
-    public Person() {}
-    public Person(String name, int age) {
-        this.age = age;
-        this.name = name;
-    }
-    private String sayHi(String msg) {
-        return name + ": " + msg;
-    }
-    public String toString() {
-        return "Person{" +
-                "name='" + name + '\'' +
-                ", age=" + age +
-                '}';
-    }
-}
-```
-<br/>
 
 > ### 4-1. Get Generic Superclass (獲取帶泛型的父類和interface的泛型型別)
 
