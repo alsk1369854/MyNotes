@@ -21,13 +21,29 @@
 <br/>
 
 ## 1. Lambda 表達式介紹
+```
+    1. FunctionalInterface 函數接口
+        - interface 必須直有一個要被實現的抽象方法
+
+    2. Lambda 表達式必須依賴於 FunctionalInterface
+
+    3. java 8 內置的4大核心函數式接口
+        1. 消費型 Consumer<T>      void accept(T t)
+        2. 供給型 Supplier<T>      T get()
+        3. 函數型 Function<T, R>   R apply(T t)
+        4. 斷定型 Predicate<T>     boolean test(T t)
+```
+<br/>
+
 ### 1-1. FunctionalInterface 函數接口
 ```java
-// interface 必須直有一個要被實現的抽象方法
+// FunctionalInterface 必須直有一個要被實現的抽象方法
 @FunctionalInterface
 interface MyFunctionalInterface<T> {
     String sayHi(String name);
 }
+
+// Lambda 表達式必須依賴於 FunctionalInterface
 @Test
 public void myTest(){
     // MyFunctionalInterface<String> myfun = t -> t + ", Hi~";
