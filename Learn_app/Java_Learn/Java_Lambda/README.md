@@ -41,13 +41,13 @@ public void myTest(){
 
 ### 1-2. java 8 內置的4大核心函數式接口
 <p align="center">
-<img height="500px" src="Learn_app\Java_Learn\Java_Lambda\函數式接口_四大基礎的.png"/>
+<img height="500px" src="/Learn_app\Java_Learn\Java_Lambda\函數式接口_四大基礎的.png"/>
 </p>
 <br/>
 
 ### 1-3. java 8 內置的其他函數式接口
 <p align="center">
-<img height="500px" src="Learn_app\Java_Learn\Java_Lambda\函數式接口_其他.png"/>
+<img height="500px" src="/Learn_app\Java_Learn\Java_Lambda\函數式接口_其他.png"/>
 </p>
 <br/>
 
