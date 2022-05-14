@@ -1,5 +1,18 @@
 # Java JDBC MySQL
 
+### ORM編成思想 (Object Relational Mapping)
++ 一個數據表對應一個java類
++ 表中一條紀錄對應java類的一個對象
++ 表中的一個字段對應java類的個屬性
+<br/>
+
+### Java 與 MySQL 數據對應關係
+<p align=center>
+<img height=400px src=/Learn_app\Java_Learn\Java_JDBC\Java_jdbc_數據類型對應關係.png/>
+</p> 
+<br/>
+
+## 簡介
 ### Connection Util
 + Step 1: 將mysql中驅動導入專案lib中
   + Step 1.1: 在MySQL文件中找到JDBC驅動(Connector)
@@ -8,10 +21,18 @@
 + Step 3: 實作 class JDBCUtils
 
 ### CRUD
-+ 增
-+ 改
-+ 刪
-+ 查
++ Demo Class Customer
++ 增/刪/改 Update
+  + 未考慮事務(Transaction)
+  + 考慮事務(Transaction)
++ 查 Query
++ Blob Data 處理
+  + Blob Data 數據說明
+  + 更新Blob數據
+  + 查詢Blob類型 並下載到本地
++ 批量(Batch)插入與刪除
+
+### Demo SQL Language
 
 <br/>
 
@@ -33,7 +54,7 @@
 ```
 user=root
 password=root
-url=jdbc:mysql://localhost:3306/test
+url=jdbc:mysql://localhost:3306/test?rewriteBatchedStatements=true&useUnicode=true&characterEncoding=utf-8
 driverClass=com.mysql.cj.jdbc.Driver
 ```
 <br/>
@@ -41,16 +62,13 @@ driverClass=com.mysql.cj.jdbc.Driver
 ### Step 3: 實作 class JDBCUtils
 ```java
 import java.io.InputStream;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.Properties;
 
 public class JDBCUtils {
-    public static Connection getConnection() throws Exception{
+    public static Connection getConnection() throws Exception {
         // 1. 讀取配置文件4個基本訊息
-        InputStream is = ClassLoader.getSystemClassLoader().getResourceAsStream("jdbc.properties"); // 根目錄為 src
+        InputStream is = ClassLoader.getSystemClassLoader().getResourceAsStream("jdbc.properties");
         Properties prop = new Properties();
         prop.load(is);
         String user = prop.getProperty("user");
@@ -75,16 +93,8 @@ public class JDBCUtils {
         return cnn;
     }
 
-    public static void closeResource(Connection conn, PreparedStatement ps){
-        // 7. 關閉資源
-        if(ps != null){
-            try {
-                ps.close();
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
-        }
-        if(conn != null){
+    public static void closeResource(Connection conn) {
+        if (conn != null) {
             try {
                 conn.close();
             } catch (SQLException e) {
@@ -92,41 +102,424 @@ public class JDBCUtils {
             }
         }
     }
+
+    public static void closeResource(PreparedStatement ps) {
+        if (ps != null) {
+            try {
+                ps.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    public static void closeResource(ResultSet rs) {
+        if (rs != null) {
+            try {
+                rs.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    public static void closeResource(Connection conn, PreparedStatement ps) {
+        JDBCUtils.closeResource(conn);
+        JDBCUtils.closeResource(ps);
+    }
+
+    public static void closeResource(Connection conn, PreparedStatement ps, ResultSet rs) {
+        JDBCUtils.closeResource(conn, ps);
+        JDBCUtils.closeResource(rs);
+    }
 }
 ```
 <br/>
 
 > ## CRUD
-### 增 insert
+### Demo Class Customer
 ```java
-    // 增
+import java.sql.Date;
+
+public class Customer {
+    private int id;
+    private String name;
+    private String email;
+    private Date birth;
+    private int balance;
+
+    public Customer() {
+    }
+
+    public Customer(int id, String name, String email, Date birth) {
+        this.id = id;
+        this.name = name;
+        this.email = email;
+        this.birth = birth;
+    }
+
+    @Override
+    public String toString() {
+        return "Customer{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", email='" + email + '\'' +
+                ", birth=" + birth +
+                ", balance=" + balance +
+                '}';
+    }
+}
+```
+<br/>
+
+### 增/刪/改 Update
+#### 未考慮事務(Transaction)
+```java
+    // 通用Update(未考慮事務)
     @Test
-    public void insertTest(){
+    public void testUpdateSQL() {
+        // 刪除操作
+        String sql = "DELETE FROM customers WHERE id = ?";
+        int i = updateSQL(sql, 4);
+        if (i > 0) {
+            System.out.println("更新成功");
+        } else {
+            System.out.println("更新失敗");
+        }
+
+        // 新增操作
+        //String sql = "INSERT INTO customers(NAME,email,birth) VALUE(?,?,?)";
+        //int i = updateSQL(sql, "JJ", "JJ@gmail.com", "1996-5-13");
+        //if(i > 0){
+        //    System.out.println("更新成功");
+        //}else{
+        //    System.out.println("更新失敗");
+        //}
+    }
+
+    public int updateSQL(String sql, Object... args) {
         Connection conn = null;
         PreparedStatement ps = null;
         try {
             // 1. 獲取數據庫的連接
             conn = JDBCUtils.getConnection();
-
             // 2. 預編譯sql語句，返回PreparedStatement的實例
-            // INSERT INTO customers(NAME, email, birth) VALUE(Ming, alsk1369854@gmail.com, 1996-08-06);
-            String sql = "INSERT INTO customers(NAME,email,birth) VALUE(?,?,?)";
             ps = conn.prepareStatement(sql);
-
             // 3. 填充佔位符
-            ps.setString(1,"Ming");
-            ps.setString(2,"alsk1369854@gmail.com");
-            SimpleDateFormat sdf = new SimpleDateFormat("YYYY-MM-dd");
-            java.util.Date birth = sdf.parse("1996-08-06");
-            ps.setDate(3, new Date(birth.getTime()));
-
-            // 4. 執行
-            ps.execute();
-            System.out.println("添加完成");
-
+            for (int i = 0; i < args.length; i++) {
+                ps.setObject(i + 1, args[i]);
+            }
+            // 4. 執行: 回傳數據庫引響行數
+            return ps.executeUpdate();
         } catch (Exception e) {
             e.printStackTrace();
+        } finally {
+            // 5. 關閉資源
+            JDBCUtils.closeResource(conn, ps);
+        }
+        return 0;
+    }
+```
+<br/>
+
+#### 考慮事務(Transaction)
+```java
+    // 通用Update(考慮事務) // 模擬轉帳
+    @Test
+    public void testUpdateWithTransaction() {
+        Connection conn = null;
+        try {
+            // 1. 獲取數據庫的連接
+            conn = JDBCUtils.getConnection();
+            // 2. 關閉自動提交
+            conn.setAutoCommit(false);
+            // 扣除甲方帳戶
+            String sql1 = "UPDATE customers SET balance = balance-100 WHERE id = ?";
+            updateWithTransaction(conn, sql1, 1);
+
+            // System.out.println(2/0); // 模擬網路異常
+
+            // 添加乙方帳戶
+            String sql2 = "UPDATE customers SET balance = balance+100 WHERE id = ?";
+            updateWithTransaction(conn, sql2, 2);
+            // 3. 提交事務
+            conn.commit();
+            System.out.println("轉帳成功");
+        } catch (Exception e) {
+            e.printStackTrace();
+            // 發生錯誤時回滾事務
+            try {
+                conn.rollback();
+            } catch (SQLException ex) {
+                ex.printStackTrace();
+            }
+        } finally {
+            // 4. 關閉資源
+            JDBCUtils.closeResource(conn);
+        }
+    }
+
+    public int updateWithTransaction(Connection conn, String sql, Object... args) {
+        PreparedStatement ps = null;
+        try {
+            // 1. 預編譯sql語句，返回PreparedStatement的實例
+            ps = conn.prepareStatement(sql);
+            // 2. 填充佔位符
+            for (int i = 0; i < args.length; i++) {
+                ps.setObject(i + 1, args[i]);
+            }
+            // 3. 執行: 回傳數據庫引響行數
+            return ps.executeUpdate();
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            // 4. 關閉資源
+            JDBCUtils.closeResource(ps);
+        }
+        return 0;
+    }
+```
+<br/>
+
+### 查 Query
+#### 1. 針對於表的字段名與類的屬性名不相同的情況
+  1. 必須聲明sql時，使用類的屬性名來命名字段的別名
+  2. 使用ResultSetMetaData時，需使用getColumnLabel()來獲取列別名(沒有別名則獲取到原列名)
+<br/>
+
+#### 2. Java Code
+```java
+    // 通用查詢多個操作
+    @Test
+    public void testGetForList() {
+        String sql = "SELECT id id,name name,email email,birth birth FROM `customers` WHERE id < ?";
+        List<Customer> list = getForList(Customer.class, sql, 10);
+        list.forEach(System.out::println);
+        /* output
+        Customer{id=1, name='test1', email='test@gmail.com', birth=2022-05-14, balance=0}
+        Customer{id=2, name='Han1', email='alsk1369854@gmail.com', birth=1995-12-31, balance=0}
+        Customer{id=5, name='Ming', email='alsk1369854@gmail.com', birth=1995-12-31, balance=0}
+        * */
+    }
+
+    public <T> List<T> getForList(Class<T> clazz, String sql, Object... args) {
+        Connection conn = null;
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+        try {
+            // 1. 獲取連結
+            conn = JDBCUtils.getConnection();
+            // 2. 預先載入sql，並填充佔位符
+            ps = conn.prepareStatement(sql);
+            for (int i = 0; i < args.length; i++) {
+                ps.setObject(i + 1, args[i]);
+            }
+            // 3. 查詢
+            rs = ps.executeQuery();
+            // 4. 獲取結果集的元數據: ResultSetMetaData
+            ResultSetMetaData rsmd = rs.getMetaData();
+            // 5. 通過ResultSetMetaData獲取結果集的列數
+            int columnCount = rsmd.getColumnCount();
+            // 建立數據集合
+            LinkedList<T> list = new LinkedList<>();
+            // 是否有查到東西
+            while (rs.next()) {
+                // 6. 透過反射建立通用的類實例
+                T t = clazz.newInstance();
+                // 7. 處理結果集一行數據中的每一個列
+                for (int i = 0; i < columnCount; i++) {
+                    // 獲取列值
+                    Object columnValue = rs.getObject(i + 1);
+                    // 獲取列別名(別名必須與java類屬性名一致)
+                    String columnName = rsmd.getColumnLabel(i + 1);
+                    // 通過反射: 給對象指定的columnName屬性，賦值為columnValue
+                    Field field = clazz.getDeclaredField(columnName);
+                    field.setAccessible(true);
+                    field.set(t, columnValue);
+                }
+                list.add(t);
+            }
+            // 8. 返回結果集合
+            return list;
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            // 關閉資源
+            JDBCUtils.closeResource(conn, ps, rs);
+        }
+        return null;
+    }
+```
+<br/>
+
+### Blob Data 處理
+#### Blob Data 數據說明
+<p align=center>
+<img height=400px src=/Learn_app\Java_Learn\Java_JDBC\jdbc_blob_type.png/>
+</p> 
+<br/>
+
+#### 更新Blob數據
+```java
+    // 更新blob數據
+    // 寫入Blob數據需要寫入 InputStream
+    @Test
+    public void testUpdateBlob(){
+        FileInputStream fis = null;
+        try {
+            String sql = "INSERT INTO customers(NAME, email, birth, photo) VALUE(?,?,?,?)";
+            // 讀取本圖片轉成 InputStream 寫入sql ; PathRoot = Module/
+            fis = new FileInputStream(new File("img.png"));
+            updateSQL(sql, "Green", "green@Email.com", "1990-1-1", fis);
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
         }finally {
+            // 關閉資源
+            try {
+                fis.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    // 通用Update(未考慮事務)
+    public int updateSQL(String sql, Object... args) {
+        Connection conn = null;
+        PreparedStatement ps = null;
+        try {
+            // 1. 獲取數據庫的連接
+            conn = JDBCUtils.getConnection();
+            // 2. 預編譯sql語句，返回PreparedStatement的實例
+            ps = conn.prepareStatement(sql);
+            // 3. 填充佔位符
+            for (int i = 0; i < args.length; i++) {
+                ps.setObject(i + 1, args[i]);
+            }
+            // 4. 執行: 回傳數據庫引響行數
+            return ps.executeUpdate();
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            // 5. 關閉資源
+            JDBCUtils.closeResource(conn, ps);
+        }
+        return 0;
+    }
+```
+<br/>
+
+#### 查詢Blob類型 並下載到本地
+```java
+    // 查詢 blob類型 並下載到本地
+    // 使用 resultSet.getBlob(n) 獲取 Blob 數據對象
+    // 使用 blob.getBinaryStream() 獲取 InputStream 流對象
+    @Test
+    public void testDownloadBlobData(){
+        Connection conn = null;
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+        InputStream is = null;
+        FileOutputStream fos = null;
+        try {
+            // 獲取連結
+            conn = JDBCUtils.getConnection();
+            // 預先加載 sql
+            String sql = "SELECT id,name,email,birth,photo FROM customers  WHERE id = ?";
+            ps = conn.prepareStatement(sql);
+            // 填充佔位符
+            ps.setObject(1, 7);
+            // 執行查詢
+            rs = ps.executeQuery();
+            // 使否存在數據
+            if(rs.next()){
+                // 建立關聯物件
+                int id = rs.getInt(1);
+                String name = rs.getString(2);
+                String email = rs.getString(3);
+                Date date = rs.getDate(4);
+                Customer customer = new Customer(id, name, email, date);
+                System.out.println(customer); // Customer{id=7, name='Green', email='green@Email.com', birth=1990-01-01, balance=0}
+
+                // 1. 讀出圖片
+                Blob blob = rs.getBlob(5);
+                // 2. 調用 getBinaryStream() 獲取 InputStream
+                is = blob.getBinaryStream();
+                // 3. 寫入本地文件
+                fos = new FileOutputStream(new File("DownloadImg.png"));
+                byte[] buffer = new byte[1024];
+                int len;
+                while((len = is.read(buffer)) != -1){
+                    fos.write(buffer,0,len);
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            // 4. 關閉資源
+            JDBCUtils.closeResource(conn,ps,rs);
+            if(fos != null){
+                try {
+                    fos.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+            if(is != null){
+                try {
+                    is.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
+```
+<br/>
+
+### 批量插入與刪除
+#### 1. connection.setAutoCommit(false) // 關閉自動提交
++ addBatch() // 將執行添加至 Batch
++ executeBatch() // 處理 Batch 中累積的數據
++ clearBatch() // 清空 Batch 中的數據(通常跟在executeBatch()後面)
++ connection.commit() // 手動提交數據
+#### 2. mysql服務器是關閉批量處理的，我們需要通過一個參數，讓mysql開啟批量處理的支持。
++ mysql.jdbc-5.1.37 在 url 後加上 ?rewriteBatchedStatements=true
+    + Example - jdbc:mysql://localhost:3306/test?rewriteBatchedStatements=true&useUnicode=true&characterEncoding=utf-8
+<br/>
+
+#### 3. java Code
+```java
+    // 批量insert
+    @Test
+    public void testBatch() {
+        Connection conn = null;
+        PreparedStatement ps = null;
+        try {
+            // 獲取數據庫的連接
+            conn = JDBCUtils.getConnection();
+            // 1. 關閉自動提交數據
+            conn.setAutoCommit(false);
+            // 預編譯sql語句，返回PreparedStatement的實例
+            String sql = "INSERT INTO good(name) VALUE(?)";
+            ps = conn.prepareStatement(sql);
+            // 填充佔位符
+            for (int i = 1; i <= 10000; i++) {
+                ps.setObject(1, "name_" + i);
+                // 1. 加入batch
+                ps.addBatch();
+                if ((i % 500) == 0) {
+                    // 2. 執行batch
+                    ps.executeBatch();
+                    // 3. 清空batch
+                    ps.clearBatch();
+                }
+            }
+            // 4. 提交數據
+            conn.commit();
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
             // 5. 關閉資源
             JDBCUtils.closeResource(conn, ps);
         }
@@ -134,49 +527,52 @@ public class JDBCUtils {
 ```
 <br/>
 
-### 改 set
-```java
-    // 改
-    @Test
-    public void setTest(){
-        Connection conn = null;
-        PreparedStatement ps = null;
-        try {
-            // 1. 獲取數據庫的連接
-            conn = JDBCUtils.getConnection();
+> ## Demo SQL Language
+```sql
+USE test;
 
-            // 2. 預編譯sql語句，返回PreparedStatement的實例
-            // UPDATE customers SET NAME='test1' WHERE id =1;
-            String sql = "UPDATE customers SET NAME= ? WHERE id = ?";
-            ps = conn.prepareStatement(sql);
+# 創建 customers 表
+CREATE TABLE customers(
+	id INT(10),
+	NAME VARCHAR(15),
+	email VARCHAR(20),
+	birth DATE,
+	balance INT,
+	photo MEDIUMBLOB
+)
 
-            // 3. 填充佔位符
-            ps.setObject(1,"Han");
-            ps.setObject(2, 2);
+# 查詢 customers 表
+SELECT *
+FROM customers;
 
-            // 4. 執行
-            ps.execute();
-            System.out.println("修改完成");
+# 增
+INSERT INTO customers(NAME, email, birth) VALUE("test", "test@gmail.com", NOW())
 
-        } catch (Exception e) {
-            e.printStackTrace();
-        }finally {
-            // 5. 關閉資源
-            JDBCUtils.closeResource(conn, ps);
-        }
-    }
+# 改
+UPDATE customers SET NAME='test1' WHERE id =1;
+UPDATE customers SET balance = balance-100 WHERE id = 1;
+
+# 刪
+DELETE FROM customers WHERE id = 3;
+
+# 查
+SELECT id,NAME,email,birth FROM customers  WHERE id = 2;
+
+# create good table
+CREATE TABLE good(
+	NAME VARCHAR(10)
+)
+
+# good 總數
+SELECT COUNT(*)
+FROM good
+
+# 刪除 good 內容
+TRUNCATE good;
+
+# 設定事務flag
+SET autocommit = FALSE
 ```
-<br/>
-
-### 刪
-```java
-```
-<br/>
-
-### 查
-```java
-```
-<br/>
 
 <br/>
 
