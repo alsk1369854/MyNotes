@@ -42,3 +42,24 @@ TRUNCATE good;
 # 設定事務flag
 SET autocommit = FALSE
 
+# 查看數據庫的隔離級別
+SELECT @@transaction_isolation;
+
+# REPEATABLE-READ / READ-COMMITTED
+# 設定當前 mySQL 連接的隔離級別 為 READ COMMITTED
+SET transaction_isolation='READ-COMMITTED';
+
+# 設定數據庫系統全局的隔離級別 READ COMMITTED
+SET global transaction_isolation='READ-COMMITTED';
+
+# 補充
+# 創建mysql數據用戶
+CREATE USER 'ming'@'localhost' IDENTIFIED BY 'ming';
+
+# 授予權限
+# 授予通過網路方式登入的 ming 用戶，對所有庫所有表的全部權限
+GRANT ALL PRIVILEGES ON *.* TO 'ming'@'%';
+# 給ming用戶使用本地命令行方式，授予 test庫下的所有表的數據CRUD操作權限
+GRANT SELECT,INSERT,DELETE,UPDATE ON test.* TO 'ming'@'localhost';
+
+

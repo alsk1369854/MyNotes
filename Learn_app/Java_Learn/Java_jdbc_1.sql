@@ -42,3 +42,4 @@ TRUNCATE good;
 # 設定事務flag
 SET autocommit = FALSE
 
+CREATE USER ming IDENTIFIED BY 'ming'

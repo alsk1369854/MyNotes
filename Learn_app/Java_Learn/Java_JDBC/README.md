@@ -13,6 +13,11 @@
 <br/>
 
 ## 簡介
+### DAO 範例
++ BaseDAO
++ CustomerDAO
++ CustomerDAOImpl
+
 ### Connection Util
 + Step 1: 將mysql中驅動導入專案lib中
   + Step 1.1: 在MySQL文件中找到JDBC驅動(Connector)
@@ -21,7 +26,7 @@
 + Step 3: 實作 class JDBCUtils
 
 ### CRUD
-+ Demo Class Customer
++ Java Bean Class Customer
 + 增/刪/改 Update
   + 未考慮事務(Transaction)
   + 考慮事務(Transaction)
@@ -32,65 +37,333 @@
   + 查詢Blob類型 並下載到本地
 + 批量(Batch)插入與刪除
 
+### 事務的隔離 Transaction isolation
++ 事務的ACID屬性
++ 四種隔離級別
+
 ### Demo SQL Language
 
 <br/>
 
-> ## 1. Connection Util
+> ## DAO
+### BaseDAO
+```java
+import com.jdbc5.Druid.Util.JDBCUtils;
+
+import java.lang.reflect.Field;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
+import java.sql.*;
+import java.util.LinkedList;
+import java.util.List;
+
+public abstract class BaseDAO<T> {
+
+    // 透過映射取出子類傳入的泛型類型
+    private Class<T> clazz = null;
+    {
+        Type type = this.getClass().getGenericSuperclass();
+        ParameterizedType paramType = (ParameterizedType)type;
+        clazz = (Class<T>)paramType.getActualTypeArguments()[0];
+    }
+
+    // 通用查詢多個操作 (考慮事務)
+    public List<T> getForList(Connection conn, String sql, Object... args) {
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+        try {
+            // 1. 預先載入sql，並填充佔位符
+            ps = conn.prepareStatement(sql);
+            for (int i = 0; i < args.length; i++) {
+                ps.setObject(i + 1, args[i]);
+            }
+            // 2. 查詢
+            rs = ps.executeQuery();
+            // 3. 獲取結果集的元數據: ResultSetMetaData
+            ResultSetMetaData rsmd = rs.getMetaData();
+            // 4. 通過ResultSetMetaData獲取結果集的列數
+            int columnCount = rsmd.getColumnCount();
+            // 建立數據集合
+            LinkedList<T> list = new LinkedList<>();
+            // 是否有查到東西
+            while (rs.next()) {
+                // 5. 透過反射建立通用的類實例
+                T t = clazz.newInstance();
+                // 6. 處理結果集一行數據中的每一個列
+                for (int i = 0; i < columnCount; i++) {
+                    // 獲取列值
+                    Object columnValue = rs.getObject(i + 1);
+                    // 獲取列別名(別名必須與java類屬性名一致)
+                    String columnName = rsmd.getColumnLabel(i + 1);
+                    // 通過反射: 給對象指定的columnName屬性，賦值為columnValue
+                    Field field = clazz.getDeclaredField(columnName);
+                    field.setAccessible(true);
+                    field.set(t, columnValue);
+                }
+                list.add(t);
+            }
+            // 7. 返回結果集合
+            return list;
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            // 關閉資源
+            JDBCUtils.closeResource(ps, rs);
+        }
+        return null;
+    }
+
+    // 通用查詢單個操作 (考慮事務)
+    public T getInstance( Connection conn, String sql, Object... args) {
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+        try {
+            conn = JDBCUtils.getConnection();
+            ps = conn.prepareStatement(sql);
+            for (int i = 0; i < args.length; i++) {
+                ps.setObject(i + 1, args[i]);
+            }
+            rs = ps.executeQuery();
+            // 獲取結果集的元數據: ResultSetMetaData
+            ResultSetMetaData rsmd = rs.getMetaData();
+            // 通過ResultSetMetaData獲取結果集的列數
+            int columnCount = rsmd.getColumnCount();
+            // 是否有查到東西
+            if (rs.next()) {
+                T t = clazz.newInstance();
+                // 處理結果集一行數據中的每一個列
+                for (int i = 0; i < columnCount; i++) {
+                    // 獲取列值
+                    Object columnValue = rs.getObject(i + 1);
+                    // 獲取列別名(別名必須與java類屬性名一致)
+                    String columnName = rsmd.getColumnLabel(i + 1);
+                    // 通過反射: 給對象指定的columnName屬性，賦值為columnValue
+                    Field field = clazz.getDeclaredField(columnName);
+                    field.setAccessible(true);
+                    field.set(t, columnValue);
+                }
+                return t;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            // 關閉資源
+            JDBCUtils.closeResource(ps, rs);
+        }
+        return null;
+    }
+
+    // 通用Update(考慮事務)
+    public int update(Connection conn, String sql, Object... args) {
+        PreparedStatement ps = null;
+        try {
+            // 1. 預編譯sql語句，返回PreparedStatement的實例
+            ps = conn.prepareStatement(sql);
+            // 2. 填充佔位符
+            for (int i = 0; i < args.length; i++) {
+                ps.setObject(i + 1, args[i]);
+            }
+            // 3. 執行: 回傳數據庫引響行數
+            return ps.executeUpdate();
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            // 4. 關閉資源
+            JDBCUtils.closeResource(ps);
+        }
+        return 0;
+    }
+
+    // 用於查詢特殊值得通用方法
+    public <E> E getValue(Connection conn, String sql, Object... args) {
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+        try {
+            ps = conn.prepareStatement(sql);
+            for(int i=0; i<args.length; i++){
+                ps.setObject(i+1, args[i]);
+            }
+            rs = ps.executeQuery();
+            if(rs.next()){
+                return (E) rs.getObject(1);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            JDBCUtils.closeResource(ps, rs);
+        }
+        return null;
+    }
+}
+
+```
+<br/>
+
+### CustomerDAO
+```java
+import com.jdbc5.Druid.bean.Customer;
+
+import java.sql.Connection;
+import java.util.List;
+
+public interface CustomerDAO {
+    int insert(Connection conn, Customer cust);
+
+    int deleteById(Connection conn, int id);
+
+    int update(Connection conn, Customer cust);
+
+    Customer getCustomerById(Connection conn, int id);
+
+    List<Customer> getAll(Connection conn);
+
+    Long getCount(Connection conn);
+}
+```
+<br/>
+
+### CustomerDAOImpl
+```java
+import com.jdbc5.Druid.bean.Customer;
+
+import java.sql.Connection;
+import java.util.List;
+
+public class CustomerDAOImpl extends BaseDAO<Customer> implements CustomerDAO {
+    @Override
+    public int insert(Connection conn, Customer cust) {
+        String sql = "insert into customers(name, email, birth) values(?,?,?)";
+        return update(conn, sql, cust.getName(), cust.getEmail(), cust.getBirth());
+    }
+
+    @Override
+    public int deleteById(Connection conn, int id) {
+        String sql = "delete from customers where id = ?";
+        return update(conn, sql, id);
+    }
+
+    @Override
+    public int update(Connection conn, Customer cust) {
+        String sql = "update customers set name = ?, email = ?, birth = ? where id = ?";
+        return update(conn, sql, cust.getName(), cust.getEmail(), cust.getBirth(), cust.getId());
+    }
+
+    @Override
+    public Customer getCustomerById(Connection conn, int id) {
+        String sql = "select id, name, email, birth from customers where id = ?";
+        return getInstance(conn, sql, id);
+    }
+
+    @Override
+    public List<Customer> getAll(Connection conn) {
+        String sql = "select id, name, email, birth from customers";
+        return getForList(conn,sql);
+    }
+
+    @Override
+    public Long getCount(Connection conn) {
+        String sql = "select count(*) from customers";
+        return getValue(conn, sql);
+    }
+}
+```
+<br/>
+
+> ## Connection Util
 ### Step 1: 將mysql中驅動導入專案lib中
 #### Step 1.1: 在MySQL文件中找到JDBC驅動(Connector)
 <p align=center>
-<img height=500px src=/Learn_app\Java_Learn\Java_JDBC\jdbc_mysql_connector.png/>
+<img height=400px src=/Learn_app\Java_Learn\Java_JDBC\jdbc_mysql_connector.png/>
 </p>
 <br/>
 
 #### Step 2.2: 將驅動導入專案lib中
 <p align=center>
-<img height=500px src=/Learn_app\Java_Learn\Java_JDBC\idea_add_mysql_connector_lib.png/>
+<img height=400px src=/Learn_app\Java_Learn\Java_JDBC\idea_add_mysql_connector_lib.png/>
 </p>
 <br/>
 
 ### Step 2: 配置 jdbc.properties -> src/jdbc.properties
 ```
-user=root
+username=root
 password=root
 url=jdbc:mysql://localhost:3306/test?rewriteBatchedStatements=true&useUnicode=true&characterEncoding=utf-8
-driverClass=com.mysql.cj.jdbc.Driver
+driverClassName=com.mysql.cj.jdbc.Driver
+
+# Druid
+# https://github.com/alibaba/druid/wiki/DruidDataSource%E9%85%8D%E7%BD%AE%E5%B1%9E%E6%80%A7%E5%88%97%E8%A1%A8
+initialSize=10
+minIdle=10
+maxActive=20
+maxWait=1000
+filters=wall
 ```
 <br/>
 
 ### Step 3: 實作 class JDBCUtils
 ```java
+import com.alibaba.druid.pool.DruidDataSourceFactory;
+
+import javax.sql.DataSource;
+import java.io.IOException;
 import java.io.InputStream;
 import java.sql.*;
 import java.util.Properties;
 
 public class JDBCUtils {
-    public static Connection getConnection() throws Exception {
-        // 1. 讀取配置文件4個基本訊息
-        InputStream is = ClassLoader.getSystemClassLoader().getResourceAsStream("jdbc.properties");
-        Properties prop = new Properties();
-        prop.load(is);
-        String user = prop.getProperty("user");
-        String password = prop.getProperty("password");
-        String url = prop.getProperty("url");
-        String driverClass = prop.getProperty("driverClass");
+    // 連接 Druid 數據池
+    private static DataSource source;
 
-        // 2. 加載 Driver
-        Class.forName(driverClass);
-        /* 加載 mysql Driver時, 自動的註冊了Driver
-          static {
+    // 連接 Druid 數據池
+    static {
+        InputStream is = null;
+        try {
+            is = ClassLoader.getSystemResourceAsStream("jdbc.properties");
+            Properties prop = new Properties();
+            prop.load(is);
+            source = DruidDataSourceFactory.createDataSource(prop);
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            if (is != null) {
                 try {
-                    DriverManager.registerDriver(new Driver());
-                } catch (SQLException var1) {
-                    throw new RuntimeException("Can't register driver!");
+                    is.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
                 }
             }
-        * */
+        }
+    }
 
-        // 3. 連接Sql
-        Connection cnn = DriverManager.getConnection(url, user, password);
-        return cnn;
+    public static Connection getConnection() throws SQLException {
+        // 從連接池拿取連接
+        return source.getConnection();
+
+        // 自己取得連接的方式(不推薦)
+        //// 1. 讀取配置文件4個基本訊息
+        //InputStream is = ClassLoader.getSystemClassLoader().getResourceAsStream("jdbc.properties");
+        //Properties prop = new Properties();
+        //prop.load(is);
+        //String user = prop.getProperty("username");
+        //String password = prop.getProperty("password");
+        //String url = prop.getProperty("url");
+        //String driverClass = prop.getProperty("driverClassName");
+        //
+        //// 2. 加載 Driver
+        //Class.forName(driverClass);
+        ///* 加載 mysql Driver時, 自動的註冊了Driver
+        //  static {
+        //        try {
+        //            DriverManager.registerDriver(new Driver());
+        //        } catch (SQLException var1) {
+        //            throw new RuntimeException("Can't register driver!");
+        //        }
+        //    }
+        //* */
+        //
+        //// 3. 連接Sql
+        //Connection cnn = DriverManager.getConnection(url, user, password);
+        //return cnn;
     }
 
     public static void closeResource(Connection conn) {
@@ -128,16 +401,22 @@ public class JDBCUtils {
         JDBCUtils.closeResource(ps);
     }
 
+    public static void closeResource(PreparedStatement ps, ResultSet rs) {
+        JDBCUtils.closeResource(ps);
+        JDBCUtils.closeResource(rs);
+    }
+
     public static void closeResource(Connection conn, PreparedStatement ps, ResultSet rs) {
         JDBCUtils.closeResource(conn, ps);
         JDBCUtils.closeResource(rs);
     }
 }
+
 ```
 <br/>
 
 > ## CRUD
-### Demo Class Customer
+### Java Bean Class Customer
 ```java
 import java.sql.Date;
 
@@ -146,7 +425,7 @@ public class Customer {
     private String name;
     private String email;
     private Date birth;
-    private int balance;
+    private Integer balance;
 
     public Customer() {
     }
@@ -167,6 +446,46 @@ public class Customer {
                 ", birth=" + birth +
                 ", balance=" + balance +
                 '}';
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public Date getBirth() {
+        return birth;
+    }
+
+    public void setBirth(Date birth) {
+        this.birth = birth;
+    }
+
+    public Integer getBalance() {
+        return balance;
+    }
+
+    public void setBalance(Integer balance) {
+        this.balance = balance;
     }
 }
 ```
@@ -527,51 +846,21 @@ public class Customer {
 ```
 <br/>
 
+> ## 事務的隔離 Transaction isolation
+### 事務的ACID屬性
+<p align=center>
+<img height=400px src=/Learn_app\Java_Learn\Java_JDBC\jdbc_transaction_ACID.png/>
+</p>
+<br/>
+
+### 四種隔離級別
+<p align=center>
+<img height=400px src=/Learn_app\Java_Learn\Java_JDBC\sql_4種隔離級別.png/>
+</p>
+<br/>
+
 > ## Demo SQL Language
 ```sql
-USE test;
-
-# 創建 customers 表
-CREATE TABLE customers(
-	id INT(10),
-	NAME VARCHAR(15),
-	email VARCHAR(20),
-	birth DATE,
-	balance INT,
-	photo MEDIUMBLOB
-)
-
-# 查詢 customers 表
-SELECT *
-FROM customers;
-
-# 增
-INSERT INTO customers(NAME, email, birth) VALUE("test", "test@gmail.com", NOW())
-
-# 改
-UPDATE customers SET NAME='test1' WHERE id =1;
-UPDATE customers SET balance = balance-100 WHERE id = 1;
-
-# 刪
-DELETE FROM customers WHERE id = 3;
-
-# 查
-SELECT id,NAME,email,birth FROM customers  WHERE id = 2;
-
-# create good table
-CREATE TABLE good(
-	NAME VARCHAR(10)
-)
-
-# good 總數
-SELECT COUNT(*)
-FROM good
-
-# 刪除 good 內容
-TRUNCATE good;
-
-# 設定事務flag
-SET autocommit = FALSE
 ```
 
 <br/>
