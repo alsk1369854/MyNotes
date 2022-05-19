@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns="http://xmlns.jcp.org/xml/ns/javaee"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_4_0.xsd"
+         version="4.0">
+    <servlet>
+        <servlet-name>AddServlet</servlet-name>
+        <servlet-class>javaweb01.servlets.AddServlet</servlet-class>
+        <load-on-startup>1</load-on-startup>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>AddServlet</servlet-name>
+        <url-pattern>/add</url-pattern>
+    </servlet-mapping>
+    <!--
+      1. 用戶發送請求. action=add
+      2. 項目中, web.xml中找到url-pattern = /add -> 第12行
+      3. 找到第11行的servlet-name = AddServlet
+      4. 找到和servlet-mapping中servlet-name一致的servlet. -> 找到第7行
+      5. 找到第8行的servlet-class    ->  servlets.AddServlet
+      6. 用戶方送的是post請求 (method=post), 因此 tomcat 會執行AddServlet中的doPost方法
+      -->
+
+    <!-- 在上下文参数中配置视图前缀和视图后缀 -->
+    <context-param>
+        <param-name>view-prefix</param-name>
+        <param-value>/</param-value>
+    </context-param>
+    <context-param>
+        <param-name>view-suffix</param-name>
+        <param-value>.html</param-value>
+    </context-param>
+</web-app>

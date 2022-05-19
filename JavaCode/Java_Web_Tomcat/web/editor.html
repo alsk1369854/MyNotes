@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<!--<html xmlns:th="http://www.thymeleaf.org">-->
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Editor page</title>
+    <!--    <link rel="stylesheet" href="index.css">-->
+    <link rel="stylesheet" href="index.css">
+</head>
+<body>
+<h2>Customer Editor</h2>
+<form th:action="@{/customer.do}" method="post" th:object="${session.cust}">
+    <input type="hidden" name="operate" value="update">
+    <input type="hidden" name="id" th:value="*{id}">
+    Name: <input type="text" name="name" th:value="*{name}"/><br/>
+    Birth bay: <input type="text" name="birth" th:value="*{birth}"/><br/>
+    E-mail: <input type="text" name="email" th:value="*{email}"/><br/>
+    <input type="submit" value="Submit"/>
+</form>
+</body>
+</html>

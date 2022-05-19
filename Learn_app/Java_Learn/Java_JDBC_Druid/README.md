@@ -45,7 +45,7 @@
 
 <br/>
 
-> ## DAO
+> ## DAO 範例
 ### BaseDAO
 ```java
 import com.jdbc5.Druid.Util.JDBCUtils;
@@ -311,10 +311,10 @@ import java.sql.*;
 import java.util.Properties;
 
 public class JDBCUtils {
-    // 連接 Druid 數據池
+    // 連接 Druid 連接池
     private static DataSource source;
 
-    // 連接 Druid 數據池
+    // 連接 Druid 連接池
     static {
         InputStream is = null;
         try {

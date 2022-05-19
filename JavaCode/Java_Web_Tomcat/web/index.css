@@ -1,0 +1,16 @@
+body{
+    background-color: blanchedalmond;
+    margin:0px;
+    padding:0px;
+    text-align: center;
+}
+a{
+    text-decoration:none;
+}
+.btnBar{
+    width: 60%;
+    margin-left: 20%;
+}
+.btnBar > button{
+    margin-left: 5px;
+}

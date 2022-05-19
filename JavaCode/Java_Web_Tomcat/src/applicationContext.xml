@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<beans>
+    <!--  如果 DispatchServlet 中 servletPath = customer 就要 CustomerController 來處理 -->
+    <bean id="customer" class="JavaWeb.controllers.CustomerController"></bean>
+
+</beans>

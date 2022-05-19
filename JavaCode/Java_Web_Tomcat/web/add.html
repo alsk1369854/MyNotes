@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<!--<html xmlns:th="http://www.thymeleaf.org">-->
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Add page</title>
+    <!--    <link rel="stylesheet" href="index.css">-->
+    <link rel="stylesheet" href="index.css">
+</head>
+<body>
+<h2>Customer Add</h2>
+<form action="/customer.do" method="post">
+    <input type="hidden" name="operate" value="add">
+    Name: <input type="text" name="name" value="default name"/><br/>
+    Birth bay: <input type="text" name="birth" value="2022-01-01"/><br/>
+    E-mail: <input type="text" name="email" value="123@123.com"/><br/>
+    <input type="submit" value="Submit"/>
+</form>
+</body>
+</html>

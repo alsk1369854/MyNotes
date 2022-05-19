@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" href="index.css">
+</head>
+<body>
+<h1 style="text-align:center">Customer List</h1>
+<div>
+    <form style="display:inline-block" th:action="@{/customer.do}" method="post">
+        <input type="hidden" name="search" value="search"/>
+        搜尋: <input type="text" name="searchValue" th:value="${session.keyword}"/>
+        <input type="submit" value="Search">
+    </form>
+    <a th:href="@{/add.html}">Add new Customer</a>
+</div>
+<h3 th:if="${#lists.isEmpty(session.custList)}">沒有數據</h3>
+<ul th:unless="${#lists.isEmpty(session.custList)}" th:each="cust : ${session.custList}">
+    <!--    <span th:text="${cust.id}"/><span> - </span><span th:text="${cust.name}"/><span> - </span><span th:text="${cust.email}"/><span> - </span>-->
+    <a th:href="@{/customer.do(custId=${cust.id}, operate='editor')}"><span
+            th:text="${cust.id + '---' + cust.name + '---' + cust.email}"></span></a>
+    <button th:onclick="|doDelCust(${cust.id})|">Delete</button>
+</ul>
+<div class="btnBar">
+    <button onclick="goPage(1)" th:disabled="|${session.pageNo == 1}|">首 頁</button>
+    <button th:onclick="|goPage(${session.pageNo-1})|" th:disabled="|${session.pageNo == 1}|">上一頁</button>
+    <button th:onclick="|goPage(${session.pageNo+1})|" th:disabled="|${session.pageNo == session.lastPage}|">下一頁
+    </button>
+    <button th:onclick="|goPage(${session.lastPage})|" th:disabled="|${session.pageNo == session.lastPage}|">尾 頁
+    </button>
+</div>
+<script type="text/javascript" src="index.js"></script>
+</body>
+</html>
