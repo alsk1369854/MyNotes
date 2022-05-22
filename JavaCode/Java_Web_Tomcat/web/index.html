@@ -13,7 +13,7 @@
         搜尋: <input type="text" name="searchValue" th:value="${session.keyword}"/>
         <input type="submit" value="Search">
     </form>
-    <a th:href="@{/add.html}">Add new Customer</a>
+    <a th:href="@{/page.do(operate='page',page='add')}">Add new Customer</a>
 </div>
 <h3 th:if="${#lists.isEmpty(session.custList)}">沒有數據</h3>
 <ul th:unless="${#lists.isEmpty(session.custList)}" th:each="cust : ${session.custList}">

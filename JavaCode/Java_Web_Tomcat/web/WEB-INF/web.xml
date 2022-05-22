@@ -3,15 +3,15 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_4_0.xsd"
          version="4.0">
-    <servlet>
-        <servlet-name>AddServlet</servlet-name>
-        <servlet-class>javaweb01.servlets.AddServlet</servlet-class>
+    <com.servlet>
+        <com.servlet-name>AddServlet</com.servlet-name>
+        <com.servlet-class>javaweb01.servlets.AddServlet</com.servlet-class>
         <load-on-startup>1</load-on-startup>
-    </servlet>
-    <servlet-mapping>
-        <servlet-name>AddServlet</servlet-name>
+    </com.servlet>
+    <com.servlet-mapping>
+        <com.servlet-name>AddServlet</com.servlet-name>
         <url-pattern>/add</url-pattern>
-    </servlet-mapping>
+    </com.servlet-mapping>
     <!--
       1. 用戶發送請求. action=add
       2. 項目中, web.xml中找到url-pattern = /add -> 第12行
@@ -29,5 +29,10 @@
     <context-param>
         <param-name>view-suffix</param-name>
         <param-value>.html</param-value>
+    </context-param>
+
+    <context-param>
+        <param-name>contextConfigLocation</param-name>
+        <param-value>C:\IdeaProjects\Java_learn\JavaWeb\JavaWeb01\src\applicationContext.xml</param-value>
     </context-param>
 </web-app>

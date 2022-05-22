@@ -44,20 +44,20 @@ String fname = request.getParameter("name");
 
 ## 2. Servlet 繼承關係 - 重點查看的是(service(request, response))
 ### 1 繼承關係
-    javax.servlet.Servlet (interface)
-        javax.servlet.GenericServlet (abstract)
-            javax.servlet.http.HttpServlet (abstract)
+    javax.com.servlet.Servlet (interface)
+        javax.com.servlet.GenericServlet (abstract)
+            javax.com.servlet.http.HttpServlet (abstract)
 
 ### 2 相關方法
-    1. javax.servlet.Servlet (interface):
+    1. javax.com.servlet.Servlet (interface):
         init(ServletConfig var1) - 初始化方法
         void service(ServletRequest var1, ServletResponse var2) - 服務方法
         void destroy() - 銷毀方法
 
-    2. javax.servlet.GenericServlet (abstract):
+    2. javax.com.servlet.GenericServlet (abstract):
         public abstract void service(ServletRequest var1, ServletResponse var2) - 仍然是抽象的
 
-    3. javax.servlet.http.HttpServlet (abstract):
+    3. javax.com.servlet.http.HttpServlet (abstract):
         protected void service(HttpServletRequest req, HttpServletResponse resp) - 不是抽象的
         1. String method = req.getMethod(); - 獲取請求的方式
         2. 各種if判斷，根據請求方式不同，決定去調用不同的do方法
@@ -105,11 +105,11 @@ String fname = request.getParameter("name");
     4. Servlet的初始化時機
         - 默認是第一次接收請求時 實例化, 初始化
         - 我們可以透過配置web.xml中<load-on-startup>來設計servlet啟動的先後順序，數字越小，啟動順序越靠前，最小值0
-                <servlet>
-                    <servlet-name>AddServlet</servlet-name>
-                    <servlet-class>javaweb01.servlets.AddServlet</servlet-class>
+                <com.servlet>
+                    <com.servlet-name>AddServlet</com.servlet-name>
+                    <com.servlet-class>javaweb01.servlets.AddServlet</com.servlet-class>
                     <load-on-startup>1</load-on-startup>
-                </servlet>
+                </com.servlet>
     5. Servlet在容器中是: 單例的，線程不安全的
         - 單例: 所有的請求都是同一個實例去響應
         - 線程不安全的: 一個線程需要根據這個實例中的某個成員變量值去做邏輯判斷。但是在中間某個時機，另一個線程改變了這個程成員變量，倒置其他線程出現判斷錯誤
@@ -218,7 +218,7 @@ String fname = request.getParameter("name");
 
 ### 11 DispatchServlet 使用反射提供一個中央Servlet
     1. 配置 Controller Bean 這個對應依據我們存儲在 applicationContext.xml 中
-        <bean id="customer" class="JavaWeb.controllers.CustomerController"></bean>
+        <bean id="customer" class="JavaWeb.customer.controllers.CustomerController"></bean>
         通過DOM技術我們去解析XML文件，在中央控制器中形成一個 beanMap 容器，用來存放所有的 controller 組件實例
     2. 根據 url 定位到能處理這個請求的 controller 組件
         1) 從 url 中提取 request.getServletPath() // /customer.do  ->  customer 
@@ -241,8 +241,162 @@ String fname = request.getParameter("name");
             } else {
                 super.processTemplate(returnValue, request, response);
             }
-            
 
+## 12 Servlet 初始化方法
+    1. 初始化方法有兩個: init(), init(config)
+        1) 帶參數:
+            public void init(ServletConfig config) throws ServletException {
+                this.config = config;
+                this.init();
+            }
+        2) 未帶參數:
+            public void init() throws ServletException {
+            }
+        3)　我們想要在 Servlet 初始化時做一些準備工作，那麼我們可以重寫init方法
+            我們可以透過下方步驟獲取初始化設置數據
+            - 獲取config對象: ServletConfig config = getServletConfig();
+            - 獲取參數值: String value = config.getInitParameter(key);
+    2. 在web.xml文件中配置Servlet
+        <!--  ServletContext context = getServletContext()  -->
+        <context-param>
+            <param-name>contextConfigLocation</param-name>
+            <param-value>classpath:applicationContext.xml</param-value>
+        </context-param>
+        <!--  ServletConfig config = getServletConfig()  -->
+        <com.servlet>
+            <com.servlet-name>IndexServlet</com.servlet-name>
+            <com.servlet-class>com.servlet.IndexServlet</com.servlet-class>
+            <init-param>
+                <param-name>name</param-name>
+                <param-value>Ming</param-value>
+            </init-param>
+        </com.servlet>
+        <!--  IndexServlet 映射  -->
+        <com.servlet-mapping>
+            <com.servlet-name>IndexServlet</com.servlet-name>
+            <url-pattern>/index</url-pattern>
+        </com.servlet-mapping>
+        
+    3. 也可以透過註解的方式進行配置:
+        @WebServlet(urlPatterns = {"/index"},
+                initParams = {
+                        @WebInitParam(name = "name", value = "Ming")
+                }
+        )
+    
+    4. Servlet 中的 ServletContext 和 <context-param>
+        1) 獲取ServletContext，有很多
+            在初始化方法中獲取: 
+                ServletContext context = getServletContext();
+                String contextConfigLocation = context.getInitParameter("contextConfigLocation");
+            在 service() 方法中也可以透過 request對象獲取:
+                request.getServletContext();
+                request.getSession().getServletContext();
+        2) 獲取初始化值:
+            String value = servletContext.getInitParameter(key);
+
+## 13 什麼是業務層
+    MVC: Model(模型)、View(視圖)、Controller(控制器)
+    View: 用於做數據展示以及和用戶交互的一個介面
+    Controller: 能夠接收客戶端的清求，具體的業務功能還是需要借助模型組件來完成
+    Model: 模型分為很多種: 有比較簡單的 pojo/vo(value object)，有業務模型組件，有數據庫訪問組件
+        1) pojo/vo: 值模型
+        2) DAO: 數據庫方問模型
+        3) BO: 業物邏輯模型
+        4) DTO: 數據傳輸模型
+    
+    區分業務對象和數據訪問對象:
+        1) DAO中的方法都是單精度方法。 什麼叫單精度? 一個方法只考慮一個操作， 比如添加，那就是insert操作、查詢操作select、更新操作update、刪除操作delete
+        2) BO中的方法屬於業務方法，而實際的業務是比較複雜的，因此業務方法的粒度是比較粗的
+            例: 註冊
+                1. 檢查用戶名是否已經被註冊 - DAO中的select操作
+                2. 向用戶表新增一條新用戶數據 - DAO中的insert操作
+                3. 向用戶積分表新增一條數據(默認100分) - DAO中的insert操作
+                4. 向系統消息表新增一條數據(XXX新用戶註冊了，需要根據通訊錄向他發送驗證信) - DAO中的insert操作
+                5. 向系統日誌表新增一條數據(XXX用戶 IP:xxx.xxx.xxx 日期:xxxx/xx/xx 註冊) - DAO中的insert操作
+                6. ....
+
+## 14 IOC
+    1) 耦合/依賴
+        依賴是指XXX離不開xxx
+        在軟體系統中，層與層之間是存在依賴的。我們也稱之為耦合
+        我們系統架構或者是設計的一個原則是: 高內聚低耦合。
+        層內部的組件因該是高度聚合的，而層與層之間的關西因該是低耦合的，最理想的情況是0耦合(就是沒有耦合)
+    2) IOC - 控制反轉 / DI - 依賴注入
+        控制反轉:
+        1) 之前在Servlet中，我們創建service對象， CustomerService customerService = new CustomerServiceImpl();
+            這句話如果出現在servlet中某個方法內部，那麼這個customerService的作用域(生命週期)因該就是這個方法級別的;
+            如果這句話出現在servlet的類中，也就是說customerService是一個成員變量，那麼這個customerService的作用域(生命週期)因該就是這個servlet實例級別
+        2) 之後我們在applicationContext.xml中定義了這個customerService。然後透過解析XML，產生customerService的實例，存放在beanMap中，這個beanMap在一個beanFactory中
+            因此，我們轉移(改變)了之前的service實例，dao實例等等他們的生命週期。控制權從程序員轉移到beanFactory。這個現象我們稱之為控制反轉。
+
+        依賴注入:
+        1) 之前我們在控制層出現代碼: CustomerService customerService = new CustomerServiceImpl();
+            那麼，控制層和service層級存在耦合。
+        2) 之後，我們將代碼修改成 CustomerService customerService = null;
+            然後，在配置文件中配置:
+            <bean id="customer" class="JavaWeb.customer.controllers.CustomerController">
+                <property name="customerService" ref="customerService"/>
+            </bean>
+
+## 15 過濾器 Filter
+    1) Filter也屬於Servlet規範
+    2) Filter開發步驟: 新建類實現Filter接口，然後實現其中三個方法: init, doFilter, destoy
+        配置Filter, 可以用註解@WebFilter, 也可以使用xml文件 <filter><filter-mapping>
+    3) Filter在配置時, 和servlet一樣，也可配置通配符，例如: @WebFileter("*.do") 表示攔截所有以.do結尾的請求
+    4) 過濾器鏈
+        1) 執行的順序依次是: AFilter BFileter CFileter Servlet CFilter2 BFileter2 AFileter2 
+        2) 如果採取的是註解的方式進行配置， 那麼過濾器鏈的攔截順序是按照類名遞增的先後順序排序的
+        3) 如果採取的是xml的方式進行配置，那麼按照配置的先後順序來進行排序
+
+
+## 16 事務管理 (TransActionManager, ThreadLocal, OpenSessionInViewFilter)
+    1) 涉及到的組件
+        - OpenSessionInViewFilter
+        - TransactionManager
+        - ConnUtil(JDBCUtils)
+        - BaseDAO
+    
+    2) ThreadLocal
+        - get(), set(obj)
+        - ThreadLocal稱之為本地線程。我們可以透過set方法在當前線程上存儲數據，透過get方法在當前線程上獲取數據
+        - set 方法原碼分析:
+            public void set(T value) {
+                Thread t = Thread.currentThread();  // 獲取當前線程
+                ThreadLocalMap map = getMap(t);     // 每個線程都維護各自的一個容器(TreadLocalMap)
+                if (map != null) {
+                    map.set(this, value);           // 這裡的key對應的是ThreadLocal，因為我們的組件中需要傳輸(共享數據)的對象可能會有多個工具箱
+                } else {
+                    createMap(t, value);            // 默認情況下map是每有初始化的，那麼第一次往其中添加數據時，進行初始化
+                }
+            }
+
+        - get 
+            public T get() {
+                Thread t = Thread.currentThread();  // 獲取當前線程
+                ThreadLocalMap map = getMap(t);     // 獲取和這個線程(企業)相關的ThreadLocalMap(也就是工作紐帶的集合)
+                if (map != null) {
+                    ThreadLocalMap.Entry e = map.getEntry(this);    this指的是ThreadLocal對象，通過他才能知道是哪一個工作紐帶
+                    if (e != null) {
+                        @SuppressWarnings("unchecked")
+                        T result = (T)e.value;  // entry.value就可以獲取到工具箱了
+                        return result;
+                    }
+                }
+                return setInitialValue();
+            }
+                
+## 17 監聽器(Listener, ContextLoaderListener)
+    1) ServletContextListener - 監聽ServletContext對象創建和銷毀過程
+    2) HttpSessionListener - 監聽HttpSession對象創建和銷毀過程
+    3) ServletRequestListener - 監聽ServletRequest對象創建和銷毀過程
+    
+    4) ServletContextAttributeListener - 監聽ServletContext的包存作用愈的改動(add, remove, replace)
+    5) HttpSessionAttributeListener - 監聽HttpSession的包存作用愈的改動(add, remove, replace)
+    6) ServletRequestAttributeListener - 監聽ServletRequest的包存作用愈的改動(add, remove, replace)
+
+    7) HttpSessionBindingListener - 監聽某個對象在Session域中的創建與移除
+    8) HttpSessionActivationListener - 監聽某個對象在Session域中的序列化和反序列化
 
 th:action="@{/update.cust}"
 th:href="@{/editor(custId=${cust.id})}
