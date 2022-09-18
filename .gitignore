@@ -1,3 +1,4 @@
 # 忽略 .webm 文件
 *.webm
 *.rar
+*.pyc
