@@ -3,6 +3,7 @@
  1. 常用 shell 命令
     1. ping {IP位置|主機名稱} #檢查是否可以連線
     2. ls | grep [篩選文字] #篩選
+    3. pwd #查看當前路徑
  2. 網路配置 
     1.  修改靜態IP
     2.  配置主機名
@@ -13,6 +14,9 @@
     3. 遠端工具 下載地址:https://www.netsarang.com/en/free-for-home-school/
        1. 命令 => Xshell 
        2. 文件 => Xftp 
+ 4. Linux 服務管理
+    1. systemclt {start|stop|restart|status} [服務名] #CentOS 7
+    2. service [服務名] {start|stop|restart|status} #CentOS 6
 
 <br/>
 
@@ -32,6 +36,7 @@ PING google.com (142.251.42.238) 56(84) bytes of data.
 
 ### 1-2. ls | grep [篩選文字] #篩選
 ```shell
+# 篩選
 [root@ChiaMingCentOS etc]# ls /etc/ | grep host
 ghostscript
 host.conf
@@ -42,6 +47,13 @@ hosts.deny
 
 ```
 <br/>
+
+### 1-3. pwd #查看當前路徑
+```shell
+# 查看當前路徑
+[root@minglinux100 ~]# pwd
+/root
+```
 
 ## 2. 網路配置 
 ### 2-1. Setting Static IP Address
@@ -203,3 +215,33 @@ scp -C /path/file1 myuser@192.168.0.1:/path/file2
 # 限制傳輸速度為 400 Kbit/s
 scp -l 400 /path/file1 myuser@192.168.0.1:/path/file2
 ```
+<br/>
+
+## 4. Linux 服務管理
+### 4-1. systemclt {start|stop|restart|status} [服務名] #CentOS 7
+```shell
+# 服務管理: systemclt {start|stop|restart|status} [服務名]
+# 服務位址: /usr/lib/systemd/system
+# .service => 服務
+# .target => 服務集合
+[root@minglinux100 system]# systemctl status NetworkManager
+● NetworkManager.service - Network Manager
+   Loaded: loaded (/usr/lib/systemd/system/NetworkManager.service; enabled; vendor preset: enabled)
+   Active: active (running) since Tue 2022-08-09 06:56:45 CST; 1 day 13h ago
+     Docs: man:NetworkManager(8)
+ Main PID: 842 (NetworkManager)
+    Tasks: 3
+   CGroup: /system.slice/NetworkManager.service
+           └─842 /usr/sbin/NetworkManager --no-daemon
+```
+<br/>
+
+### 4-2. service [服務名] {start|stop|restart|status} #CentOS 6
+```shell
+# 服務管理: service [服務名] {start|stop|restart|status}
+# 服務位址: /etc/init.d
+# .d => daemon 常駐程式
+[root@minglinux100 system]# service network restart
+Restarting network (via systemctl):                        [  OK  ]
+```
+<br/>
