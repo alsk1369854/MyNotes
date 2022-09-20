@@ -98,8 +98,8 @@ IPAADDR=192.168.198.100
 GATEWAY=192.168.198.2
 # DNS
 DNS1=192.168.198.2
-
 ```
+
 #### 2-2-3. 重啟網路連線，檢查IP是否為靜態IP
 ```shell
 [root@ChiaMingCentOS network-scripts]# service network restart
