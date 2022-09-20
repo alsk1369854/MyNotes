@@ -1,7 +1,8 @@
 # Chat Room
 
 <p align="center">
-    <img height="400px" src="https://raw.githubusercontent.com/alsk1369854/ChatRoom/master/images/demo_img.png"/>
+    <img height="400px" src="https://raw.githubusercontent.com/alsk1369854/MyNotes/tree/master/JavaCode/SocketClientAndServer/screenshots/demo_img.png"/>
+
 </p>
 
 <br>
