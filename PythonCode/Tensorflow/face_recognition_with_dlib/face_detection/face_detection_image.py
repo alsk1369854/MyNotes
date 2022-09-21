@@ -6,7 +6,7 @@ from matplotlib import pyplot as plt
 # http://dlib.net/files/shape_predictor_68_face_landmarks.dat.bz2 # DOWNLOAD LINK
 # http://dlib.net/files/dlib_face_recognition_resnet_model_v1.dat.bz2
 datFile = r"../content/shape_predictor_68_face_landmarks.dat"
-img_path = r'../image_folder/ChiaMing.jpg'
+img_path = r'../image_folder/Chia Ming.jpg'
 
 # Dlib 的人臉偵測器
 detector = dlib.get_frontal_face_detector()

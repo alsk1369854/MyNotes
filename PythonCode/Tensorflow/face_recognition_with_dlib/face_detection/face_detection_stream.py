@@ -7,7 +7,7 @@ import numpy as np
 # http://dlib.net/files/shape_predictor_68_face_landmarks.dat.bz2 # DOWNLOAD LINK
 
 datFile = r"../content/shape_predictor_68_face_landmarks.dat"
-img_path = '../image_folder/ChiaMing.jpg'
+img_path = '../image_folder/Chia Ming.jpg'
 cap_width = 400
 cap_height = 800
 

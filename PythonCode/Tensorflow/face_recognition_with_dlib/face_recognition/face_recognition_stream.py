@@ -21,6 +21,7 @@ def load_known_faces():
 if __name__ == '__main__':
     # 讀取已知的人臉
     (person_names, known_faces) = load_known_faces()
+    print(person_names)
 
     # start detection...
     while True:
@@ -35,30 +36,35 @@ if __name__ == '__main__':
         image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
 
         # 擷取畫面中的人臉特徵
-        face_location_list = face_recognition.face_locations(image)
-        encoded_face_list = face_recognition.face_encodings(image, face_location_list)
+        # gpu face_locations
+        # face_location_list = face_recognition.face_locations(image, model='cnn')
+        # cpu face_locations
+        face_location_list = face_recognition.face_locations(image, model='hog')
+        encoded_face_list = face_recognition.face_encodings(image, face_location_list, model='large')
 
         # 遍歷畫面中所找找到的臉部特徵
         for face_location, encoded_face in zip(face_location_list, encoded_face_list):
             y1, x2, y2, x1 = face_location
             y1, x2, y2, x1 = y1 * 4, x2 * 4, y2 * 4, x1 * 4
-            matches = face_recognition.compare_faces(known_faces, encoded_face)
+            matches = face_recognition.compare_faces(known_faces, encoded_face, tolerance=0.4)
             face_distance = face_recognition.face_distance(known_faces, encoded_face)
+            print(face_distance)
             matchIndex = np.argmin(face_distance)
+            suppert = face_distance[matchIndex]
 
             if matches[matchIndex]:
                 person_name = person_names[matchIndex]
 
                 cv2.rectangle(frame, (x1, y1), (x2, y2), (0, 255, 0), 2)
+                # 標示分數
+                cv2.putText(frame, str(suppert), (x1, y1), cv2.FONT_HERSHEY_DUPLEX, 0.7, (255, 255, 255), 1, cv2.LINE_AA)
                 cv2.putText(frame, person_name, (x1 + 6, y2 - 6), cv2.FONT_HERSHEY_COMPLEX, 1, (255, 255, 255), 2)
 
             else:
                 cv2.rectangle(frame, (x1, y1), (x2, y2), (0, 255, 255), 2)
 
-
-
         # Display the resulting frame
-        cv2.imshow('frame', frame)
+        cv2.imshow('Face Detection', frame)
         if cv2.waitKey(1) & 0xFF == ord('q'):
             break
 
