@@ -4,16 +4,20 @@ import cv2
 import os
 
 image_folder_path = r'../image_folder'
+num_jitters = 50
+landmarks_model = 'large'  # 'large' | 'small'
 
 
 def encoding_images(images, person_names):
     encoded_images = []
-    for img, person_name in zip(images, person_names):
+    total_case = len(person_names)
+
+    for i, (img, person_name) in enumerate(zip(images, person_names)):
         img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
-        print(person_name + '...')
-        # model= 'large' | 'hog'
-        encode = fr.face_encodings(img, num_jitters=10, model='large')[0]
+        print(str(int(i / total_case * 100)) + '%')
+        encode = fr.face_encodings(img, num_jitters=num_jitters, model=landmarks_model)[0]
         encoded_images.append(encode)
+    print('100%')
     return encoded_images
 
 
@@ -34,7 +38,7 @@ if __name__ == '__main__':
         images.append(curImg)
         person_names.append(os.path.splitext(image_name)[0])
 
-    print('encoding...')
+    print('Encoding...\n')
     encoded_images = encoding_images(images, person_names)
     save_known_faces(person_names, encoded_images)
     print('\nDone')
