@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Change</title>
+</head>
+<body>
+<form action="/doChange", method="post">
+    <input type="text" hidden name="id" value="{{person.id}}">
+    <div>
+        New Name: <input name="name" type="text" value="{{person.name}}"  placeholder="Name" >
+    </div>
+    <div>
+        New Age: <input name="age" type="text" value="{{person.age}}" placeholder="Age" >
+    </div>
+    <input type="submit"/>
+</form>
+
+</body>
+</html>

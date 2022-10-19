@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html>
+<head></head>
+<body>
+<h1>Person List</h1>
+<!--{# jinja2 可以寫python代碼#}-->
+<h2>User Name: {{username}}</h2>
+<h2>Password: {{password}}</h2>
+<a href="/add">Add Person</a>
+{% for person in person_list %}
+<ul>
+    <li>{{person.name}}</li>
+    <li>{{person.age}}</li>
+    <a href="/delete/{{person.id}}">Delete</a>
+    <a href="/change/{{person.id}}">Change</a>
+</ul>
+{% endfor%}
+</body>
+</html>
