@@ -1,11 +1,106 @@
 # Tensorflow
--
-- 2. 創建 Tensor
+- 1. Tensor 類型
+- 2. Tensor 創建
 - 3. Tensor 索引與切片
 - 4. Tensor 維度變換
+- 5. Tensor 廣展
+- 6. Tensor 數學運算
 
+## 1. Tensor 類型
+- 1-1. Tensor 支持的類型
+- 1-2. Tensor 使用 cpu/gpu 的資源
+- 1-3. Tensor to Numpy
+- 1-4. Tensor 維度訊息
 
-## 2. 創建 Tensor
+### 1-1. Tensor 支持的類型
+- int, float, double
+- bool
+- string
+
+Tensor 在創建類型時會自動識別數據類型，若要指定類型的話就需給定 'dtype' 參數
+- int:   dtype=tf.int8 | int16 | int32 | int64 
+- float: dtype=tf.float16 | float32 | float64 | double
+- bool:  dtype=tf.bool
+- string:dtype=tf.string
+```python
+# int 自動辨識類型
+t_int = tf.convert_to_tensor(1)
+print(t_int)
+# tf.Tensor(1, shape=(), dtype=int32)
+
+# float 自動辨識類型
+t_float = tf.convert_to_tensor(1.)
+print(t_float)
+# tf.Tensor(1.0, shape=(), dtype=float32)
+
+# 指定類型為 double 
+t_double = tf.convert_to_tensor(1, dtype=tf.double) 
+print(t_double)
+# tf.Tensor(1.0, shape=(), dtype=float64)
+```
+
+### 1-2. Tensor 使用 cpu/gpu 的資源
+cpu 與 gpu 資源不能互通，只能訪問到同資源底下的資料
+```python
+# Tensor 使用 cpu 或 gpu 資源
+with tf.device('cpu'):
+    t_cpu = tf.convert_to_tensor(1.)
+with tf.device('gpu'):
+    t_gpu = tf.convert_to_tensor(2.)
+
+print(t_cpu.device)
+# /job:localhost/replica:0/task:0/device:CPU:0
+print(t_gpu.device)
+# /job:localhost/replica:0/task:0/device:GPU:0
+```
+
+### 1-3. Tensor to Numpy
+```python
+# Tensor to Numpy
+data = tf.range(5)
+print(data)
+# tf.Tensor([0 1 2 3 4], shape=(5,), dtype=int32)
+
+result = data.numpy()
+print(result)
+# [0 1 2 3 4]
+```
+
+### 1-4. Tensor 維度訊息
+- .ndim : 獲取維度
+- .shape : 獲取維度結構
+- .dtype : 獲取 tensor 數據類型
+- tf.rank() : 獲取 tensor 類型的，目標 tensor 維度
+
+```python
+data = tf.ones([2, 3, 4])
+print(data)
+# tf.Tensor(
+# [[[1. 1. 1. 1.]
+#   [1. 1. 1. 1.]
+#   [1. 1. 1. 1.]]
+#  [[1. 1. 1. 1.]
+#   [1. 1. 1. 1.]
+#   [1. 1. 1. 1.]]], shape=(2, 3, 4), dtype=float32)
+
+# 取得 tensor 維度
+print(data.ndim)
+# 3
+
+# 取得 tensor 維度結構
+print(data.shape)
+# (2, 3, 4)
+
+# 取得 tensor 數據類型
+print(data.dtype)
+# <dtype: 'float32'>
+
+# 獲取 tensor 類型的，目標 tensor 維度
+print(tf.rank(data))
+tf.Tensor(3, shape=(), dtype=int32)
+```
+
+## 2. Tensor 創建 
 - 2-1. 從 Numpy 或 List 型態轉為 Tensor 型態
 - 2-2. 初始化 0. Tensor
 - 2-3. 初始化 1. Tensor
@@ -222,10 +317,12 @@ print(result.shape)
 <br/>
 
 ## 4. Tensor 維度變換
-- 4-1. reshape() 維度升降
+- 4-1. reshape() 維度重塑
 - 4-2. transpose() 維度調換
+- 4-3. expand_dims() 維度提升
+- 4-4. squeeze() 維度下降
   
-### 4-1. reshape() 維度升降
+### 4-1. reshape() 維度重塑
 ```python
 # data = [b, h, w, rgb]
 data = tf.random.normal([5, 28, 28, 3])
@@ -272,3 +369,277 @@ result = tf.transpose(data, perm=[0, 3, 1, 2])
 print(result.shape)
 # (5, 3, 28, 28)
 ```
+
+### 4-3. expand_dims() 維度提升
+```python
+# data = [classes, students, subjects]
+data = tf.random.uniform([4,35,8], maxval=100, dtype=tf.int32)
+
+# axis: 操作插入維度(會在 "axis" 與 "axis-1" 之間插入 1 個維度)
+# axis正號: 向前插入
+result = tf.expand_dims(data, axis=0)
+print(result.shape)
+# (1, 4, 35, 8)
+
+# axis負號: 向後插入
+result = tf.expand_dims(data, axis=-3)
+print(result.shape)
+# (4, 1, 35, 8)
+```
+
+### 4-4. squeeze() 維度下降
+```python
+data = tf.zeros([1, 2, 1, 1, 3])
+
+# axis: 操作維度|預設全部維度, (可將元素為 1 的維度消除)
+# 不指定 axis 消除 Tensor 中所有元素為 1 的維度
+result = tf.squeeze(data)
+print(result.shape)
+# (2, 3)
+
+# 消除指定元素為 1 的維度
+result = tf.squeeze(data, axis=-2)
+print(result.shape)
+# (1, 2, 1, 3)
+```
+<br/>
+
+
+## 5. Tensor 廣展
+將一向量廣展為指定的多維向量
+- 5-1. broadcast_to() :使用參照的方式複製Tensor，不佔用多餘的記憶體空間(用於在訓練時添加基本常量)
+- 5-2. tile() :與broadcast_to()雷同，但此方法實質複製了Tensor並佔用記憶體空間
+
+### 5-1. broadcast_to() 使用範例
+```python
+# data = [classes, students, subjects]
+data = tf.ones([2,2,3])
+# tf.Tensor(
+# [[[1. 1. 1.]
+#   [1. 1. 1.]]
+#  [[1. 1. 1.]
+#   [1. 1. 1.]]], shape=(2, 2, 3), dtype=float32)
+
+# 使用 + 運算符可自動的完成 Tensor 的 broadcast
+# 可在目標 Tensor 維度中插入 1 元素來自動計算廣展維度，成為目的 Tensor 維度
+
+# (一)使用 + 運算符自動完成broadcast與矩陣相加
+# 將每個課目分數各加 5 分
+_add = tf.fill([3], 5.)
+print(_add)
+# tf.Tensor([5. 5. 5.], shape=(3,), dtype=float32)
+result = data + _add
+print(result)
+# tf.Tensor(
+# [[[6. 6. 6.]
+#   [6. 6. 6.]]
+#  [[6. 6. 6.]
+#   [6. 6. 6.]]], shape=(2, 2, 3), dtype=float32)
+
+# (二)使用 + 運算符自動完成broadcast與矩陣相加
+# 將每個課目分數各加 5 分
+_add = tf.fill([1,2,1], 5.)
+print(_add)
+# tf.Tensor(
+# [[[5.]
+#   [5.]]], shape=(1, 2, 1), dtype=float32)
+result = data + _add
+print(result)
+# tf.Tensor(
+# [[[6. 6. 6.]
+#   [6. 6. 6.]]
+#  [[6. 6. 6.]
+#   [6. 6. 6.]]], shape=(2, 2, 3), dtype=float32)
+
+# 使用 broadcast_to() 將 [3] -> [2,2,3]
+data = tf.ones([3])
+print(data)
+# tf.Tensor([1. 1. 1.], shape=(3,), dtype=float32)
+result = tf.broadcast_to(data, [2,2,3])
+print(result)
+# tf.Tensor(
+# [[[1. 1. 1.]
+#   [1. 1. 1.]]
+#  [[1. 1. 1.]
+#   [1. 1. 1.]]], shape=(2, 2, 3), dtype=float32)
+```
+### 5-2. tile() 使用範例
+```python
+# data = [classes, students, subjects]
+data = tf.ones([1,2,3])
+print(data)
+# tf.Tensor(
+# [[[1. 1. 1.]
+#   [1. 1. 1.]]], shape=(1, 2, 3), dtype=float32)
+
+# 可在 tile() 方法中傳入 "multiples" 維度，內可插入 1 元素來自動計算廣展維度
+
+# 複製成兩個班
+result = tf.tile(data, multiples=[2,1,1])
+print(result)
+# tf.Tensor(
+# [[[1. 1. 1.]
+#   [1. 1. 1.]]
+#  [[1. 1. 1.]
+#   [1. 1. 1.]]], shape=(2, 2, 3), dtype=float32)
+```
+
+## 6. Tensor 數學運算
+- 6-1. (+, -, *, /)
+- 6-2. (tf.math.log(), tf.exp())
+- 6-3. (pow(), sqrt())
+- 6-4. (@, matmul()) 矩陣相乘
+
+### 6-1. (+, -, *, /)
+```python
+a = tf.ones([2,2])
+# tf.Tensor(
+# [[1. 1.]
+#  [1. 1.]], shape=(2, 2), dtype=float32)
+b = tf.fill([2,2], 2.)
+# tf.Tensor(
+# [[2. 2.]
+#  [2. 2.]], shape=(2, 2), dtype=float32) 
+
+# +
+result = a + b
+print(result)
+# tf.Tensor(
+# [[3. 3.]
+#  [3. 3.]], shape=(2, 2), dtype=float32)
+
+# - 
+result = a - b
+print(result)
+# tf.Tensor(
+# [[-1. -1.]
+#  [-1. -1.]], shape=(2, 2), dtype=float32)
+
+# * 
+result = a * b
+print(result)
+# tf.Tensor(
+# [[2. 2.]
+#  [2. 2.]], shape=(2, 2), dtype=float32)
+
+# /
+result = a / b
+print(result)
+# tf.Tensor(
+# [[0.5 0.5]
+#  [0.5 0.5]], shape=(2, 2), dtype=float32)
+```
+
+### 6-2. (tf.math.log(), tf.exp())
+- tf.math.log(x) :底預設 log<sub> e</sub><sup>x</sup> 如需換底則許須使用換底公式 (log<sub>e </sub>x / log<sub>e </sub>y = log<sub>y </sub>x)
+- tf.exp(x) : e<sup>x</sup>
+
+#### tf.math.log()
+```python
+data = tf.ones([2,2])
+# tf.Tensor(
+# [[1. 1.]
+#  [1. 1.]], shape=(2, 2), dtype=float32)
+
+# log e^1 = 0
+result = tf.math.log(data)
+print(result)
+# tf.Tensor(
+# [[0. 0.]
+#  [0. 0.]], shape=(2, 2), dtype=float32)
+
+# log 2^8 = log e^8 / log e^2
+result = tf.math.log([8.]) / tf.math.log([2.])
+print(result)
+# tf.Tensor([3.], shape=(1,), dtype=float32)
+```
+
+#### tf.exp()
+```python
+data = tf.ones([2,2])
+# tf.Tensor(
+# [[1. 1.]
+#  [1. 1.]], shape=(2, 2), dtype=float32)
+
+result = tf.exp(data)
+print(result)
+# tf.Tensor(
+# [[2.7182817 2.7182817]
+#  [2.7182817 2.7182817]], shape=(2, 2), dtype=float32)
+```
+
+### 6-3. (pow(), sqrt())
+- pow(x, y)
+$$pow(x, y) = x^y$$
+- sqrt(x)
+$$sqrt(x) = \sqrt{x}$$
+
+#### pow()
+```python
+data = tf.fill([2,2], 2.)
+# tf.Tensor(
+# [[2. 2.]
+#  [2. 2.]], shape=(2, 2), dtype=float32)
+
+result = data**2
+print(result)
+# tf.Tensor(
+# [[4. 4.]
+#  [4. 4.]], shape=(2, 2), dtype=float32)
+
+result = tf.pow(data, 2)
+print(result)
+# tf.Tensor(
+# [[4. 4.]
+#  [4. 4.]], shape=(2, 2), dtype=float32)
+```
+
+#### sqrt()
+```python
+data = tf.fill([2,2], 4.)
+# tf.Tensor(
+# [[4. 4.]
+#  [4. 4.]], shape=(2, 2), dtype=float32)
+
+result = tf.sqrt(data)
+print(result)
+# tf.Tensor(
+# [[2. 2.]
+#  [2. 2.]], shape=(2, 2), dtype=float32)
+```
+
+### 6-4. (@, matmul()) 矩陣相乘
+在 Tenser 矩陣乘法中是以最低的2維度來做運算, 3維以上不變 
+```python
+a = tf.fill([2,2], 2.)
+# tf.Tensor(
+# [[2. 2.]
+#  [2. 2.]], shape=(2, 2), dtype=float32)
+b = tf.ones([2,2])
+# tf.Tensor(
+# [[1. 1.]
+#  [1. 1.]], shape=(2, 2), dtype=float32)
+
+# @
+result = a @ b
+print(result)
+# tf.Tensor(
+# [[4. 4.]
+#  [4. 4.]], shape=(2, 2), dtype=float32)
+
+# matnul()
+result = tf.matmul(a, b)
+print(result)
+# tf.Tensor(
+# [[4. 4.]
+#  [4. 4.]], shape=(2, 2), dtype=float32)
+
+# 在 Tenser 矩陣乘法中是以最低的2維度來做運算, 3維以上不變 
+# 下方運算為 [3*2] @ [2*4] = [3*4]
+a = tf.random.normal([5, 7, 3, 2])
+b = tf.random.normal([5, 7, 2, 4])
+result = a @ b
+print(result.shape)
+# (5, 7, 3, 4)
+```
+
