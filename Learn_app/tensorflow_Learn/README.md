@@ -5,12 +5,21 @@
 - 4. Tensor 維度變換
 - 5. Tensor 廣展
 - 6. Tensor 數學運算
+- 7. 實作 向前傳播(Forward): 修正 loss 最佳化預測解果 
+- 8. Tensor 分割與合併
+- 9. 數據統計
+- 10. Tensor 排序
+- 11. 實作 計算前 Top k 的預測結果準確率
+  
 
 ## 1. Tensor 類型
 - 1-1. Tensor 支持的類型
 - 1-2. Tensor 使用 cpu/gpu 的資源
 - 1-3. Tensor to Numpy
 - 1-4. Tensor 維度訊息
+- 1-5. Tensor 數據類型轉換
+- 1-6. Variable 可訓練的 Tensor
+- 1-7. 判斷是否為 Tensor or Variable 物件
 
 ### 1-1. Tensor 支持的類型
 - int, float, double
@@ -64,6 +73,12 @@ print(data)
 result = data.numpy()
 print(result)
 # [0 1 2 3 4]
+
+data = tf.ones([]) 
+# tf.Tensor(1.0, shape=(), dtype=float32)
+print(data.numpy()) # 1.0
+print(int(data)) # 1
+print(float(data)) # 1.0
 ```
 
 ### 1-4. Tensor 維度訊息
@@ -99,6 +114,75 @@ print(data.dtype)
 print(tf.rank(data))
 tf.Tensor(3, shape=(), dtype=int32)
 ```
+
+### 1-5. Tensor 數據類型轉換
+使用 cast(tensor, dtype) 來轉換 tensor 的數據類型，只要邏輯說的通就可以
+- tensor: 轉換的目標 tensor 物件
+- dtype: 要轉換的數據類型
+
+Tensor 支持的 'dtype' 參數類型
+- int:   dtype=tf.int8 | int16 | int32 | int64 
+- float: dtype=tf.float16 | float32 | float64 | double
+- bool:  dtype=tf.bool
+- string:dtype=tf.string
+```python
+data = tf.range(5)
+# tf.Tensor([0 1 2 3 4], shape=(5,), dtype=int32)
+
+# int32 to float32
+result = tf.cast(data, dtype=tf.float32)
+print(result)
+# tf.Tensor([0. 1. 2. 3. 4.], shape=(5,), dtype=float32)
+
+# bool to int32
+data = tf.constant([True, False])
+# tf.Tensor([True False], shape=(2,), dtype=bool)
+result = tf.cast(data, dtype=tf.int32)
+print(result)
+# tf.Tensor([1 0], shape=(2,), dtype=int32)
+
+# int32 to bool
+data = tf.constant([0, 1])
+# tf.Tensor([0 1], shape=(2,), dtype=int32)
+result = tf.cast(data, dtype=tf.bool)
+print(result)
+# tf.Tensor([False  True], shape=(2,), dtype=bool)
+```
+
+### 1-6. Variable 可訓練的 Tensor
+對於模型訓練我們需要不斷對 w 與 b 兩參數做梯度更新，因此需要將他們 Tensor 類型轉換為 Variable 方可更新梯度
+$$y = x*w+b$$
+
+```python
+data = tf.range(5)
+# tf.Tensor([0 1 2 3 4], shape=(5,), dtype=int32)
+
+result = tf.Variable(data)
+print(result)
+# <tf.Variable 'Variable:0' shape=(5,) dtype=int32, numpy=array([0, 1, 2, 3, 4])>
+print(result.trainable)
+# True
+```
+
+### 1-7. 判斷是否為 Tensor or Variable 物件
+使用 tf.is_tensor() 來判斷物件是否為 Tensor or Variable 
+
+也可使用 isinstance(object, tf.Tensor|tf.Variable) 來針對兩個物件做特殊判斷
+```python
+data_tensor = tf.range(5)
+# tf.Tensor([0 1 2 3 4], shape=(5,), dtype=int32)
+data_variable = tf.Variable(data_tensor)
+# <tf.Variable 'Variable:0' shape=(5,) dtype=int32, numpy=array([0, 1, 2, 3, 4])>
+
+# 推薦: Use is_tensor()
+print(tf.is_tensor(data_tensor)) # True
+print(tf.is_tensor(data_variable)) # True
+
+# Use isinstance check data_variable
+print(isinstance(data_variable, tf.Tensor)) # False
+print(isinstance(data_variable, tf.Variable)) # True
+```
+<br/>
 
 ## 2. Tensor 創建 
 - 2-1. 從 Numpy 或 List 型態轉為 Tensor 型態
@@ -642,4 +726,563 @@ result = a @ b
 print(result.shape)
 # (5, 7, 3, 4)
 ```
+<br/>
 
+## 7. 實作 向前傳播(Forward): 修正 loss 最佳化預測解果
+
+$$ out_i = x_iw_i+b_i $$ 
+$$ loss = \frac{1}{n} (\sum_{i=0}^{n-1}(y_i-out_i)^2)  $$
+```python
+import tensorflow as tf
+from tensorflow import keras
+from tensorflow.keras import datasets
+import os
+
+# 設定 terminal 只輸出 error 訊息 (指定為 '1' 表示輸出全部訊息)
+os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'
+
+# 載入 mnist 手寫數字資料集，共60k
+# x = [60k, 28, 28]
+# y = [60k]
+(x, y), _ = datasets.mnist.load_data()
+
+# 將數據轉換為 Tensor 物件
+x = tf.convert_to_tensor(x, dtype=tf.float32) 
+y = tf.convert_to_tensor(y, dtype=tf.int32) 
+
+# 查看 x, y 數據集中的最大最小值
+print(x.shape, y.shape, x.dtype, y.dtype) # (60000, 28, 28), (60000,), <dtype: 'float32'>, <dtype: 'int32'>
+print(tf.reduce_min(x), tf.reduce_max(x)) # tf.Tensor(0.0, shape=(), dtype=float32), tf.Tensor(255.0, shape=(), dtype=float32)
+print(tf.reduce_min(y), tf.reduce_max(y)) # tf.Tensor(0, shape=(), dtype=int32), tf.Tensor(9, shape=(), dtype=int32)
+
+# 將 x 數據轉換到 0~1 之間 [0~255.] => [0~1.]
+x = x / 255
+# 將 y 數據傳換成 one_hot [60k] => [60k, 10]
+y = tf.one_hot(y, depth=10)
+
+# 建立訓練資料集
+train_db = tf.data.Dataset.from_tensor_slices((x,y))
+# 設定一次 128 筆資料同時訓練，默認為 batch(1)
+train_db = train_db.batch(128)
+
+# 建立 3層 全連接神經網路，設定表準差為 0.1 以防梯度爆炸
+# layer 1: input:784, output: 256
+w1 = tf.Variable(tf.random.truncated_normal([784, 256], stddev=0.1))
+b1 = tf.Variable(tf.zeros([256]))
+# layer 2: input:256, output: 128
+w2 = tf.Variable(tf.random.truncated_normal([256, 128], stddev=0.1))
+b2 = tf.Variable(tf.zeros([128]))
+# layer 3: input:128, output: 10
+w3 = tf.Variable(tf.random.truncated_normal([128, 10], stddev=0.1))
+b3 = tf.Variable(tf.zeros([10]))
+
+print(w1.device) # Device:GPU
+
+# 設定 learn range 值:修正步伐
+lr = 1e-3 # 0.001 = (1*10^-3)
+
+for epoch in range(3): # 設定 train_db 資料集重複訓練次數
+    for step, (x, y) in enumerate(train_db): # train_db 的每一個 batch
+        # [128, 28, 28] => [128, 784]
+        x = tf.reshape(x, [-1, 28*28])
+
+        with tf.GradientTape() as tape: # 建立求導監聽
+
+            # 將 x 輸入網路層中
+            # input layer 1 : [128, 784] => [128, 256]
+            l1 = x@w1+b1
+            l1 = tf.nn.relu(l1) # Relu 非線型函數: max(0, l1)
+
+            # input layer 2 : [128, 256] => [128, 128]
+            l2 = l1@w2+b2
+            l2 = tf.nn.relu(l2) # Relu 非線型函數: max(0, l1)
+            
+            # input layer 3 : [128, 128] => [128, 10]
+            out = l2@w3+b3
+            
+            # 求預測誤差 mean(sum((y-out)^2))
+            loss = tf.square(y-out)
+            loss = tf.reduce_mean(loss)
+
+        # 向前傳播修正 loss
+        grads = tape.gradient(loss, [w1, b1, w2, b2, w3, b3])
+        # w' = w - lr * w_grads
+        # 使用 assign_sub() 原地修正誤差可保持原來的 Variable 類型，否則會變回 Tensor 類型需要再次封裝
+        w1.assign_sub(lr * grads[0])
+        b1.assign_sub(lr * grads[1]) 
+        w2.assign_sub(lr * grads[2])
+        b2.assign_sub(lr * grads[3])
+        w3.assign_sub(lr * grads[4])
+        b3.assign_sub(lr * grads[5])
+
+
+        # 打印當前訓練結果
+        if step % 100 == 0:
+            print(epoch, step, 'loss: ', float(loss))
+
+```
+<br/>
+
+## 8. Tensor 分割與合併
+- 8-1. 合併方法
+  - concat()
+  - stack()
+- 8-2. 分割方法
+  - split()
+  - unstack()
+
+### 8-1. 合併方法
+- concat() : 組合兩 Tensor 除了組合維度外其餘維度大小必須相同
+- stack() : 合併兩 Tensor 所有維度必須相同
+```python
+# data = [students, scores]
+data_1 = tf.ones([2, 4])
+# tf.Tensor(
+# [[1. 1. 1. 1.]
+#  [1. 1. 1. 1.]], shape=(2, 4), dtype=float32)
+data_2 = tf.zeros([1, 4])
+# tf.Tensor([[0. 0. 0. 0.]], shape=(1, 4), dtype=float32)
+
+# concat() 組合兩 Tensor 除了組合維度外其餘維度大小必須相同， [2, 4]&[1, 4] => [3,4]
+# axis: 組合維度
+result = tf.concat([data_1, data_2], axis=0)
+print(result)
+# tf.Tensor(
+# [[1. 1. 1. 1.]
+#  [1. 1. 1. 1.]
+#  [0. 0. 0. 0.]], shape=(3, 4), dtype=float32)
+
+# stack() 合併兩 Tensor 所有維度必須相同，在 axis=0 擴展合併 = [2, 4]&[2, 4] => [2, 2, 4]
+# axis: 合併後擴展的維度
+data_2 = tf.zeros([2, 4])
+# tf.Tensor(
+# [[0. 0. 0. 0.]
+#  [0. 0. 0. 0.]], shape=(2, 4), dtype=float32)
+
+result = tf.stack([data_1, data_2], axis=0)
+print(result)
+# tf.Tensor(
+# [[[1. 1. 1. 1.]
+#   [1. 1. 1. 1.]]
+#  [[0. 0. 0. 0.]
+#   [0. 0. 0. 0.]]], shape=(2, 2, 4), dtype=float32)
+```
+
+### 8-2. 分割方法
+- split : 維度切片
+- unstack : 展開維度
+
+```python
+# data = [classes, students, scores]
+data = tf.random.normal([2, 3, 4])
+
+# split() : 平均拆分 axis=2 的維度 4/2 = 2
+# axis: 指定拆分維度
+result = tf.split(data, axis=2, num_or_size_splits=2)
+print(len(result)) # 2
+print(result[0].shape) # (2, 3, 2)
+print(result[1].shape) # (2, 3, 2)
+
+# split() : 指定拆分大小
+result = tf.split(data, axis=2, num_or_size_splits=[1, 1, 2])
+print(len(result)) # 3
+print(result[0].shape) # (2, 3, 1)
+print(result[1].shape) # (2, 3, 1)
+print(result[2].shape) # (2, 3, 2)
+
+
+# unstack() : 展開維度
+# axis: 拆解的擴展維度
+result = tf.unstack(data, axis=0)
+print(len(result)) # 2
+print(result[0].shape) # (3, 4)
+print(result[1].shape) # (3, 4)
+```
+
+
+## 9. 數據統計
+- 9-1. 向量范數
+- 9-2. 取(最大/最小/平均)值
+- 9-3. 最大與最小值索引
+- 9-4. 數據比較
+- 9-5. 去重複
+
+### 9-1. 向量范數
+L1-Norm:
+$$ ||x||_1 = \sum_k|x_k|$$
+
+Eukl Norm(default): 
+$$ ||x||_2 = (\sum_{k}s_k^2)^\frac{1}{2} $$
+
+Max Norm:
+$$ ||x||_\infty = max_k|x_k|$$ 
+
+```python
+data = tf.convert_to_tensor([[2, 1, 3],[2, 1, 3]], dtype=tf.float32)
+print(data)
+# tf.Tensor(
+# [[2. 1. 3.]
+#  [2. 1. 3.]], shape=(2, 3), dtype=float32)
+
+# ||x||1  (ord=1) ============================
+result = tf.norm(data, ord=1)
+print(result)
+# tf.Tensor(12.0, shape=(), dtype=float32)
+
+# ||x||1 指定維度求解
+# 維度索引 1 看 Row
+result = tf.norm(data, ord=1, axis=1)
+print(result)
+# tf.Tensor([6. 6.], shape=(2,), dtype=float32)
+
+# 維度索引 0 看 Column
+result = tf.norm(data, ord=1, axis=0)
+print(result)
+# tf.Tensor([4. 2. 6.], shape=(3,), dtype=float32)
+
+
+# ||x||2  (default: ord=2) ===================
+# 方法一:
+result = tf.norm(data)
+print(result)
+# tf.Tensor(5.2915025, shape=(), dtype=float32)
+
+# 方法二:
+result = tf.sqrt(tf.reduce_sum(tf.square(data)))
+print(result)
+# tf.Tensor(5.2915025, shape=(), dtype=float32)
+
+# ||x||2 指定維度求解
+# 維度索引 1 看 Row
+result = tf.norm(data, ord=2, axis=1)
+print(result)
+# tf.Tensor([3.7416573 3.7416573], shape=(2,), dtype=float32)
+
+# 維度索引 0 看 Column
+result = tf.norm(data, ord=2, axis=0)
+print(result)
+# tf.Tensor([2.828427  1.4142135 4.2426405], shape=(3,), dtype=float32)
+```
+
+### 9-2. 取(最大/最小/平均)值
+- reduce_max()
+- reduce_min()
+- reduce_mean()
+  
+```python
+data = tf.convert_to_tensor([[2, 1, 3],[2, 1, 3]], dtype=tf.float32)
+print(data)
+# tf.Tensor(
+# [[2. 1. 3.]
+#  [2. 1. 3.]], shape=(2, 3), dtype=float32)
+
+# reduce_max()
+# 默認全局
+result = tf.reduce_max(data)
+print(result)
+# tf.Tensor(3.0, shape=(), dtype=float32)
+
+# 特定維度
+result = tf.reduce_max(data, axis=1)
+print(result) 
+# tf.Tensor([3. 3.], shape=(2,), dtype=float32)
+
+
+# reduce_mix()
+# 默認全局
+result = tf.reduce_min(data)
+print(result)
+# tf.Tensor(1.0, shape=(), dtype=float32)
+
+# 特定維度
+result = tf.reduce_min(data, axis=1)
+print(result)
+# tf.Tensor([1. 1.], shape=(2,), dtype=float32)
+
+
+# reduce_mean()
+# 默認全局
+result = tf.reduce_mean(data)
+print(result)
+# tf.Tensor(2.0, shape=(), dtype=float32)
+
+# 特定維度
+result = tf.reduce_mean(data, axis=0)
+print(result)
+# tf.Tensor([2. 1. 3.], shape=(3,), dtype=float32)
+```
+
+### 9-3. 最大與最小值索引
+- argmax()
+- argmin()
+```python
+data = tf.convert_to_tensor([[2, 1, 3],[3, 1, 2]], dtype=tf.float32)
+print(data)
+# tf.Tensor(
+# [[2. 1. 3.]
+#  [2. 1. 3.]], shape=(2, 3), dtype=float32)
+
+# argmax()
+# 預設 axis=0
+result = tf.argmax(data)
+print(result)
+# tf.Tensor([1 0 0], shape=(3,), dtype=int64)
+
+# 指定維度
+result = tf.argmax(data, axis=1)
+print(result)
+# tf.Tensor([2 0], shape=(2,), dtype=int64)
+
+# argmin()
+# 預設 axis=0
+result = tf.argmin(data)
+print(result)
+# tf.Tensor([0 0 1], shape=(3,), dtype=int64)
+
+# 指定維度
+result = tf.argmax(data, axis=1)
+print(result)
+# tf.Tensor([2 0], shape=(2,), dtype=int64)
+```
+
+### 9-4. 數據比較
+- equal()
+```python
+data_1 = tf.constant([2, 1, 3, 0, 4])
+# tf.Tensor([2 1 3 0 4], shape=(5,), dtype=int32)
+data_2 = tf.range(5)
+# tf.Tensor([0 1 2 3 4], shape=(5,), dtype=int32)
+print(data_1)
+print(data_2)
+
+result = tf.equal(data_1, data_2)
+print(result)
+# tf.Tensor([False  True False False  True], shape=(5,), dtype=bool)
+
+
+# 應用 計算準確率 ====================================
+out = tf.constant(
+    [[0.7, 0.1, 0.2],
+    [0.05, 0.05, 0.9]])
+y = tf.constant([1, 2])
+
+# 取每個資料機率最大的索引位置
+max_index = tf.cast(tf.argmax(out, axis=1), dtype=tf.int32)
+# tf.Tensor([0 2], shape=(2,), dtype=int32)
+
+# 比較正確結果
+compare = tf.equal(y, max_index)
+# tf.Tensor([False  True], shape=(2,), dtype=bool)
+
+# 計算正確數量
+right_count = tf.reduce_sum(tf.cast(compare, dtype=tf.int32))
+# tf.Tensor(1, shape=(), dtype=int32)
+
+# 預測正確率為 0.5 
+correct_rate = right_count / out.ndim
+# tf.Tensor(0.5, shape=(), dtype=float64)
+```
+
+### 9-5. 去重複
+使用 unique() 去重後會返回兩個 Tensor
+1. 去重後的 Tensor
+2. 原數據對應去重後的 Tensor 的索引位置 
+```python
+data = tf.constant([4, 2, 2, 4, 3])
+
+# unique()
+result = tf.unique(data)
+print(len(result)) # 2
+print(result[0]) # tf.Tensor([4 2 3], shape=(3,), dtype=int32)
+print(result[1]) # tf.Tensor([0 1 1 0 2], shape=(5,), dtype=int32)
+
+
+# 還原
+reduction = tf.gather(result[0], result[1])
+print(reduction)
+# tf.Tensor([4 2 2 4 3], shape=(5,), dtype=int32)
+```
+<br/>
+
+## 10. Tensor 排序
+- 10-1. tf.sort(tensor): Tensor 排序
+- 10-2. tf.argsort(tensor): 取得排序解果對映原數據的索引 Tensor
+- 10-3. tf.math.top_k(tensor, k=k): 取得排序後的前 k 個值
+
+### 10-1. sort(): Tensor 排序
+- 升序: 預設 | direction='ASCENDING'
+- 降序: direction='DESCENDING'
+
+```python
+data = tf.random.uniform([3, 3], maxval=10, dtype=tf.int32)
+print(data)
+# tf.Tensor(
+# [[0 8 2]
+#  [4 3 2]
+#  [2 0 5]], shape=(3, 3), dtype=int32)
+
+# 升序 (預設: direction='ASCENDING')
+result = tf.sort(data)
+print(result)
+# tf.Tensor(
+# [[0 2 8]
+#  [2 3 4]
+#  [0 2 5]], shape=(3, 3), dtype=int32)
+
+# 降序 (direction='DESCENDING')
+result = tf.sort(data, direction='DESCENDING')
+print(result)
+# tf.Tensor(
+# [[8 2 0]
+#  [4 3 2]
+#  [5 2 0]], shape=(3, 3), dtype=int32)
+
+# 指定維度排序 (axis: 操作維度)
+result = tf.sort(data, axis=0)
+print(result)
+# tf.Tensor(
+# [[0 0 2]
+#  [2 3 2]
+#  [4 8 5]], shape=(3, 3), dtype=int32)
+```
+
+### 10-2. argsort(): 取得排序解果對映原數據的索引 Tensor
+- 升序: 預設 | direction='ASCENDING'
+- 降序: direction='DESCENDING'
+
+```python
+data = tf.random.uniform([3, 3], maxval=10, dtype=tf.int32)
+print(data)
+# tf.Tensor(
+# [[5 2 5]  
+#  [9 7 7]
+#  [0 7 4]], shape=(3, 3), dtype=int32)
+
+# 升序 (預設: direction='ASCENDING')
+result = tf.argsort(data)
+print(result)
+# tf.Tensor(
+# [[1 0 2]
+#  [1 2 0]
+#  [0 2 1]], shape=(3, 3), dtype=int32)
+
+# 降序 (direction='DESCENDING')
+result = tf.argsort(data, direction='DESCENDING')
+print(result)
+# tf.Tensor(
+# [[0 2 1]
+#  [0 1 2]
+#  [1 2 0]], shape=(3, 3), dtype=int32)
+
+# 指定維度排序 (axis: 操作維度)
+result = tf.argsort(data, axis=0)
+print(result)
+# tf.Tensor(
+# [[2 0 2]
+#  [0 1 0]
+#  [1 2 1]], shape=(3, 3), dtype=int32)
+```
+
+### 10-3. tf.math.top_k(): 取得排序後的前 k 個值
+使用 tf.math.top_k() 後會返回排序後的 tensor 以及對應原數據的索引 tensor 調取方法如下
+```python
+data = tf.random.uniform([3, 3], maxval=10, dtype=tf.int32)
+print(data)
+# tf.Tensor(
+# [[8 8 1]
+#  [1 6 7]
+#  [4 2 3]], shape=(3, 3), dtype=int32)
+
+# 取排序後前 2 個最大值
+result = tf.math.top_k(data, 2)
+print(len(result)) # 2
+print(result[0]) # 同等於 result.values
+# tf.Tensor(
+# [[8 8]
+#  [7 6]
+#  [4 3]], shape=(3, 2), dtype=int32)
+print(result[1]) # 同等於 result.indices
+# tf.Tensor(
+# [[0 1]
+#  [2 1]
+#  [0 2]], shape=(3, 2), dtype=int32)
+```
+<br/>
+
+## 11. 實作 計算前 Top k 的預測結果準確率
+將預測結果前 Top k 對應的結果索引轉置為如下矩陣
+|    | b1 | b2 |
+|----|----|----|
+|Top1|  1 |  0 |
+|Top2|  0 |  1 |
+
+真實預測結果也 broadcast 成為相同大小的矩陣
+|    | t1 | t2 |
+|----|----|----|
+|Top1|  1 |  1 |
+|Top2|  1 |  1 |
+
+兩矩陣做 equal 比較，計算 True 值便可得出前 Top k 的預測解果涵蓋真實結果的比例
+- 取 Top1 準確率為: 0.5 = 1/2
+- 取 Top2 準確率為: 1.0 = 2/2
+
+```python
+# output:[b, n], target:[b]
+def accuracy(output, target, topk=(1,)):
+    maxk = max(topk)
+    batch_size = target.shape[0]
+
+    # 取出最大前 topK 的預測結果
+    pred = tf.math.top_k(output, maxk).indices # [b, maxk]
+    # 矩陣轉置
+    pred = tf.transpose(pred, perm=[1, 0]) # [maxk, b]
+    # 真實解果 broadcast 成為與預測結果一樣大小的舉證
+    target_ = tf.broadcast_to(target, pred.shape) # [maxk, b]
+    correct = tf.equal(pred, target_) # [maxk, b]
+
+    res = []
+    for k in topk:
+        # 取前 k 個預測結果，並將結果攤平轉換為 float32 數據類型
+        correct_k = tf.cast(tf.reshape(correct[:k], [-1]), dtype=tf.float32) # [k, b]
+        # 計算前 k 個預測結果，正確預測的數量
+        correct_k = tf.reduce_sum(correct_k) # []
+        # 除去所有結果總數量，取得前 k 向預測結果的正確率
+        acc = float(correct_k / batch_size)
+        res.append(acc)
+
+    return res
+
+
+# 模擬模型預測結果
+output = tf.random.normal([10, 6])
+# 使預測結果集總和為 1
+output = tf.math.softmax(output, axis=1)
+# 創建真實解果資料
+target = tf.random.uniform([10], maxval=6, dtype=tf.int32)
+
+# 計算 top 1~6 預測結果，對應的準確性
+acc =  accuracy(output, target, topk=(1,2,3,4,5,6))
+
+print('預測結果: ', output.numpy())
+pred = tf.argmax(output, axis=1)
+print('top1 預測結果: ', pred.numpy())
+print('真實結果: ', target.numpy())
+print('top 1~6 acc: ', acc)
+
+# 預測結果:  [[0.01599683 0.2586538  0.03114775 0.41821274 0.13388869 0.14210023]
+#  [0.03047033 0.4571253  0.42915204 0.04027861 0.01444509 0.0285286 ]
+#  [0.02405828 0.13872029 0.36055857 0.09747908 0.27350754 0.1056762 ]
+#  [0.11693911 0.18226306 0.30125073 0.08403484 0.2409016  0.07461069]
+#  [0.3156007  0.07190048 0.08539322 0.08392893 0.20196776 0.24120893]
+#  [0.02276766 0.11890458 0.42106277 0.19977042 0.20472538 0.03276917]
+#  [0.12434467 0.04807299 0.2137635  0.1346938  0.12734754 0.3517775 ]
+#  [0.04323702 0.18649292 0.09656099 0.21869545 0.02307978 0.43193394]
+#  [0.0783204  0.10127778 0.4983185  0.22030185 0.05811384 0.04366755]
+#  [0.04397693 0.17431746 0.15371111 0.05870872 0.4574907  0.11179502]]
+# top1 預測結果:  [3 1 2 2 0 2 5 5 2 4]
+# 真實結果:  [5 0 2 4 2 1 3 3 3 0]
+# top 1~6 acc:  [0.10000000149011612, 0.4000000059604645, 0.6000000238418579, 0.8999999761581421, 0.8999999761581421, 1.0]
+
+```
+
+## 12. 
