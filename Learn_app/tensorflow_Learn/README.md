@@ -13,7 +13,10 @@
 - 12. Tensor 填充與複製
 - 13. Tensor 限幅
 - 14. 高階操作 根據座標(取值|更新值|生成座標點)
-- 15. 
+- 15. 數據加載
+- 16. 實作 模型測試
+- 17. 全連接層
+- 18. 
   
 
 ## 1. Tensor 類型
@@ -1709,4 +1712,432 @@ plt.show()
 
 
 
-## 15.
+## 15. 數據加載
+- 15-1. tensorflow.keras.datasets: tensorflow 中自帶的測試資料集
+- 15-2. tf.data.Dataset.from_tensor_slices() 數據封裝為 tensor 數據集
+- 15-3. 數據加載 完整使用範例
+
+### 15-1. tensorflow.keras.datasets: tensorflow 中自帶的測試資料集
+- boston housing
+  - Boston housing price regression dataset.
+- mnist/fashion mnist
+  - MNIST/Fashion-MNIST dataset.
+- cifar10/100
+  - small images classification dataset.
+- imdb
+  - sentiment classification dataset.
+
+Classes in cifar10/100 dataset
+![](images/clfar10_classes.png)
+
+```python
+import tensorflow as tf
+from tensorflow.keras import datasets
+
+# 加載 mnist dataset 
+# ========================
+# all_data = [70k, 28, 28] 
+(x, y), (test_x, test_y) = datasets.mnist.load_data()
+print(x.shape, y.shape)
+# (60000, 28, 28) (60000,)
+print(test_x.shape, test_y.shape)
+# (10000, 28, 28) (10000,)
+print(x.min(), x.max(), x.mean())
+# (0 ,255, 33.318421449829934)
+print(y[:5])
+# [5 0 4 1 9]
+
+
+# 加載 cifar10 dataset 
+# ========================
+# all_data = [60k, 32, 32, 3] 
+(x, y), (test_x, test_y) = datasets.cifar10.load_data()
+print(x.shape, y.shape)
+# (50000, 32, 32, 3) (50000, 1)
+print(test_x.shape, test_y.shape)
+# (10000, 32, 32, 3) (10000, 1)
+print(x.min(), x.max())
+# (0, 255)
+print(y[:5])
+# [[6]
+#  [9]
+#  [9]
+#  [4]
+#  [1]]
+```
+
+### 15-2. tf.data.Dataset.from_tensor_slices() 數據封裝為 tensor 數據集
+- tf.data.Dataset.from_tensor_slices(): 數據封裝為 tensor 數據集
+  - 15-2-1. shuffle(buffer_siz): 數據隨機打亂
+  - 15-2-2. map(map_func): 數據預處理
+  - 15-2-3. batch(batch_size): 數據批量處理數量
+  - 15-2-4. repeat(num): 數據重新跌代次數
+```python
+import tensorflow as tf
+from tensorflow.keras import datasets
+
+# 加載 cifar10 dataset 
+# all_data = [50k, 32, 32, 3], [10k, 32, 32, 3] 
+(x, y), (test_x, test_y) = datasets.cifar10.load_data()
+
+# x, y 封裝為 tensor dataset
+# ==========================
+db = tf.data.Dataset.from_tensor_slices((x, y))
+data = next(iter(db))
+print(len(data)) # 2
+print(data[0].shape) # (32, 32, 3)
+print(data[1].shape) # (1,)
+
+# x 封裝為 tensor dataset
+# ==========================
+db = tf.data.Dataset.from_tensor_slices(x)
+data = next(iter(db))
+print(data.shape) # (32, 32, 3)
+
+```
+
+#### 15-2-1. shuffle(buffer_siz): 數據隨機打亂程度
+- buffer_siz: 數值越大數據打亂效果越好
+```python
+import tensorflow as tf
+from tensorflow.keras import datasets
+
+# 加載 cifar10 dataset 
+# all_data = [50k, 32, 32, 3], [10k, 32, 32, 3] 
+(x, y), (test_x, test_y) = datasets.cifar10.load_data()
+db = tf.data.Dataset.from_tensor_slices((x, y))
+
+# 數據隨機打亂
+db = db.shuffle(10000)
+```
+
+#### 15-2-2. map(map_func): 數據預處理
+- map_func: 數據預處理的 callback function
+```python
+import tensorflow as tf
+from tensorflow.keras import datasets
+
+# 加載 cifar10 dataset 
+# all_data = [50k, 32, 32, 3], [10k, 32, 32, 3] 
+(x, y), (test_x, test_y) = datasets.cifar10.load_data()
+db = tf.data.Dataset.from_tensor_slices((x, y))
+
+# 設置預處理函數
+def map_func(x, y):
+    # 預處理 x
+    x = tf.cast(x, dtype=tf.float32)/255
+    # 預處理 y
+    y = tf.cast(y, dtype=tf.int32)
+    y = tf.squeeze(y)
+    y = tf.one_hot(y, depth=10)
+    return x, y
+
+# 使用 map() 預處理所有資料集
+db2 = db.map(map_func=map_func)
+data = next(iter(db2))
+print(data[0].shape) # (32, 32, 3)
+print(data[1])
+# tf.Tensor([0. 0. 0. 0. 0. 0. 1. 0. 0. 0.], shape=(10,), dtype=float32)
+
+```
+
+#### 15-2-3. batch(batch_size): 數據批量處理數量
+- batch_size: 一次處理的資料量 (預設為1)
+```python
+import tensorflow as tf
+from tensorflow.keras import datasets
+
+# 加載 cifar10 dataset 
+# all_data = [50k, 32, 32, 3], [10k, 32, 32, 3] 
+(x, y), (test_x, test_y) = datasets.cifar10.load_data()
+db = tf.data.Dataset.from_tensor_slices((x, y))
+
+# 設置一次處理 64 比資料
+db = db.batch(batch_size=64)
+data = next(iter(db))
+print(data[0].shape) # (64, 32, 32, 3)
+print(data[1].shape) # (64, 1)
+```
+
+#### 15-2-4. repeat(count): 數據重新跌代次數
+- count: 跌代循環次數 (預設為1)
+```python
+import tensorflow as tf
+from tensorflow.keras import datasets
+
+# 加載 cifar10 dataset 
+# all_data = [50k, 32, 32, 3], [10k, 32, 32, 3] 
+(x, y), (test_x, test_y) = datasets.cifar10.load_data()
+db = tf.data.Dataset.from_tensor_slices((test_x, test_y))
+
+count = 0
+iter_db = iter(db)
+for data in iter_db:
+    count += 1
+print('before len: ', count)
+# before len:  10000
+
+# 設定跌代循環2次
+db = db.repeat(count=2)
+count = 0
+iter_db = iter(db)
+for data in iter_db:
+    count += 1
+print('after len: ', count)
+# after len:  20000
+
+```
+
+### 15-3. 數據加載 完整使用範例
+範例中使用 cifar10 資料集
+- tf.data.Dataset.from_tensor_slices(): 數據封裝為 tensor 數據集
+  - 15-2-1. shuffle(buffer_siz): 數據隨機打亂
+  - 15-2-2. map(map_func): 數據預處理
+  - 15-2-3. batch(batch_size): 數據批量處理數量
+  - 15-2-4. repeat(num): 數據重新跌代次數
+```python
+import tensorflow as tf
+from tensorflow.keras import datasets
+
+# 設計數據預處理函數
+def cifar10_map_func(x, y):
+    # x
+    x = tf.cast(x, dtype=tf.float32)/255 # (0~255) -> (0~1)
+    # y
+    y = tf.squeeze(y) # [1] -> []
+    y = tf.cast(y, dtype=tf.int32)
+    y = tf.one_hot(y, depth=10) # [] -> [10]
+    return x, y
+
+# 設計數據加載函數
+def get_cifar10_dataset():
+    # 加載 cifar10 dataset 
+    # all_data = [50k, 32, 32, 3], [10k, 32, 32, 3] 
+    (x, y), (test_x, test_y) = datasets.cifar10.load_data()
+    # 封裝訓練資料
+    ds = tf.data.Dataset.from_tensor_slices((x, y))
+    ds = ds.map(map_func=cifar10_map_func)
+    ds = ds.shuffle(50000).batch(100)
+    # 封裝測試資料
+    ds_test = tf.data.Dataset.from_tensor_slices((test_x, test_y))
+    ds_test = ds_test.map(map_func=cifar10_map_func)
+    ds_test = ds_test.shuffle(10000).batch(100)
+    
+    return ds, ds_test
+
+# 加載數據
+ds, ds_test = get_cifar10_dataset()
+data = next(iter(ds))
+print(data[0].shape) # (100, 32, 32, 3)
+print(data[1].shape) # (100, 10)
+```
+<br/>
+
+## 16. 實作 模型測試
+```python
+import tensorflow as tf
+from tensorflow import keras
+from tensorflow.keras import datasets
+import os
+
+# 設定 terminal 只輸出 error 訊息 (指定為 '1' 表示輸出全部訊息)
+os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'
+
+# train dataset 資料預處理
+def map_func_train(x, y):
+    x = tf.cast(x, dtype=tf.float32)/255
+    x = tf.reshape(x, [-1]) # [28, 28] => [28*28]
+    y = tf.cast(y, dtype=tf.int32)
+    y = tf.one_hot(y, depth=10)
+    return x, y
+
+# test dataset 資料預處理
+def map_func_test(x, y):
+    x = tf.cast(x, dtype=tf.float32)/255
+    x = tf.reshape(x, [-1]) # [28, 28] => [28*28]
+    y = tf.cast(y, dtype=tf.int32)
+    return x, y
+
+def get_mnist_dataset():
+    # 載入 mnist 手寫數字資料集，共70k
+    # [60k, 28, 28], [10k, 28, 28]
+    (x, y), (x_test, y_test) = datasets.mnist.load_data()
+    # train dataset
+    ds_train = tf.data.Dataset.from_tensor_slices((x, y))
+    ds_train = ds_train.map(map_func_train).batch(64)
+    # test dataset
+    ds_test = tf.data.Dataset.from_tensor_slices((x_test, y_test))
+    ds_test = ds_test.map(map_func_test).batch(64) 
+    return ds_train, ds_test
+
+
+ds_train, ds_test = get_mnist_dataset()
+
+# 建立 3層 全連接神經網路，設定表準差為 0.1 以防梯度爆炸
+# layer 1: input:784, output: 256
+w1 = tf.Variable(tf.random.truncated_normal([784, 256], stddev=0.1))
+b1 = tf.Variable(tf.zeros([256]))
+# layer 2: input:256, output: 128
+w2 = tf.Variable(tf.random.truncated_normal([256, 128], stddev=0.1))
+b2 = tf.Variable(tf.zeros([128]))
+# layer 3: input:128, output: 10
+w3 = tf.Variable(tf.random.truncated_normal([128, 10], stddev=0.1))
+b3 = tf.Variable(tf.zeros([10]))
+
+# 設定 learn range 值:修正步伐
+lr = 1e-3 # 0.001 = (1*10^-3)
+
+for epoch in range(3): # 設定 ds_train 資料集重複訓練次數
+    for step, (x, y) in enumerate(ds_train): # ds_train 的每一個 batch
+        with tf.GradientTape() as tape: # 建立求導監聽
+
+            # 將 x 輸入網路層中
+            # input layer 1 : [128, 784] => [128, 256]
+            l1 = x@w1+b1
+            l1 = tf.nn.relu(l1) # Relu 非線型函數: max(0, l1)
+
+            # input layer 2 : [128, 256] => [128, 128]
+            l2 = l1@w2+b2
+            l2 = tf.nn.relu(l2) # Relu 非線型函數: max(0, l1)
+            
+            # input layer 3 : [128, 128] => [128, 10]
+            out = l2@w3+b3
+            
+            # 求預測誤差 mean(sum((y-out)^2))
+            loss = tf.square(y-out)
+            loss = tf.reduce_mean(loss)
+
+        # 向前傳播修正 loss
+        grads = tape.gradient(loss, [w1, b1, w2, b2, w3, b3])
+
+        # 將梯度範式限幅在 15，解決 Exploding/Vanishing 的狀況
+        grads, _ = tf.clip_by_global_norm(grads, 15)
+
+        # w' = w - lr * w_grads
+        # 使用 assign_sub() 原地修正誤差可保持原來的 Variable 類型，否則會變回 Tensor 類型需要再次封裝
+        w1.assign_sub(lr * grads[0])
+        b1.assign_sub(lr * grads[1]) 
+        w2.assign_sub(lr * grads[2])
+        b2.assign_sub(lr * grads[3])
+        w3.assign_sub(lr * grads[4])
+        b3.assign_sub(lr * grads[5])
+
+        # 打印當前訓練結果
+        if step % 100 == 0:
+            print(epoch, step, 'loss: ', float(loss))
+
+    total_correct, total_num = 0, 0
+    for step, (x_test, y_test) in enumerate(ds_test):
+        
+        # [b, 784] => [b, 256] => [b, 128] => [b, 10]
+        h1 = tf.nn.relu(x_test@w1+b1)
+        h2 = tf.nn.relu(h1@w2+b2)
+        out = h2@w3+b3 # [b, 10]
+
+        # 讓每一個 b of [10] 機率之合為 1
+        prob = tf.nn.softmax(out, axis=1)
+        # 取得機率最大的索引
+        pred = tf.argmax(prob, axis=1) # [b, 10] => [b] (dtype=int64)
+        pred = tf.cast(pred, dtype=tf.int32) # int64 -> int32
+
+        # 測試預測與真實結果 (結果為 boolean 型態)
+        correct = tf.equal(pred, y_test)
+        # 轉換為整數型態
+        correct = tf.cast(correct, dtype=tf.int32)
+        # 計算預測正確數量
+        correct = tf.reduce_sum(correct)
+
+        total_correct += int(correct)
+        total_num += x.shape[0]
+
+    acc = total_correct / total_num
+    print('test acc: ', acc)
+```
+
+<br/>
+
+## 17. 全連接層
+- 17-1. tf.keras.layers.Dense() 創建全連接層
+- 17-2. tf.keras.Sequential() 創建網路層容器
+
+### 17-1. tf.keras.layers.Dense() 創建全連接層
+```python
+# 創建一個輸出為 10 的全連接層
+# 方法一
+# =============================
+net = tf.keras.layers.Dense(10)
+
+# input net 
+data = tf.random.normal([1, 20])
+out = net(data) # [20] => [10]
+print(out.shape) # (1, 10)
+
+print(net.kernel.shape) # (20, 10)
+
+# 方法二
+# =============================
+net = tf.keras.layers.Dense(10)
+
+# 非必要, 實際在預測時會自動機算生成輸入層維度
+net.build(input_shape=(None, 20))
+
+print(net.kernel.shape) # (20, 10)
+```
+
+### 17-2. tf.keras.Sequential() 創建網路層容器
+```python
+import tensorflow as tf
+from tensorflow import keras
+
+# input data
+data = tf.random.normal([2, 256])
+
+# [b, 256] => [b, 128] => [b, 64] => [b, 10]
+model = tf.keras.Sequential([
+    tf.keras.layers.Dense(128, activation='relu'),
+    tf.keras.layers.Dense(64, activation='relu'),
+    tf.keras.layers.Dense(10),
+])
+
+# 初始化 model
+# 方法一
+# model.build(input_shape=[None, 256])
+# 方法二
+model(data)
+
+# 打印 model 訊息
+model.summary()
+# _________________________________________________________________
+#  Layer (type)                Output Shape              Param #
+# =================================================================
+#  dense (Dense)               (2, 128)                  32896
+
+#  dense_1 (Dense)             (2, 64)                   8256
+
+#  dense_2 (Dense)             (2, 10)                   650
+
+# =================================================================
+# Total params: 41,802
+# Trainable params: 41,802
+# Non-trainable params: 0
+# _________________________________________________________________
+
+# 打印 model 層訊息
+for p in model.trainable_variables:
+    print(p.name, p.shape)
+# dense/kernel:0 (256, 128)
+# dense/bias:0 (128,)
+# dense_1/kernel:0 (128, 64)
+# dense_1/bias:0 (64,)
+# dense_2/kernel:0 (64, 10)
+# dense_2/bias:0 (10,)
+```
+
+
+<br/>
+
+## 18. 
+
+
+
+
