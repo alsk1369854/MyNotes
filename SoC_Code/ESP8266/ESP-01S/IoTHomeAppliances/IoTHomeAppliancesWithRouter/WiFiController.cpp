@@ -15,7 +15,7 @@
 
 // Static Public Variable
 String WiFiController::wifiManagerAPName = "Switch AP";
-String WiFiController::wifiManagerAPPassword = "password";
+String WiFiController::wifiManagerAPPassword = "12345678";
 char WiFiController::autoConnectWifiSSID[50] = "Switch_SSID";
 char WiFiController::autoConnectWifiPASS[50] = "password";
 int WiFiController::rebootCountdownTime = 5; // 5 Sec 

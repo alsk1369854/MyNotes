@@ -21,8 +21,9 @@ const char MAIN_page[] PROGMEM = R"=====(
             margin: 0;
             padding: 0;
 
-            background-color: rgb(234, 225, 217);
+            background-color: rgb(137, 127, 131);
 
+            font-family: monospace;
             /* 禁止文字選取 */
             -webkit-user-select: none;
             -moz-user-select: none;
@@ -30,22 +31,32 @@ const char MAIN_page[] PROGMEM = R"=====(
             user-select: none;
         }
 
+        #app {
+            height: 100vh;
+            width: 100vw;
+            overflow: auto;
+
+            background-color: rgb(234, 225, 217);
+        }
+
         .title_container {
-            
             display: flex;
             align-items: center;
             justify-content: center;
 
             width: 100%;
-            height: 70px;
+            height: auto;
             border-radius: 0px 0px 30px 30px;
-
             background-color: rgb(137, 127, 131);
             color: rgb(255, 255, 255);
         }
 
         .title_text {
-            font-size: 40px;
+            display: flex;
+            align-items: flex-end;
+
+            height: 105px;
+            font-size: 75px;
             font-weight: bold;
         }
 
@@ -57,7 +68,7 @@ const char MAIN_page[] PROGMEM = R"=====(
             width: 100%;
             height: 40%;
 
-            font-size: 3rem;
+            font-size: 5rem;
             font-weight: bold;
             border-radius: 10px;
 
@@ -96,9 +107,10 @@ const char MAIN_page[] PROGMEM = R"=====(
             justify-content: center;
             align-items: center;
 
-            margin: 0px 20px 0px 20px;
-            width: 80%;
+            margin: 0px 20px;
+            padding: 0px 20px;
             height: 600px;
+            height: calc(100% - 105px);
 
         }
 
@@ -113,17 +125,18 @@ const char MAIN_page[] PROGMEM = R"=====(
 </head>
 
 <body>
-    <div class="title_container">
-        <div class="title_text">Switch Controller</div>
+    <div id="app">
+        <div class="title_container">
+            <div class="title_text">Switch</div>
+        </div>
+        <div class="content_container">
+            <div onclick="click_on_btn()" class="btn btn-on">ON</div>
+            <div class="line"></div>
+            <div onclick="click_off_btn()" class="btn btn-off">OFF</div>
+        </div>
     </div>
-    <div class="content_container">
-        <div id="btn_on" onclick="doOnAPI()" class="btn btn-on">ON</div>
-        <div class="line"></div>
-        <div id="btn_off" onclick="doOffAPI()" class="btn btn-off">OFF</div>
-    </div>
-
     <script>
-        const sendGetAPIFunc = (operate) => {
+        const send_operate_API = (operate) => {
             const xhttp = new XMLHttpRequest();
             xhttp.onreadystatechange = function () {
                 if (this.readyState == 4 && this.status == 200) {
@@ -133,16 +146,12 @@ const char MAIN_page[] PROGMEM = R"=====(
             xhttp.open("GET", "operate?operate=" + operate, true);
             xhttp.send();
         }
-        const doOnAPI = () => {
-            sendGetAPIFunc('on');
-        }
-        const doOffAPI = () => {
-            sendGetAPIFunc('off');
-        }
-        const btn_on_tag = document.getElementById('btn_on');
-        const btn_off_tag = document.getElementById('btn_off');
-        btn_on_tag.addEventListener("touchend", doOnAPI, false);
-        btn_off_tag.addEventListener("touchend", doOffAPI, false);
+        const click_on_btn = () => send_operate_API('on');
+        const click_off_btn = () => send_operate_API('off');
+        const btn_on_tag = document.querySelector('.btn_on');
+        const btn_off_tag = document.querySelector('.btn_off');
+        btn_on_tag.addEventListener("touchend", click_on_btn, false);
+        btn_off_tag.addEventListener("touchend", click_off_btn, false);
     </script>
 </body>
 

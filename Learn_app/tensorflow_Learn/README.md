@@ -17,7 +17,8 @@
 - 16. 實作 模型測試
 - 17. 全連接層
 - 18. 輸出方式
-- 19. 
+- 19. 誤差計算
+- 20. 
   
 
 ## 1. Tensor 類型
@@ -2177,8 +2178,59 @@ print(result)
 
 <br/>
 
-## 19.
+## 19. 誤差計算
+- 19-1. MSE
+- 19-2. Cross Entropy Loss (交叉熵)
+- 
 
+### 19-1. MSE
+$$loss = \frac{1}{N}\sum(y-out)^2$$
+$$L_{2-norm} = \sqrt{\sum(u-out)^2}$$
+```python
+# MSE ---------------
+y = tf.constant([1, 2, 3, 0, 2])
+y = tf.one_hot(y, depth=4)
+y = tf.cast(y, dtype=tf.float32)
+
+out = tf.random.normal([5, 4])
+
+loss1 = tf.reduce_mean(tf.square(y-out))
+print(loss1) # tf.Tensor(0.44715032, shape=(), dtype=float32)
+loss2 = tf.square(tf.norm(y-out))/(5*4)
+print(loss2) # tf.Tensor(0.4471503, shape=(), dtype=float32) 
+loss3 = tf.reduce_mean(tf.losses.MSE(y, out))
+print(loss3) # tf.Tensor(0.44715032, shape=(), dtype=float32)
+```
+
+### 19-2. Cross Entropy Loss (交叉熵)
+#### 熵 Entropy: 驚喜度越高熵越低，驚喜度越低熵越高 ; 越亂熵越高，越有條理熵越低
+$$H(p) = -\sum P(x)\log_2 P(x)$$
+
+#### 交叉熵 Cross Entropy
+##### 分類問題計算(多輸出節點)
+$$D_{KL}(p|q):表示p與q的散度，當p=q時解果為0$$
+$$ H(p,g) = -\sum p(x)\log_2 q(x)$$
+$$ H(p,g) = H(p) + D_{KL}(p|q)$$
+for p=q 
+$$ Minima: H(p,g) = H(p)$$
+for p:one-hot encoding
+$$H(p:[0,1,0]) = -1 \log 1= 0$$
+$$H(y:[0,1,0],out:[p_0,p_1,p_3]) =  0 + D_{KL}(p|q) = -1 \log q_1$$
+##### 二分類問題(單輸出節點)
+以貓(cat)狗(dog)二分類為例
+$$H(P,Q) = - P(cat) \log Q(cat) - (1-P(cat)) \log (1-Q(cat))$$
+$$P(dog) = (1-P(cat))$$
+$$H(P,Q) = - \sum_{i=(cat,dog)} P(i) \log Q(i)$$
+$$ = -P(cat) \log Q(cat) - P(dog) \log Q(dog)$$
+$$-(y \log p + (1-y) \log (1-p))$$
+```python
+```
+
+### 19-3.
+
+<br/>
+
+## 20.
 
 
 

@@ -13,31 +13,28 @@
 const char* ssid = "Switch AP";
 const char* password = "12345678";
 //----------------------------------------
-String onOperate = "on";
-String offOperate = "off";
+
 
 const byte DNS_PORT = 53;
 
 DNSServer dnsServer;
 Servo myservo;  
-
-//IPAddress local_IP(192,168,4,22);
-//IPAddress gateway(192,168,4,9);
-//IPAddress subnet(255,255,255,0);
-
 ESP8266WebServer server(80);  //--> Server on port 80
 
-void servoAngleToAngle(int angle1, int angle2){
-  if(angle1 <= angle2){
-     for (int i = angle1; i <= angle2; i++) {
-      myservo.write(i);
-      delay(15); 
-    }
-  }else{
-    for (int i = angle1; i >= angle2; i--) {
-      myservo.write(i);
-      delay(15); 
-    }
+// Servo parameter
+int centerAngle = 70;
+int switchRotationAngle = 65;
+int servoDelay = 10;
+
+// Server API Operate map
+String onOperate = "on";
+String offOperate = "off";
+
+void servoAngleToAngle(int startAngle, int endAngle){
+  while(startAngle != endAngle){
+    myservo.write(startAngle);
+    (startAngle < endAngle)? startAngle++ : startAngle--;
+    delay(servoDelay); 
   }
 }
 
@@ -56,15 +53,16 @@ void handleRoot() {
 void handleOperate(){
   String operate = server.arg("operate");
   
+  int targetAngle = centerAngle;
   if(onOperate == operate){
-    servoAngleToAngle(75, 25);
-    delay(15);
-    servoAngleToAngle(25, 75);
+    targetAngle = centerAngle - switchRotationAngle;
   }else if(offOperate == operate){
-    servoAngleToAngle(75, 125);
-    delay(15);
-    servoAngleToAngle(125, 75);
+    targetAngle = centerAngle + switchRotationAngle;
   }
+  
+  servoAngleToAngle(centerAngle, targetAngle);
+  servoAngleToAngle(targetAngle, centerAngle);
+  
   server.send(200, "text/plane","");
 }
 
@@ -89,7 +87,7 @@ void setup() {
   
   pinMode(SystemLED, OUTPUT);
   digitalWrite(SystemLED, HIGH);
-  myservo.write(75);
+  myservo.write(centerAngle);
 }
 //----------------------------------------loop------------------------------------------
 void loop() {
