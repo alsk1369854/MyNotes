@@ -22,9 +22,9 @@ Servo myservo;
 ESP8266WebServer server(80);  //--> Server on port 80
 
 // Servo parameter
-int centerAngle = 70;
-int switchRotationAngle = 65;
-int servoDelay = 10;
+int centerAngle = 90;
+int switchRotationAngle = 40;
+int servoDelay = 15;
 
 // Server API Operate map
 String onOperate = "on";
