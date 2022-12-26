@@ -19,6 +19,7 @@
     "build": "concurrently npm:build:*",
     "watch:compile": "npx babel src --extensions .ts --out-dir lib --source-maps --watch",
     "watch:types": "tsc --source-maps --watch",
+    "watch:index": "browserify lib/index.js -o index.js",
     "watch": "concurrently npm:watch:*"
   },
   "author": "alsk1369854",

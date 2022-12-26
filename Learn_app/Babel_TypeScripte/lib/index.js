@@ -15,8 +15,8 @@ console.log(document.getElementById('a'));
 console.log((0, _TestModule.default)());
 console.log(x);
 console.log(1231);
-console.log(1231);
-console.log(1231);
+console.log(321);
+console.log(321);
 var a = function () {
   return _TestModule.default;
 }();

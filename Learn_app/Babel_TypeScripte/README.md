@@ -10,6 +10,9 @@ npm install --save-dev @babel/preset-typescript
 # babel config browser support
 npm install --save-dev @babel/preset-env
 
+# compile to browser useable .js => commonJS
+npm install --save -dev browserify
+
 # multi-commands util
 npm install --save-dev concurrently
 
@@ -27,6 +30,9 @@ npx babel src --extensions .ts --out-dir lib --source-maps
 
 # build types .d.ts
 tsc 
+
+# compile to browser useable(.js => commonJS)
+browserify lib/index.js -o index.js
 
 # display debug error from .ts files(run with source maps)
 node --enable-source-maps lib/index.js
