@@ -1,0 +1,36 @@
+# command line: java -jar {project.jar} --spring.profiles.active={state}
+spring:
+    profiles:
+        active: dev
+
+---
+spring:
+    config:
+        activate:
+            on-profile: dev
+server:
+    url: 127.0.0.1
+    port: 8887
+
+---
+spring:
+    config:
+        activate:
+            on-profile: prod
+server:
+    url: 127.0.0.1
+    port: 8888
+
+
+#person:
+#    name: "家銘"
+#    age: 18
+#    email: alsk@gmail.com
+#    is-male: true
+#    birth: 1996/18/16
+#    maps: {k1:v1, k2, 14}
+#    lists: [1,2,3]
+#    dog:
+#        name: "dog"
+#        age: 6
+#
