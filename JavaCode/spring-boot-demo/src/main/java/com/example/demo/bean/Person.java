@@ -16,12 +16,11 @@ import java.util.Map;
  * @PropertySource(value = "classpath:person.properties") 表示讀取 application.properties 以外的 person.properties 配置文檔
  */
 @Component
+//@Configuration
 @ConfigurationProperties(prefix = "person")
 @PropertySource(value = "classpath:person.properties")
 //@Validated // 數據檢查
 public class Person {
-
-
 //    @Value("${person.name}")
     private String name;
 //    @Value("#{10+5}")

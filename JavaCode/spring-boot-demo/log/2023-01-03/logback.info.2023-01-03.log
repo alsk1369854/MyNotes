@@ -1,0 +1,161 @@
+14:54:25.967 logback [main] INFO  c.example.demo.DemoApplicationTests - Starting DemoApplicationTests using Java 17.0.5 with PID 1204 (started by ChiaMing in D:\個人資料\MyNotes\JavaCode\spring-boot-demo)
+14:54:25.969 logback [main] INFO  c.example.demo.DemoApplicationTests - The following 1 profile is active: "dev"
+14:54:26.868 logback [main] INFO  c.example.demo.DemoApplicationTests - Started DemoApplicationTests in 1.254 seconds (process running for 1.976)
+14:54:27.195 logback [main] INFO  c.example.demo.DemoApplicationTests - Info Log
+14:54:27.195 logback [main] WARN  c.example.demo.DemoApplicationTests - Warn Log
+14:54:27.195 logback [main] ERROR c.example.demo.DemoApplicationTests - Error Log
+14:58:00.389 logback [main] INFO  c.example.demo.DemoApplicationTests - Starting DemoApplicationTests using Java 17.0.5 with PID 1100 (started by ChiaMing in D:\個人資料\MyNotes\JavaCode\spring-boot-demo)
+14:58:00.391 logback [main] INFO  c.example.demo.DemoApplicationTests - The following 1 profile is active: "dev"
+14:58:01.287 logback [main] INFO  c.example.demo.DemoApplicationTests - Started DemoApplicationTests in 1.251 seconds (process running for 1.969)
+14:58:01.619 logback [main] INFO  c.example.demo.DemoApplicationTests - Info Log
+14:58:01.619 logback [main] WARN  c.example.demo.DemoApplicationTests - Warn Log
+14:58:01.620 logback [main] ERROR c.example.demo.DemoApplicationTests - Error Log
+14:58:27.498 logback [main] INFO  c.example.demo.DemoApplicationTests - Starting DemoApplicationTests using Java 17.0.5 with PID 16380 (started by ChiaMing in D:\個人資料\MyNotes\JavaCode\spring-boot-demo)
+14:58:27.499 logback [main] INFO  c.example.demo.DemoApplicationTests - The following 1 profile is active: "dev"
+14:58:28.382 logback [main] INFO  c.example.demo.DemoApplicationTests - Started DemoApplicationTests in 1.247 seconds (process running for 1.977)
+14:58:28.692 logback [main] INFO  c.example.demo.DemoApplicationTests - Info Log
+14:59:51.485 logback [main] INFO  c.example.demo.DemoApplicationTests - Starting DemoApplicationTests using Java 17.0.5 with PID 12416 (started by ChiaMing in D:\個人資料\MyNotes\JavaCode\spring-boot-demo)
+14:59:51.487 logback [main] INFO  c.example.demo.DemoApplicationTests - The following 1 profile is active: "dev"
+14:59:52.356 logback [main] INFO  c.example.demo.DemoApplicationTests - Started DemoApplicationTests in 1.216 seconds (process running for 1.944)
+14:59:52.667 logback [main] INFO  c.example.demo.DemoApplicationTests - Info Log
+Dev 15:00:50.170 logback [main] INFO  c.example.demo.DemoApplicationTests - Starting DemoApplicationTests using Java 17.0.5 with PID 5156 (started by ChiaMing in D:\個人資料\MyNotes\JavaCode\spring-boot-demo)
+Dev 15:00:50.171 logback [main] INFO  c.example.demo.DemoApplicationTests - The following 1 profile is active: "dev"
+Dev 15:00:51.135 logback [main] INFO  c.example.demo.DemoApplicationTests - Started DemoApplicationTests in 1.313 seconds (process running for 2.04)
+Dev 15:00:51.484 logback [main] INFO  c.example.demo.DemoApplicationTests - Info Log
+Dev 15:02:06.708 logback [main] INFO  c.example.demo.DemoApplicationTests - Starting DemoApplicationTests using Java 17.0.5 with PID 11980 (started by ChiaMing in D:\個人資料\MyNotes\JavaCode\spring-boot-demo)
+Dev 15:02:06.709 logback [main] INFO  c.example.demo.DemoApplicationTests - The following 1 profile is active: "dev"
+Dev 15:02:07.621 logback [main] INFO  c.example.demo.DemoApplicationTests - Started DemoApplicationTests in 1.291 seconds (process running for 2.008)
+Dev 15:02:07.986 logback [main] INFO  c.example.demo.DemoApplicationTests - Info Log
+Dev 15:02:28.252 logback [main] INFO  c.example.demo.DemoApplicationTests - Starting DemoApplicationTests using Java 17.0.5 with PID 25784 (started by ChiaMing in D:\個人資料\MyNotes\JavaCode\spring-boot-demo)
+Dev 15:02:28.253 logback [main] INFO  c.example.demo.DemoApplicationTests - The following 1 profile is active: "dev"
+Dev 15:02:29.129 logback [main] INFO  c.example.demo.DemoApplicationTests - Started DemoApplicationTests in 1.234 seconds (process running for 1.951)
+Dev 15:02:29.447 logback [main] INFO  c.example.demo.DemoApplicationTests - Info Log
+Dev 15:03:51.943 logback [main] INFO  c.example.demo.DemoApplicationTests - Starting DemoApplicationTests using Java 17.0.5 with PID 8672 (started by ChiaMing in D:\個人資料\MyNotes\JavaCode\spring-boot-demo)
+Dev 15:03:51.945 logback [main] INFO  c.example.demo.DemoApplicationTests - The following 1 profile is active: "dev"
+Dev 15:03:52.905 logback [main] INFO  c.example.demo.DemoApplicationTests - Started DemoApplicationTests in 1.318 seconds (process running for 2.049)
+Dev 15:03:53.239 logback [main] INFO  c.example.demo.DemoApplicationTests - Info Log
+Dev 15:03:53.239 logback [main] WARN  c.example.demo.DemoApplicationTests - Warn Log
+Dev 15:03:53.240 logback [main] ERROR c.example.demo.DemoApplicationTests - Error Log
+Prod 15:04:46.510 logback [main] INFO  c.example.demo.DemoApplicationTests - Starting DemoApplicationTests using Java 17.0.5 with PID 26228 (started by ChiaMing in D:\個人資料\MyNotes\JavaCode\spring-boot-demo)
+Prod 15:04:46.512 logback [main] INFO  c.example.demo.DemoApplicationTests - The following 1 profile is active: "prod"
+Prod 15:04:47.419 logback [main] INFO  c.example.demo.DemoApplicationTests - Started DemoApplicationTests in 1.264 seconds (process running for 2.01)
+Prod 15:04:47.767 logback [main] INFO  c.example.demo.DemoApplicationTests - Info Log
+Prod 15:04:47.767 logback [main] WARN  c.example.demo.DemoApplicationTests - Warn Log
+Prod 15:04:47.767 logback [main] ERROR c.example.demo.DemoApplicationTests - Error Log
+Dev 15:07:46.914 logback [main] INFO  c.example.demo.DemoApplicationTests - Starting DemoApplicationTests using Java 17.0.5 with PID 10048 (started by ChiaMing in D:\個人資料\MyNotes\JavaCode\spring-boot-demo)
+Dev 15:07:46.916 logback [main] INFO  c.example.demo.DemoApplicationTests - The following 1 profile is active: "dev"
+Dev 15:07:47.878 logback [main] INFO  c.example.demo.DemoApplicationTests - Started DemoApplicationTests in 1.327 seconds (process running for 2.06)
+Dev 15:07:48.189 logback [main] INFO  c.example.demo.DemoApplicationTests - Info Log
+Dev 15:07:48.190 logback [main] WARN  c.example.demo.DemoApplicationTests - Warn Log
+Dev 15:07:48.191 logback [main] ERROR c.example.demo.DemoApplicationTests - Error Log
+Dev 15:08:05.060 logback [main] INFO  c.example.demo.DemoApplicationTests - Starting DemoApplicationTests using Java 17.0.5 with PID 22144 (started by ChiaMing in D:\個人資料\MyNotes\JavaCode\spring-boot-demo)
+Dev 15:08:05.061 logback [main] INFO  c.example.demo.DemoApplicationTests - The following 1 profile is active: "dev"
+Dev 15:08:05.959 logback [main] INFO  c.example.demo.DemoApplicationTests - Started DemoApplicationTests in 1.251 seconds (process running for 1.963)
+Dev 15:08:06.274 logback [main] INFO  c.example.demo.DemoApplicationTests - Info Log
+Dev 15:08:06.274 logback [main] WARN  c.example.demo.DemoApplicationTests - Warn Log
+Dev 15:08:06.274 logback [main] ERROR c.example.demo.DemoApplicationTests - Error Log
+Dev 22:00:21.486 logback [main] INFO  com.example.demo.DemoApplication - Starting DemoApplication using Java 17.0.5 with PID 21624 (D:\個人資料\MyNotes\JavaCode\spring-boot-demo\target\classes started by ChiaMing in D:\個人資料\MyNotes\JavaCode\spring-boot-demo)
+Dev 22:00:21.496 logback [main] INFO  com.example.demo.DemoApplication - The following 1 profile is active: "dev"
+Dev 22:00:22.051 logback [main] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat initialized with port(s): 8888 (http)
+Dev 22:00:22.061 logback [main] INFO  o.a.coyote.http11.Http11NioProtocol - Initializing ProtocolHandler ["http-nio-8888"]
+Dev 22:00:22.061 logback [main] INFO  o.a.catalina.core.StandardService - Starting service [Tomcat]
+Dev 22:00:22.061 logback [main] INFO  o.a.catalina.core.StandardEngine - Starting Servlet engine: [Apache Tomcat/10.1.4]
+Dev 22:00:22.122 logback [main] INFO  o.a.c.c.C.[.[localhost].[/ming] - Initializing Spring embedded WebApplicationContext
+Dev 22:00:22.122 logback [main] INFO  o.s.b.w.s.c.ServletWebServerApplicationContext - Root WebApplicationContext: initialization completed in 595 ms
+Dev 22:00:22.313 logback [main] INFO  o.a.coyote.http11.Http11NioProtocol - Starting ProtocolHandler ["http-nio-8888"]
+Dev 22:00:22.331 logback [main] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat started on port(s): 8888 (http) with context path '/ming'
+Dev 22:00:22.337 logback [main] INFO  com.example.demo.DemoApplication - Started DemoApplication in 1.223 seconds (process running for 1.905)
+Dev 22:00:44.751 logback [http-nio-8888-exec-1] INFO  o.a.c.c.C.[.[localhost].[/ming] - Initializing Spring DispatcherServlet 'dispatcherServlet'
+Dev 22:00:44.751 logback [http-nio-8888-exec-1] INFO  o.s.web.servlet.DispatcherServlet - Initializing Servlet 'dispatcherServlet'
+Dev 22:00:44.752 logback [http-nio-8888-exec-1] INFO  o.s.web.servlet.DispatcherServlet - Completed initialization in 1 ms
+Dev 22:01:20.864 logback [main] INFO  com.example.demo.DemoApplication - Starting DemoApplication using Java 17.0.5 with PID 15564 (D:\個人資料\MyNotes\JavaCode\spring-boot-demo\target\classes started by ChiaMing in D:\個人資料\MyNotes\JavaCode\spring-boot-demo)
+Dev 22:01:20.864 logback [main] INFO  com.example.demo.DemoApplication - The following 1 profile is active: "dev"
+Dev 22:01:21.369 logback [main] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat initialized with port(s): 8888 (http)
+Dev 22:01:21.376 logback [main] INFO  o.a.coyote.http11.Http11NioProtocol - Initializing ProtocolHandler ["http-nio-8888"]
+Dev 22:01:21.377 logback [main] INFO  o.a.catalina.core.StandardService - Starting service [Tomcat]
+Dev 22:01:21.377 logback [main] INFO  o.a.catalina.core.StandardEngine - Starting Servlet engine: [Apache Tomcat/10.1.4]
+Dev 22:01:21.432 logback [main] INFO  o.a.c.c.C.[.[localhost].[/ming] - Initializing Spring embedded WebApplicationContext
+Dev 22:01:21.432 logback [main] INFO  o.s.b.w.s.c.ServletWebServerApplicationContext - Root WebApplicationContext: initialization completed in 527 ms
+Dev 22:01:21.614 logback [main] INFO  o.a.coyote.http11.Http11NioProtocol - Starting ProtocolHandler ["http-nio-8888"]
+Dev 22:01:21.629 logback [main] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat started on port(s): 8888 (http) with context path '/ming'
+Dev 22:01:21.635 logback [main] INFO  com.example.demo.DemoApplication - Started DemoApplication in 1.097 seconds (process running for 1.491)
+Dev 22:02:18.894 logback [http-nio-8888-exec-1] INFO  o.a.c.c.C.[.[localhost].[/ming] - Initializing Spring DispatcherServlet 'dispatcherServlet'
+Dev 22:02:18.895 logback [http-nio-8888-exec-1] INFO  o.s.web.servlet.DispatcherServlet - Initializing Servlet 'dispatcherServlet'
+Dev 22:02:18.896 logback [http-nio-8888-exec-1] INFO  o.s.web.servlet.DispatcherServlet - Completed initialization in 0 ms
+Dev 22:02:40.725 logback [main] INFO  com.example.demo.DemoApplication - Starting DemoApplication using Java 17.0.5 with PID 16252 (D:\個人資料\MyNotes\JavaCode\spring-boot-demo\target\classes started by ChiaMing in D:\個人資料\MyNotes\JavaCode\spring-boot-demo)
+Dev 22:02:40.725 logback [main] INFO  com.example.demo.DemoApplication - The following 1 profile is active: "dev"
+Dev 22:02:41.218 logback [main] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat initialized with port(s): 8888 (http)
+Dev 22:02:41.218 logback [main] INFO  o.a.coyote.http11.Http11NioProtocol - Initializing ProtocolHandler ["http-nio-8888"]
+Dev 22:02:41.218 logback [main] INFO  o.a.catalina.core.StandardService - Starting service [Tomcat]
+Dev 22:02:41.218 logback [main] INFO  o.a.catalina.core.StandardEngine - Starting Servlet engine: [Apache Tomcat/10.1.4]
+Dev 22:02:41.290 logback [main] INFO  o.a.c.c.C.[.[localhost].[/ming] - Initializing Spring embedded WebApplicationContext
+Dev 22:02:41.290 logback [main] INFO  o.s.b.w.s.c.ServletWebServerApplicationContext - Root WebApplicationContext: initialization completed in 534 ms
+Dev 22:02:41.477 logback [main] INFO  o.a.coyote.http11.Http11NioProtocol - Starting ProtocolHandler ["http-nio-8888"]
+Dev 22:02:41.491 logback [main] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat started on port(s): 8888 (http) with context path '/ming'
+Dev 22:02:41.497 logback [main] INFO  com.example.demo.DemoApplication - Started DemoApplication in 1.1 seconds (process running for 1.558)
+Dev 22:02:46.305 logback [http-nio-8888-exec-1] INFO  o.a.c.c.C.[.[localhost].[/ming] - Initializing Spring DispatcherServlet 'dispatcherServlet'
+Dev 22:02:46.306 logback [http-nio-8888-exec-1] INFO  o.s.web.servlet.DispatcherServlet - Initializing Servlet 'dispatcherServlet'
+Dev 22:02:46.307 logback [http-nio-8888-exec-1] INFO  o.s.web.servlet.DispatcherServlet - Completed initialization in 1 ms
+Dev 22:03:20.713 logback [main] INFO  com.example.demo.DemoApplication - Starting DemoApplication using Java 17.0.5 with PID 12240 (D:\個人資料\MyNotes\JavaCode\spring-boot-demo\target\classes started by ChiaMing in D:\個人資料\MyNotes\JavaCode\spring-boot-demo)
+Dev 22:03:20.713 logback [main] INFO  com.example.demo.DemoApplication - The following 1 profile is active: "dev"
+Dev 22:03:21.229 logback [main] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat initialized with port(s): 8888 (http)
+Dev 22:03:21.229 logback [main] INFO  o.a.coyote.http11.Http11NioProtocol - Initializing ProtocolHandler ["http-nio-8888"]
+Dev 22:03:21.229 logback [main] INFO  o.a.catalina.core.StandardService - Starting service [Tomcat]
+Dev 22:03:21.229 logback [main] INFO  o.a.catalina.core.StandardEngine - Starting Servlet engine: [Apache Tomcat/10.1.4]
+Dev 22:03:21.290 logback [main] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring embedded WebApplicationContext
+Dev 22:03:21.290 logback [main] INFO  o.s.b.w.s.c.ServletWebServerApplicationContext - Root WebApplicationContext: initialization completed in 536 ms
+Dev 22:03:21.482 logback [main] INFO  o.a.coyote.http11.Http11NioProtocol - Starting ProtocolHandler ["http-nio-8888"]
+Dev 22:03:21.498 logback [main] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat started on port(s): 8888 (http) with context path ''
+Dev 22:03:21.502 logback [main] INFO  com.example.demo.DemoApplication - Started DemoApplication in 1.132 seconds (process running for 1.599)
+Dev 22:03:25.602 logback [http-nio-8888-exec-1] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring DispatcherServlet 'dispatcherServlet'
+Dev 22:03:25.603 logback [http-nio-8888-exec-1] INFO  o.s.web.servlet.DispatcherServlet - Initializing Servlet 'dispatcherServlet'
+Dev 22:03:25.603 logback [http-nio-8888-exec-1] INFO  o.s.web.servlet.DispatcherServlet - Completed initialization in 0 ms
+Dev 22:04:31.210 logback [main] INFO  com.example.demo.DemoApplication - Starting DemoApplication using Java 17.0.5 with PID 21488 (D:\個人資料\MyNotes\JavaCode\spring-boot-demo\target\classes started by ChiaMing in D:\個人資料\MyNotes\JavaCode\spring-boot-demo)
+Dev 22:04:31.213 logback [main] INFO  com.example.demo.DemoApplication - The following 1 profile is active: "dev"
+Dev 22:04:31.717 logback [main] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat initialized with port(s): 8888 (http)
+Dev 22:04:31.723 logback [main] INFO  o.a.coyote.http11.Http11NioProtocol - Initializing ProtocolHandler ["http-nio-8888"]
+Dev 22:04:31.724 logback [main] INFO  o.a.catalina.core.StandardService - Starting service [Tomcat]
+Dev 22:04:31.725 logback [main] INFO  o.a.catalina.core.StandardEngine - Starting Servlet engine: [Apache Tomcat/10.1.4]
+Dev 22:04:31.784 logback [main] INFO  o.a.c.c.C.[.[localhost].[/ming] - Initializing Spring embedded WebApplicationContext
+Dev 22:04:31.784 logback [main] INFO  o.s.b.w.s.c.ServletWebServerApplicationContext - Root WebApplicationContext: initialization completed in 537 ms
+Dev 22:04:31.902 logback [main] INFO  o.s.b.a.w.s.WelcomePageHandlerMapping - Adding welcome page: class path resource [frontEnd/build/index.html]
+Dev 22:04:31.966 logback [main] INFO  o.a.coyote.http11.Http11NioProtocol - Starting ProtocolHandler ["http-nio-8888"]
+Dev 22:04:31.978 logback [main] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat started on port(s): 8888 (http) with context path '/ming'
+Dev 22:04:31.985 logback [main] INFO  com.example.demo.DemoApplication - Started DemoApplication in 1.104 seconds (process running for 1.494)
+Dev 22:04:46.190 logback [http-nio-8888-exec-3] INFO  o.a.c.c.C.[.[localhost].[/ming] - Initializing Spring DispatcherServlet 'dispatcherServlet'
+Dev 22:04:46.191 logback [http-nio-8888-exec-3] INFO  o.s.web.servlet.DispatcherServlet - Initializing Servlet 'dispatcherServlet'
+Dev 22:04:46.192 logback [http-nio-8888-exec-3] INFO  o.s.web.servlet.DispatcherServlet - Completed initialization in 1 ms
+Dev 22:30:55.750 logback [main] INFO  c.example.demo.DemoApplicationTests - Starting DemoApplicationTests using Java 17.0.5 with PID 21816 (started by ChiaMing in D:\個人資料\MyNotes\JavaCode\spring-boot-demo)
+Dev 22:30:55.753 logback [main] INFO  c.example.demo.DemoApplicationTests - The following 1 profile is active: "dev"
+Dev 22:30:56.668 logback [main] INFO  o.s.b.a.w.s.WelcomePageHandlerMapping - Adding welcome page: class path resource [frontend/build/index.html]
+Dev 22:30:56.768 logback [main] INFO  c.example.demo.DemoApplicationTests - Started DemoApplicationTests in 1.428 seconds (process running for 2.428)
+Dev 22:37:48.637 logback [main] INFO  com.example.demo.DemoApplication - Starting DemoApplication using Java 17.0.5 with PID 19808 (D:\個人資料\MyNotes\JavaCode\spring-boot-demo\target\classes started by ChiaMing in D:\個人資料\MyNotes\JavaCode\spring-boot-demo)
+Dev 22:37:48.640 logback [main] INFO  com.example.demo.DemoApplication - The following 1 profile is active: "dev"
+Dev 22:37:49.156 logback [main] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat initialized with port(s): 8888 (http)
+Dev 22:37:49.156 logback [main] INFO  o.a.coyote.http11.Http11NioProtocol - Initializing ProtocolHandler ["http-nio-8888"]
+Dev 22:37:49.156 logback [main] INFO  o.a.catalina.core.StandardService - Starting service [Tomcat]
+Dev 22:37:49.156 logback [main] INFO  o.a.catalina.core.StandardEngine - Starting Servlet engine: [Apache Tomcat/10.1.4]
+Dev 22:37:49.252 logback [main] INFO  o.a.c.c.C.[.[localhost].[/ming] - Initializing Spring embedded WebApplicationContext
+Dev 22:37:49.253 logback [main] INFO  o.s.b.w.s.c.ServletWebServerApplicationContext - Root WebApplicationContext: initialization completed in 580 ms
+Dev 22:37:49.374 logback [main] INFO  o.s.b.a.w.s.WelcomePageHandlerMapping - Adding welcome page: class path resource [frontend/build/index.html]
+Dev 22:37:49.435 logback [main] INFO  o.a.coyote.http11.Http11NioProtocol - Starting ProtocolHandler ["http-nio-8888"]
+Dev 22:37:49.455 logback [main] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat started on port(s): 8888 (http) with context path '/ming'
+Dev 22:37:49.461 logback [main] INFO  com.example.demo.DemoApplication - Started DemoApplication in 1.15 seconds (process running for 1.632)
+Dev 22:37:58.553 logback [http-nio-8888-exec-1] INFO  o.a.c.c.C.[.[localhost].[/ming] - Initializing Spring DispatcherServlet 'dispatcherServlet'
+Dev 22:37:58.554 logback [http-nio-8888-exec-1] INFO  o.s.web.servlet.DispatcherServlet - Initializing Servlet 'dispatcherServlet'
+Dev 22:37:58.554 logback [http-nio-8888-exec-1] INFO  o.s.web.servlet.DispatcherServlet - Completed initialization in 0 ms
+Dev 22:38:52.847 logback [main] INFO  com.example.demo.DemoApplication - Starting DemoApplication using Java 17.0.5 with PID 18388 (D:\個人資料\MyNotes\JavaCode\spring-boot-demo\target\classes started by ChiaMing in D:\個人資料\MyNotes\JavaCode\spring-boot-demo)
+Dev 22:38:52.848 logback [main] INFO  com.example.demo.DemoApplication - The following 1 profile is active: "dev"
+Dev 22:38:53.340 logback [main] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat initialized with port(s): 8888 (http)
+Dev 22:38:53.340 logback [main] INFO  o.a.coyote.http11.Http11NioProtocol - Initializing ProtocolHandler ["http-nio-8888"]
+Dev 22:38:53.340 logback [main] INFO  o.a.catalina.core.StandardService - Starting service [Tomcat]
+Dev 22:38:53.340 logback [main] INFO  o.a.catalina.core.StandardEngine - Starting Servlet engine: [Apache Tomcat/10.1.4]
+Dev 22:38:53.401 logback [main] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring embedded WebApplicationContext
+Dev 22:38:53.401 logback [main] INFO  o.s.b.w.s.c.ServletWebServerApplicationContext - Root WebApplicationContext: initialization completed in 521 ms
+Dev 22:38:53.517 logback [main] INFO  o.s.b.a.w.s.WelcomePageHandlerMapping - Adding welcome page: class path resource [frontend/build/index.html]
+Dev 22:38:53.578 logback [main] INFO  o.a.coyote.http11.Http11NioProtocol - Starting ProtocolHandler ["http-nio-8888"]
+Dev 22:38:53.595 logback [main] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat started on port(s): 8888 (http) with context path ''
+Dev 22:38:53.601 logback [main] INFO  com.example.demo.DemoApplication - Started DemoApplication in 1.08 seconds (process running for 1.446)
+Dev 22:38:58.669 logback [http-nio-8888-exec-1] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring DispatcherServlet 'dispatcherServlet'
+Dev 22:38:58.670 logback [http-nio-8888-exec-1] INFO  o.s.web.servlet.DispatcherServlet - Initializing Servlet 'dispatcherServlet'
+Dev 22:38:58.670 logback [http-nio-8888-exec-1] INFO  o.s.web.servlet.DispatcherServlet - Completed initialization in 0 ms

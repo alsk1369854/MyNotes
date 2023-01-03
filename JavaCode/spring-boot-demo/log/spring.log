@@ -1,0 +1,87 @@
+2023-01-03T13:51:06.989+08:00  INFO 21424 --- [main] com.example.demo.DemoApplicationTests    : Starting DemoApplicationTests using Java 17.0.5 with PID 21424 (started by ChiaMing in D:\個人資料\MyNotes\JavaCode\spring-boot-demo)
+2023-01-03T13:51:06.990+08:00 DEBUG 21424 --- [main] com.example.demo.DemoApplicationTests    : Running with Spring Boot v3.0.1, Spring v6.0.3
+2023-01-03T13:51:06.991+08:00  INFO 21424 --- [main] com.example.demo.DemoApplicationTests    : The following 1 profile is active: "dev"
+2023-01-03T13:51:07.972+08:00  INFO 21424 --- [main] com.example.demo.DemoApplicationTests    : Started DemoApplicationTests in 1.282 seconds (process running for 1.996)
+2023-01-03T13:51:08.315+08:00 TRACE 21424 --- [main] com.example.demo.DemoApplicationTests    : Trace Log
+2023-01-03T13:51:08.316+08:00 DEBUG 21424 --- [main] com.example.demo.DemoApplicationTests    : Debug Log
+2023-01-03T13:51:08.317+08:00  INFO 21424 --- [main] com.example.demo.DemoApplicationTests    : Info Log
+2023-01-03T13:51:08.317+08:00  WARN 21424 --- [main] com.example.demo.DemoApplicationTests    : Warn Log
+2023-01-03T13:51:08.317+08:00 ERROR 21424 --- [main] com.example.demo.DemoApplicationTests    : Error Log
+2023-01-03 [main] INFO  com.example.demo.DemoApplicationTests - Starting DemoApplicationTests using Java 17.0.5 with PID 24392 (started by ChiaMing in D:\個人資料\MyNotes\JavaCode\spring-boot-demo)
+2023-01-03 [main] DEBUG com.example.demo.DemoApplicationTests - Running with Spring Boot v3.0.1, Spring v6.0.3
+2023-01-03 [main] INFO  com.example.demo.DemoApplicationTests - The following 1 profile is active: "dev"
+2023-01-03 [main] INFO  com.example.demo.DemoApplicationTests - Started DemoApplicationTests in 1.222 seconds (process running for 1.972)
+2023-01-03 [main] TRACE com.example.demo.DemoApplicationTests - Trace Log
+2023-01-03 [main] DEBUG com.example.demo.DemoApplicationTests - Debug Log
+2023-01-03 [main] INFO  com.example.demo.DemoApplicationTests - Info Log
+2023-01-03 [main] WARN  com.example.demo.DemoApplicationTests - Warn Log
+2023-01-03 [main] ERROR com.example.demo.DemoApplicationTests - Error Log
+2023-01-03 [main] INFO  com.example.demo.DemoApplicationTests - Starting DemoApplicationTests using Java 17.0.5 with PID 19520 (started by ChiaMing in D:\個人資料\MyNotes\JavaCode\spring-boot-demo)
+2023-01-03 [main] DEBUG com.example.demo.DemoApplicationTests - Running with Spring Boot v3.0.1, Spring v6.0.3
+2023-01-03 [main] INFO  com.example.demo.DemoApplicationTests - The following 1 profile is active: "dev"
+2023-01-03 [main] INFO  com.example.demo.DemoApplicationTests - Started DemoApplicationTests in 1.403 seconds (process running for 2.241)
+2023-01-03 [main] TRACE com.example.demo.DemoApplicationTests - Trace Log
+2023-01-03 [main] DEBUG com.example.demo.DemoApplicationTests - Debug Log
+2023-01-03 [main] INFO  com.example.demo.DemoApplicationTests - Info Log
+2023-01-03 [main] WARN  com.example.demo.DemoApplicationTests - Warn Log
+2023-01-03 [main] ERROR com.example.demo.DemoApplicationTests - Error Log
+2023-01-03 [main] INFO  com.example.demo.DemoApplicationTests - Starting DemoApplicationTests using Java 17.0.5 with PID 16532 (started by ChiaMing in D:\個人資料\MyNotes\JavaCode\spring-boot-demo)
+2023-01-03 [main] DEBUG com.example.demo.DemoApplicationTests - Running with Spring Boot v3.0.1, Spring v6.0.3
+2023-01-03 [main] INFO  com.example.demo.DemoApplicationTests - The following 1 profile is active: "dev"
+2023-01-03 [main] INFO  com.example.demo.DemoApplicationTests - Started DemoApplicationTests in 1.263 seconds (process running for 1.995)
+2023-01-03 [main] TRACE com.example.demo.DemoApplicationTests - Trace Log
+2023-01-03 [main] DEBUG com.example.demo.DemoApplicationTests - Debug Log
+2023-01-03 [main] INFO  com.example.demo.DemoApplicationTests - Info Log
+2023-01-03 [main] WARN  com.example.demo.DemoApplicationTests - Warn Log
+2023-01-03 [main] ERROR com.example.demo.DemoApplicationTests - Error Log
+2023-01-03 [main] INFO  com.example.demo.DemoApplicationTests - Starting DemoApplicationTests using Java 17.0.5 with PID 24472 (started by ChiaMing in D:\個人資料\MyNotes\JavaCode\spring-boot-demo)
+2023-01-03 [main] DEBUG com.example.demo.DemoApplicationTests - Running with Spring Boot v3.0.1, Spring v6.0.3
+2023-01-03 [main] INFO  com.example.demo.DemoApplicationTests - The following 1 profile is active: "dev"
+2023-01-03 [main] INFO  com.example.demo.DemoApplicationTests - Started DemoApplicationTests in 1.227 seconds (process running for 1.971)
+2023-01-03 [main] TRACE com.example.demo.DemoApplicationTests - Trace Log
+2023-01-03 [main] DEBUG com.example.demo.DemoApplicationTests - Debug Log
+2023-01-03 [main] INFO  com.example.demo.DemoApplicationTests - Info Log
+2023-01-03 [main] WARN  com.example.demo.DemoApplicationTests - Warn Log
+2023-01-03 [main] ERROR com.example.demo.DemoApplicationTests - Error Log
+2023-01-03 [main] INFO  com.example.demo.DemoApplicationTests - Starting DemoApplicationTests using Java 17.0.5 with PID 1128 (started by ChiaMing in D:\個人資料\MyNotes\JavaCode\spring-boot-demo)
+2023-01-03 [main] DEBUG com.example.demo.DemoApplicationTests - Running with Spring Boot v3.0.1, Spring v6.0.3
+2023-01-03 [main] INFO  com.example.demo.DemoApplicationTests - The following 1 profile is active: "dev"
+2023-01-03 [main] INFO  com.example.demo.DemoApplicationTests - Started DemoApplicationTests in 1.261 seconds (process running for 1.966)
+2023-01-03 [main] TRACE com.example.demo.DemoApplicationTests - Trace Log
+2023-01-03 [main] DEBUG com.example.demo.DemoApplicationTests - Debug Log
+2023-01-03 [main] INFO  com.example.demo.DemoApplicationTests - Info Log
+2023-01-03 [main] WARN  com.example.demo.DemoApplicationTests - Warn Log
+2023-01-03 [main] ERROR com.example.demo.DemoApplicationTests - Error Log
+2023-01-03 [main] INFO  com.example.demo.DemoApplicationTests - Starting DemoApplicationTests using Java 17.0.5 with PID 23184 (started by ChiaMing in D:\個人資料\MyNotes\JavaCode\spring-boot-demo)
+2023-01-03 [main] DEBUG com.example.demo.DemoApplicationTests - Running with Spring Boot v3.0.1, Spring v6.0.3
+2023-01-03 [main] INFO  com.example.demo.DemoApplicationTests - The following 1 profile is active: "dev"
+2023-01-03 [main] INFO  com.example.demo.DemoApplicationTests - Started DemoApplicationTests in 1.209 seconds (process running for 1.896)
+2023-01-03 [main] TRACE com.example.demo.DemoApplicationTests - Trace Log
+2023-01-03 [main] DEBUG com.example.demo.DemoApplicationTests - Debug Log
+2023-01-03 [main] INFO  com.example.demo.DemoApplicationTests - Info Log
+2023-01-03 [main] WARN  com.example.demo.DemoApplicationTests - Warn Log
+2023-01-03 [main] ERROR com.example.demo.DemoApplicationTests - Error Log
+2023-01-03 [main] INFO  com.example.demo.DemoApplicationTests - Starting DemoApplicationTests using Java 17.0.5 with PID 11992 (started by ChiaMing in D:\個人資料\MyNotes\JavaCode\spring-boot-demo)
+2023-01-03 [main] INFO  com.example.demo.DemoApplicationTests - The following 1 profile is active: "dev"
+2023-01-03 [main] INFO  com.example.demo.DemoApplicationTests - Started DemoApplicationTests in 1.229 seconds (process running for 1.928)
+2023-01-03 [main] INFO  com.example.demo.DemoApplicationTests - Info Log
+2023-01-03 [main] WARN  com.example.demo.DemoApplicationTests - Warn Log
+2023-01-03 [main] ERROR com.example.demo.DemoApplicationTests - Error Log
+2023-01-03 [main] INFO  com.example.demo.DemoApplicationTests - Starting DemoApplicationTests using Java 17.0.5 with PID 19084 (started by ChiaMing in D:\個人資料\MyNotes\JavaCode\spring-boot-demo)
+2023-01-03 [main] INFO  com.example.demo.DemoApplicationTests - The following 1 profile is active: "dev"
+2023-01-03 [main] INFO  com.example.demo.DemoApplicationTests - Started DemoApplicationTests in 1.308 seconds (process running for 2.001)
+2023-01-03 [main] INFO  com.example.demo.DemoApplicationTests - Info Log
+2023-01-03 [main] WARN  com.example.demo.DemoApplicationTests - Warn Log
+2023-01-03 [main] ERROR com.example.demo.DemoApplicationTests - Error Log
+2023-01-03 [main] INFO  com.example.demo.DemoApplicationTests - Starting DemoApplicationTests using Java 17.0.5 with PID 4996 (started by ChiaMing in D:\個人資料\MyNotes\JavaCode\spring-boot-demo)
+2023-01-03 [main] INFO  com.example.demo.DemoApplicationTests - The following 1 profile is active: "dev"
+2023-01-03 [main] INFO  com.example.demo.DemoApplicationTests - Started DemoApplicationTests in 1.282 seconds (process running for 2.009)
+2023-01-03 [main] INFO  com.example.demo.DemoApplicationTests - Info Log
+2023-01-03 [main] WARN  com.example.demo.DemoApplicationTests - Warn Log
+2023-01-03 [main] ERROR com.example.demo.DemoApplicationTests - Error Log
+2023-01-03 [main] INFO  com.example.demo.DemoApplicationTests - Starting DemoApplicationTests using Java 17.0.5 with PID 16004 (started by ChiaMing in D:\個人資料\MyNotes\JavaCode\spring-boot-demo)
+2023-01-03 [main] INFO  com.example.demo.DemoApplicationTests - The following 1 profile is active: "dev"
+2023-01-03 [main] INFO  com.example.demo.DemoApplicationTests - Started DemoApplicationTests in 1.274 seconds (process running for 1.999)
+2023-01-03 [main] INFO  com.example.demo.DemoApplicationTests - Info Log
+2023-01-03 [main] WARN  com.example.demo.DemoApplicationTests - Warn Log
+2023-01-03 [main] ERROR com.example.demo.DemoApplicationTests - Error Log
