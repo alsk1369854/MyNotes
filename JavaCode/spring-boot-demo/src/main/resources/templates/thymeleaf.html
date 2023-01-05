@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+    <h1>Thymeleaf Tool</h1>
+    <hr/>
+
+    <h2>th:text and th:utext</h2>
+    <h3>th:text</h3>
+    <div id="def_id" class="def_cla" th:id="|${hiTag}_id|" th:class="|${hiTag}_cla|" th:text="${hiTag}">def_val</div>
+    <div>[[${hiTag}]]</div>
+
+    <h3>th:utext</h3>
+    <div th:utext="${hiTag}"></div>
+    <div>[(${hiTag})]</div>
+    <hr/>
+
+    <h2>th:each</h2>
+    <h3>被表記 th:each 的標籤也會被複製</h3>
+    <h4 th:each="name: ${usernames}">[[${name}]]</h4>
+    <h4>
+        <span th:text="|${name}, |" th:each="name: ${usernames}"></span>
+    </h4>
+    <hr/>
+
+    <h2>th:object</h2>
+    <div th:object="${author}">
+        <div>Author: [[*{name}]]</div>
+        <div>Age: [[${author.age}]]</div>
+    </div>
+    <hr/>
+
+    <h2>@{}</h2>
+    <a href="thymeleaf" th:href="@{https://google.com}">google.com</a>
+
+</body>
+</html>
