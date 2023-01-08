@@ -16,6 +16,11 @@ import java.util.Map;
 @Controller
 public class HelloController {
 
+//    @RequestMapping({"/","/index"})
+//    public String index(){
+//        return "login";
+//    }
+
     @ResponseBody
     @RequestMapping("/hello")
     public String hello(){

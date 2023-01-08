@@ -1,30 +1,38 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration  scan="true" scanPeriod="60 seconds" debug="false">
+    <!-- 應用名稱 -->
     <property name="APP_NAME" value="ApplicationName"/>
+    <!-- Log 輸出根目錄 -->
     <property name="LOG_FILE_PATH" value="log"/>
-    <!--設置 Log 輸出格式-->
+    <!-- Log 輸出格式 -->
     <property name="PATTERN_FORMAT" value="%d{yyyy-MM-dd HH:mm:ss.SSS} %-5level %class{36} %L %M - %msg%xEx%n"/>
     <contextName>logback</contextName>
-    <!--輸出到 Console-->
+    <!-- 輸出到 Console -->
     <appender name="console" class="ch.qos.logback.core.ConsoleAppender">
         <encoder>
-            <pattern>${PATTERN_FORMAT}</pattern>
+            <!-- 僅在 dev 環境下生效 -->
+            <springProfile name="dev">
+                <!-- log 輸出格式 -->
+                <pattern>Dev ${PATTERN_FORMAT}</pattern>
+            </springProfile>
+            <!-- 僅在 prod 環境下生效 -->
+            <springProfile name="prod">
+                <!-- log 輸出格式 -->
+                <pattern>Prod ${PATTERN_FORMAT}</pattern>
+            </springProfile>
         </encoder>
     </appender>
 
-    <!--輸出到檔案-->
+    <!-- 輸出日誌檔案 -->
     <appender name="info" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <!-- 日誌策略配置 -->
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <!-- 在 log 目錄下，已日期為目錄生成日誌文件 -->
             <fileNamePattern>${LOG_FILE_PATH}/%d{yyyy-MM-dd,aux}/logback.info.%d{yyyy-MM-dd}.log</fileNamePattern>
         </rollingPolicy>
         <encoder>
-            <springProfile name="dev">
-                <pattern>Dev %d{HH:mm:ss.SSS} %contextName [%thread] %-5level %logger{36} - %msg%n</pattern>
-            </springProfile>
-            <springProfile name="prod">
-                <pattern>Prod %d{HH:mm:ss.SSS} %contextName [%thread] %-5level %logger{36} - %msg%n</pattern>
-            </springProfile>
-
+            <!-- log 輸出格式 -->
+            <pattern>%d{HH:mm:ss.SSS} %contextName [%thread] %-5level %logger{36} - %msg%n</pattern>
         </encoder>
         <!-- 只輸出定義級別 -->
 <!--        <filter class="ch.qos.logback.classic.filter.LevelFilter">-->
@@ -34,10 +42,8 @@
 <!--        </filter>-->
     </appender>
 
-
     <root level="info">
         <appender-ref ref="console" />
         <appender-ref ref="info" />
     </root>
-
 </configuration>

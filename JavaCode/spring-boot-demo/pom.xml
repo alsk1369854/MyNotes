@@ -50,6 +50,12 @@
 			<artifactId>spring-boot-starter-thymeleaf</artifactId>
 		</dependency>
 
+		<!--	引入-bootstrap		-->
+		<dependency>
+			<groupId>org.webjars.npm</groupId>
+			<artifactId>bootstrap</artifactId>
+			<version>5.3.0-alpha1</version>
+		</dependency>
 		<!-- 引入-jquery-from-webjars-->
 		<dependency>
 			<groupId>org.webjars.npm</groupId>
