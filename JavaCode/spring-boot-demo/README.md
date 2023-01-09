@@ -483,3 +483,22 @@ public class EmployeeController {
 }
 ```
 
+## 錯誤處理與訂製錯誤頁面
+### 訂製錯誤頁面
+在靜態目錄在模板目錄下 error 目錄新增對應裝態的 .html 文件，在錯誤發生時就會顯示對應的錯誤頁面
+- 無模板工具: src/main/resources/static/error/xxx.html
+- 有模板： src/main/resources/{templates_base}/error/xxx.html
+- 可用 4xx.html 與 5xx.html 頁面，來制定涵蓋所有 4 與 5 系列的錯誤響應頁面
+
+### 錯誤頁面響應能獲取的訊息
+使用 thymeleaf 模板工具能夠直接透過 **${status}** 拿出對應的錯誤訊息
+- timestamp: 時間戳
+- status: 狀態碼
+- error: 錯誤提示
+- exception: 異常對象
+- message: 異常消息
+- errors: JSR303數據檢驗的錯誤都在這裡
+
+
+
+
