@@ -2,11 +2,14 @@ package com.example.demo.controller;
 
 
 
+import com.example.demo.exception.ServerException;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.management.RuntimeErrorException;
 import java.util.Arrays;
 import java.util.Map;
 
@@ -36,5 +39,10 @@ public class HelloController {
             public Integer age = 20;
         });
         return "thymeleaf";
+    }
+
+    @GetMapping("/500")
+    RuntimeErrorException getError(){
+        throw new ServerException();
     }
 }
