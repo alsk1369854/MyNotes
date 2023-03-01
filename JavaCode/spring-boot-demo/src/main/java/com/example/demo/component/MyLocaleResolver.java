@@ -7,7 +7,10 @@ import org.thymeleaf.util.StringUtils;
 
 import java.util.Locale;
 
+// 自定義地區語言解析器
 public class MyLocaleResolver implements LocaleResolver {
+
+    // 自定義地區語言解析方法
     @Override
     public Locale resolveLocale(HttpServletRequest request) {
         String l = request.getParameter("l");

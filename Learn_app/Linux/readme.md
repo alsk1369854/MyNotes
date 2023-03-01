@@ -17,20 +17,30 @@
  4. Linux 服務管理
     1. systemclt {start|stop|restart|status} [服務名] #CentOS 7
     2. service [服務名] {start|stop|restart|status} #CentOS 6
+ 5. 錯誤解決
 
 <br/>
 
 ## 1. 常用 shell 命令
 ### 1-1. ping {IP位置|主機名稱} #檢查是否可以連線
 ```shell
-# ping {IP位置|主機名稱}
-# ping 192.168.100.10
-# ping google.com
+# 發送網路封包給指定地址
+$ ping {IP位置|主機名稱}
+$ ping 192.168.100.10
+$ ping google.com
 
-[root@ChiaMingCentOS etc]# ping google.com
-PING google.com (142.251.42.238) 56(84) bytes of data.
-64 bytes from tsa01s11-in-f14.1e100.net (142.251.42.238): icmp_seq=1 ttl=128 time=9.06 ms
+# 查看 Linux kernel 版本
+$ uname -r
 
+# 升級軟件包與內核
+$ yum update
+
+# 重啟網路程序
+$ service restart network
+
+# 重啟 NetworkManager 服務(UI介面) 
+$ systemctl restart NetworkManager
+$ systemctl restart network.device
 ```
 <br/>
 
@@ -218,6 +228,7 @@ scp -l 400 /path/file1 myuser@192.168.0.1:/path/file2
 <br/>
 
 ## 4. Linux 服務管理
+
 ### 4-1. systemclt {start|stop|restart|status} [服務名] #CentOS 7
 ```shell
 # 服務管理: systemclt {start|stop|restart|status} [服務名]
@@ -245,3 +256,27 @@ scp -l 400 /path/file1 myuser@192.168.0.1:/path/file2
 Restarting network (via systemctl):                        [  OK  ]
 ```
 <br/>
+
+## 文件修改權限修改
+```shell
+# 修改為可修改文件
+$ chmod -v u+w {filepath}
+
+# 修改為唯獨文件
+$ chmod -v u-w {filepath}
+```
+
+
+<br/>
+
+## 錯誤解決
+### 網路重啟錯誤(Job for network.service failed because the control process exited with error code.)
+```shell
+# 停止 NetworkManager 程序
+$ systemctl stop NetworkManager
+$ systemctl disable NetworkManager
+
+# 重啟網卡
+$ systemctl restart network
+```
+

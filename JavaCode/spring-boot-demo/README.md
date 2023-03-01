@@ -499,6 +499,204 @@ public class EmployeeController {
 - message: 異常消息
 - errors: JSR303數據檢驗的錯誤都在這裡
 
+### 添加自定義的錯誤訊息
+path: src/main/java/com/example/demo/exception
+#### 建立 ExceptionHandler 類，管理錯誤拋出
+```java
+// 異常管理類
+@ControllerAdvice
+public class MyExceptionHandler {
+    @ExceptionHandler(Exception.class) // 接收全部的 Exception
+    // @ExceptionHandler(ServerException.class) // 接收特定的 Exception
+    public String handlerException(Exception e, HttpServletRequest request){
+        // 日誌紀錄
+        Logger logger = LoggerFactory.getLogger(getClass());
+        logger.error("My Exception Handler");
 
+        // 在 AbstractErrorController 會取用 jakarta.servlet.error.status_code 來設定異常狀態訊息
+        // path: spring-boot-autoconfigure-3.0.1.jar\org\springframework\boot\autoconfigure\web\servlet\error\AbstractErrorController.class
+        // Integer statusCode = (Integer)request.getAttribute("jakarta.servlet.error.status_code");
 
+        // 自訂義異常狀態碼
+        request.setAttribute("jakarta.servlet.error.status_code", 500);
 
+        // 建立自定義的異常數據集
+        Map<String, Object> map = new HashMap<>();
+        map.put("message", e.getMessage());
+        map.put("exception", e);
+        // 將自定義數據集，預先加入至 request 參數當中(會在 MyErrorAttributes 處理時邦定到，異常數據中)
+        request.setAttribute("errors", map);
+
+        // 委派給 Spring boot 預設的錯誤處裡類處裡(能夠自動適配請求 header 所需要的數據類型做響應)
+        return "forward:/error";
+    }
+}
+```
+
+#### 建立 ErrorAttributes 類，管理錯誤信息回傳
+```java
+// 設置 Error 丟出時，附帶的錯誤信息
+@Component
+public class MyErrorAttributes extends DefaultErrorAttributes {
+    @Override
+    public Map<String, Object> getErrorAttributes(WebRequest webRequest, ErrorAttributeOptions options) {
+        // 取得錯誤訊息數據
+        Map<String, Object> errorAttributes = super.getErrorAttributes(webRequest, options);
+
+        // 直接添加數據
+        errorAttributes.put("company", "ming");
+
+        // 間接添加數據，獲取先前添加好的數據，並添加到錯誤數據集中
+        Map<String, Object> other = (Map<String, Object>) webRequest.getAttribute("errors", 0);
+        errorAttributes.put("errors", other);
+
+        // 回傳錯誤數據集
+        return errorAttributes;
+    }
+}
+```
+
+## 註冊 Serverlet 三大組件
+- 註冊 Servlet
+- 註冊 Filter
+- 註冊 Listener
+
+### 註冊 Servlet
+#### 1. 創建自定義 Servlet
+- path: src/main/java/com/example/demo/servlet/MyServlet.java
+```java
+public class MyServlet extends HttpServlet {
+    @Override
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        doPost(req, resp);
+    }
+
+    @Override
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        resp.getWriter().write("My Servlet...");
+    }
+}
+```
+#### 註冊至容器中
+- path: src/main/java/com/example/demo/config/MyServerConfig.java
+```java
+@Configuration
+public class MyServerConfig {
+    // 註冊 Servlet
+    @Bean
+    public ServletRegistrationBean myServlet() {
+        // 全地址使用 Servlet
+        // ServletRegistrationBean<MyServlet> registrationServlet = new ServletRegistrationBean(new MyServlet());
+
+        // 指定地址使用 Servlet
+        ServletRegistrationBean<MyServlet> registrationServlet = new ServletRegistrationBean(new MyServlet());
+        registrationServlet.setUrlMappings(Arrays.asList("/myservlet"));
+
+        return registrationServlet;
+    }
+}
+```
+
+### 註冊 Filter
+#### 1. 創建自定義 Filter
+- path: src/main/java/com/example/demo/filter/MyFilter.java
+```java
+public class MyFilter implements Filter {
+    @Override
+    public void init(FilterConfig filterConfig) throws ServletException {
+        Filter.super.init(filterConfig);
+    }
+
+    @Override
+    public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
+        System.out.println("My Filter...");
+        // 放行通過
+        filterChain.doFilter(servletRequest, servletResponse);
+    }
+
+    @Override
+    public void destroy() {
+        Filter.super.destroy();
+    }
+}
+```
+#### 註冊至容器中
+- path: src/main/java/com/example/demo/config/MyServerConfig.java
+```java
+@Configuration
+public class MyServerConfig {
+    // 註冊 Filter
+    @Bean
+    public FilterRegistrationBean<MyFilter> myFilter() {
+        // 全地址使用 Filter
+        // FilterRegistrationBean<MyFilter> registrationFilter = new FilterRegistrationBean<>(new MyFilter());
+
+        // 指定地址使用 Filter
+        FilterRegistrationBean<MyFilter> registrationFilter = new FilterRegistrationBean<>(new MyFilter());
+        registrationFilter.setUrlPatterns(Arrays.asList("/myfilter"));
+
+        return registrationFilter;
+    }
+}
+```
+
+### 註冊 Listener
+#### 1. 創建自定義 Listener
+- path: src/main/java/com/example/demo/listener/MyListener.java
+```java
+public class MyListener implements ServletContextListener {
+    @Override
+    public void contextInitialized(ServletContextEvent sce) {
+        System.out.println("Web 應用啟動...");
+    }
+
+    @Override
+    public void contextDestroyed(ServletContextEvent sce) {
+        System.out.println("Web 應用關閉...");
+    }
+}
+```
+#### 註冊至容器中
+- path: src/main/java/com/example/demo/config/MyServerConfig.java
+```java
+@Configuration
+public class MyServerConfig {
+    // 註冊 Listener
+    @Bean
+    public ServletListenerRegistrationBean myListener(){
+        ServletListenerRegistrationBean<MyListener> registrationListener = new ServletListenerRegistrationBean<>(new MyListener());
+        return registrationListener;
+    }
+}
+```
+
+## 使用其他 Servlet 容器
+- tomcat(預設)
+- jetty(長連接優勢)
+- undertow(多執行續優勢)
+
+### 修改配置方法，以 Maven 為例
+- path: pom.xml
+```xml
+<!-- 使用其他 Servlet 容器-->
+<project>
+    <dependency>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-web</artifactId>
+        <!-- 註銷預設使用的 tomcat -->
+        <exclusions>
+            <exclusion>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-starter-tomcat</artifactId>
+            </exclusion>
+        </exclusions>
+    </dependency>
+    <dependency>
+        <groupId>org.springframework.boot</groupId>
+        <!-- 使用 undertow -->
+        <artifactId>spring-boot-starter-undertow</artifactId>
+        <!-- 使用 jetty -->
+        <!-- <artifactId>spring-boot-starter-jetty</artifactId> error-->
+    </dependency>
+</project>
+```
