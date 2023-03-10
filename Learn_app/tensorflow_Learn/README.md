@@ -18,7 +18,7 @@
 - 17. 全連接層
 - 18. 輸出方式
 - 19. 誤差計算
-- 20. 
+- 20. 梯度下降
   
 
 ## 1. Tensor 類型
@@ -2182,6 +2182,7 @@ print(result)
 - 19-1. MSE
 - 19-2. Cross Entropy Loss (交叉熵)
 - 19-3. Cross Entropy Numerical Stability (交叉熵數值穩定性)
+- Hinge Loss (使用於 SVM,Support Vector Machine 較多)
 
 ### 19-1. MSE
 $$loss = \frac{1}{N}\sum(y-out)^2$$
@@ -2329,7 +2330,7 @@ print('loss_with_prob: ', loss_with_prob)
 ```
 <br/>
 
-## 20.
+## 20. 梯度下降
 
 
 
