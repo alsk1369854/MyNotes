@@ -10,3 +10,6 @@
 
 # java
 *.class
+
+# cpp
+*.exe
