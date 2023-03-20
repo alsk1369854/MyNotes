@@ -48,8 +48,6 @@ int main(){
 套件識別碼: brandonfowler.exe-runner
 ```
 
- 
-
 ## API reference docs
 
 [API Web Docs](https://cplusplus.com/reference/)

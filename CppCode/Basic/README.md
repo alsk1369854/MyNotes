@@ -7,10 +7,12 @@
 標頭戴 c 表示此庫在 C 時代就已經存在了
 
 ```cpp
-#include <iostream> // I/O方法庫
+#include <iostream> // I/O函式庫
 #include <climits> // 整數類型的極限大小 INT_MAX, INT_MIN ...
 #include <cmath> // 數學運算庫 sqrt(), abs() ...
 #include <iomanip> // 設定打印精度 setprecision()
+#include <cstring> // 字串處理函式庫，strlen, strcmp, strcat, strcpy, strtok
+#include <cstdlib> // 字串轉 int or float 函式庫，(atoi, atof, itoa)
 ```
 
 ## Basic C++ program
@@ -28,7 +30,7 @@ int main()
 
 ## Basic Data Type
 
-unsigned 表示為純正數類型
+- unsigned 表示為純正數類型
 
 | Category           | Type           | Bytes |
 | ------------------ | -------------- | ----- |
@@ -100,6 +102,121 @@ int main()
             cout << endl;
         }
     }
+}
+```
+
+### Arrays Parameter
+
+<a id="arraysparameter">123</a>
+
+- Array 作為 Function 參數傳遞宣告時，2維以上大小必須寫死。  
+
+- 1維可寫可不寫，就算寫了 compiler 也會忽視掉。
+
+```cpp
+#include <iostream>
+using namespace std;
+
+const int MAX_LEN_ROW = 3;
+const int MAX_LEN_COL = 3;
+
+// array 作為參數傳遞，的二個維度開始必須寫死(C++ 語法規則)
+void arrayToString(int array[][MAX_LEN_COL], int row, int col);
+
+int main()
+{
+    int array[MAX_LEN_ROW][MAX_LEN_COL] =
+        {{1, 2},
+         {5, 4},
+         {3, 7}};
+
+    arrayToString(array, MAX_LEN_ROW, MAX_LEN_COL);
+    /*
+    output:
+    [[1, 2, 0]
+    [5, 4, 0]
+    [3, 7, 0]]
+    */
+
+    return 0;
+}
+
+void arrayToString(int array[][MAX_LEN_COL], int row, int col)
+{
+    cout << "[";
+    for (int i = 0; i < row; i++)
+    {
+        cout << "[";
+        for (int j = 0; j < col; j++)
+        {
+            cout << array[i][j];
+            if (j != col - 1)
+            {
+                cout << ", ";
+            }
+        }
+        cout << "]";
+        if (i != row - 1)
+        {
+            cout << "\n";
+        }
+    }
+    cout << "]";
+}
+```
+
+### Dynamic Arrays
+
+1. 使用 **int *array  = new int [5];** 的方式動態宣告陣列。
+
+2. 使用動態宣告，<mark>不會在 function block 結束後自動釋放記憶體</mark>，需要手動加上 **delete [] array;** 來釋放記憶體 ("推薦"釋放結束後直接將指針指向空 **array = nullptr;**) 
+
+```cpp
+#include <iostream>
+using namespace std;
+
+void arrayToString(int *array, int len);
+
+int main()
+{
+    int len = 0;
+    cout << "Enter a number to initialization array length: ";
+    cin >> len;
+
+    // 1. 動態宣告 array
+    int *array = new int[len];
+
+    // 2. 需要自己手動初始化
+    for (int i = 0; i < len; i++)
+    {
+        array[i] = 0;
+    }
+    arrayToString(array, len);
+    cout << endl;
+
+    // 3. 使用結束要使用 delete 關鍵字釋放記憶體
+    delete[] array;
+    array = nullptr; // 指針直接加上 nullptr 以避免，之後誤用 reference 取值
+
+    // tip: sizeof 計算長度會錯誤，因為 array 是 8 bit 的指針記憶體大小，array[0] 則是 int 大小。
+    int size = sizeof(array) / sizeof(array[0]);
+    cout << "Array size is: " << size; // out put: 2
+
+    return 0;
+}
+
+void arrayToString(int *array, int len)
+{
+    cout << "[";
+    for (int i = 0; i < len; i++)
+    {
+        cout << array[i];
+        if (i != len - 1)
+        {
+            cout << ", ";
+        }
+    }
+    cout << "]";
 }
 ```
 
@@ -253,23 +370,25 @@ int circleArea(double radius, double pi)
 }
 ```
 
+### Arrays Parameter
 
+- 請參考 Aarrys > Arrays Parameter
 
 ## Pointers
 
 ### Base
 
-1. 變數取"址" : 使用 &variable 取出變數記憶體地址。
+1. 變數取"址" : 使用 **&variable** 取出變數記憶體地址。
 
-2. 指標取"值" : 使用 *pointer 取出指標指向記憶體地址的值。
+2. 指標取"值" : 使用 ***pointer** 取出指標指向記憶體地址的值。
 
 3. 宣告指標
    
-   1. 記憶體地址指標 <mark>int *pointer = &variable; </mark> 可存放變數記憶體地址。
+   1. 記憶體地址指標 **int *pointer = &variable;** 可存放變數記憶體地址。
    
-   2. 參照指標 <mark> int &referencePointer = variable; </mark>   可直接參照變數的值，直接操作原始值。
+   2. 參照指標 **int &referencePointer = variable;**  可直接參照變數的值，直接操作原始值。
    
-   3. 空指標 <mark> int *pointer = nullptr; </mark> 宣告指標目前未指向任何地址，若不小心 使用了 <mark> *pointer</mark> 取值，則會丟出 run time error 方便 debug。
+   3. 空指標 **int *pointer = nullptr;** 宣告指標目前未指向任何地址，若不小心 使用了 ***pointer** 取值，則會丟出 run time error 方便 debug。
 
 ```cpp
 #include <iostream>
@@ -299,8 +418,6 @@ int main()
 }
 ```
 
-
-
 ### Swap by reference
 
 ```cpp
@@ -329,8 +446,6 @@ void swap(int &num1, int &num2)
 }
 ```
 
-
-
 ### Swap by address
 
 ```cpp
@@ -345,7 +460,7 @@ int main()
     cout << "a: " << a << ", b: " << b << endl;
     // output: a: 2, b: 5
 
-    swap(a, b);
+    swap(&a, &b);
     cout << "a: " << a << ", b: " << b << endl;
     // output: a: 5, b: 2
     return 0;
@@ -356,5 +471,355 @@ void swap(int *num1, int *num2)
     int temp = *num1;
     *num1 = *num2;
     *num2 = temp;
+}
+```
+
+## Program Arguments
+
+```cpp
+#include <iostream>
+using namespace std;
+
+/**
+ * int argc: 參數數量
+ * char *argv[]: 參數字串
+ */
+int main(int argc, char *argv[])
+{
+    for (int i = 0; i < argc; i++)
+    {
+        cout << "argument " << i + 1 << " : " << argv[i] << endl;
+    }
+    /*
+    Input:
+        {path/Program.exe} hello, world!
+    
+    Output:
+        argument 1 : C:\Users\ChiaMing\Desktop\CppCode\Basic\ProgramArguments\ProgramArguments.exe
+        argument 2 : hello
+        argument 3 : world!
+    */
+    return 0;
+}
+```
+
+
+
+## cstring Library (字串處裡庫)
+
+### 字串長度
+
+- **size_t strlen(const char *str);**
+
+```cpp
+#include <iostream>
+#include <cstring>
+using namespace std;
+
+/**
+ * size_t strlen(const char *str);
+ * 字串長度 
+*/
+int main()
+{
+    char strValue[20] = "Hello, World!";
+    int strLen = strlen(strValue);
+    cout << "strLen: " << strLen << endl;
+    // strLen: 13
+
+    cout << "sizeof(strValue): " << sizeof(strValue) << endl;
+    // sizeof(strValue): 20
+
+    return 0;
+}
+```
+
+### 字串中查找字元
+
+- **char *strchr(const char *str, int character);**
+
+```cpp
+#include <iostream>
+#include <cstring>
+using namespace std;
+
+/**
+ * char *strchr(const char *str, int character);
+ * 檢查字串中使否存在字元
+ *
+ * char *str: 被檢查的字串
+ * int character: 要尋找的字元
+ *
+ * return char*:  字元所在的指標位置 or 若無則回傳 nullptr
+ */
+int main()
+{
+    char str[100] = "this is book";
+    char *p = strchr(str, 'i');
+
+    // 由於 cout 被 overloading 改寫，導致會連續印出整個字串
+    cout << "p: " << p << endl;   // p: is is book
+    cout << "*p: " << *p << endl; // *p: is is book
+
+    // index
+    cout << "(p - str): " << (p - str) << endl; // (p - str): 2
+
+    // 未找到則回傳 nullptr
+    char *p2 = strchr(str, 'A');
+    cout << "(p2 == nullptr): " << (p2 == nullptr) << endl; // (p2 == nullptr): 1
+
+    return 0;
+}
+```
+
+### 字串中查找子字串
+
+- **char *strstr(const char *str1, const char *str2);**
+
+```cpp
+#include <iostream>
+#include <cstring>
+using namespace std;
+
+/**
+ * char *strstr(const char *str1, const char *str2);
+ * 在字串中尋找子字串
+ *
+ * const char *str1: 要查找的目標字串
+ * const char *str2: 要查找的目標子字串
+ *
+ * return char *: 回傳找到的子字串記憶體位置起始點，若無找到則回傳 nullptr
+ */
+int main()
+{
+    char str1[100] = "this is a book";
+    char *p = strstr(str1, "is");
+
+    // 由於 cout 被 overloading 改寫，導致會連續印出整個字串
+    cout << "p: " << p << endl;   // p: is is book
+    cout << "*p: " << *p << endl; // *p: i
+
+    // index
+    cout << "(p - str): " << (p - str1) << endl; // (p - str): 2
+
+    // 未找到則回傳 nullptr
+    char *p2 = strstr(str1, "ABC");
+    cout << "(p2 == nullptr): " << (p2 == nullptr) << endl; // (p2 == nullptr): 1
+
+    return 0;
+}
+
+
+```
+
+
+
+### 字串比較
+
+- **int strcmp(const char *str1, const char *str2);**
+
+- **int strncmp(const char *str1, const char *str2, unsigned int num);**
+
+```cpp
+#include <iostream>
+#include <cstring>
+using namespace std;
+
+/**
+ * int strcmp(const char *str1, const char *str2);
+ * int strncmp(const char *str1, const char *str2, unsigned int num);
+ * 字串比較，根具 ASCII 碼比較字串大小
+ *
+ * const char *str1: 第一個被比較的字串
+ * const char *str2: 第二個被比較的字串
+ * unsigned int num: 指定比較的字符個數
+ *
+ * return int: 若相等回傳 0 ; 若 str1 > str2 回傳 "正數" ; 若 str1 < str2 回傳 "負數"
+ */
+int main()
+{
+    char str1[10] = "them";
+    char str2[10] = "they";
+
+    int cmp1 = strcmp(str1, str2);
+    cout << "cmp1: " << cmp1 << endl;
+    // cmp1: -1
+
+    int cmp2 = strcmp(str2, str1);
+    cout << "cmp2: " << cmp2 << endl;
+    // cmp2: 1
+
+    int cmp3 = strncmp(str1, str2, 3);
+    cout << "cmp3: " << cmp3 << endl;
+    // cmp3: 0
+
+    return 0;
+}
+```
+
+
+
+### 字串複製
+
+- **char *strcpy(char *dest, const char *source);** // 複製後<mark>"會"</mark>在最後加上 '\0'
+
+- **char *strncpy(char *dest, const char *source, size_t count);** // 如果<mark>指定要複製的字串長度，小於要被複製的目標字串，複製後則"不會"</mark>在最後加上 '\0'
+
+```cpp
+#include <iostream>
+#include <cstring>
+using namespace std;
+
+/**
+ * char *strcpy(char *dest, const char *source);
+ * char *strncpy(char *dest, const char *source, size_t count);
+ * 字串複製
+ * 注意: 
+ *      strcpy() 會連同 '\0' 一起複製
+ *      strncpy() 不會連同 '\0' 一起複製
+ *
+ * char *dest: 複製後的字串要存放的位址
+ * char *source: 要被複製的目標字串
+ * size_t count: 只定要複製的字串長度
+ *
+ * return char*: 會傳複製後的字串記憶體位置
+ */
+int main()
+{
+    char strSource[30] = "Hello, world!";
+
+    char cpy1[30];
+    char *cpyStr1 = strcpy(cpy1, strSource);
+    cout << "cpyStr1: " << cpyStr1 << endl;
+    // cpyStr1: Hello, world!
+
+    char cpy2[30];
+    char *cpyStr2 = strcpy(cpy2, strSource + 7);
+    cout << "cpyStr2: " << cpyStr2 << endl;
+    // cpyStr2: world!
+
+    char *cpyStr3 = strncpy(cpy2, strSource, 5);
+    cout << "cpyStr3: " << cpyStr3 << endl;
+    // cpyStr3: Hello!
+
+
+    return 0;
+}
+```
+
+
+
+### 字串拼接
+
+- **char *strcat(char *dest, const char *source);**
+
+- **char *strncat(char *dest, const char *source, size_t count);**
+
+```cpp
+#include <iostream>
+#include <cstring>
+using namespace std;
+
+/**
+ * char *strcat(char *dest, const char *source);
+ * char *strncat(char *dest, const char *source, size_t count);
+ * 字串拼接，從 dest 字串第一個 '\0' 開始拼接
+ *
+ * char *dest: 主字串
+ * char *source: 要拼接在主字串後的字串
+ * size_t count: 指定要拼接的字串長度
+ *
+ * return char*: 主字串記憶體位置
+ */
+int main()
+{
+    char strDest[20] = "Hello";
+    char *strCat1 = strcat(strDest, ", World!");
+    cout << "strCat1: " << strCat1 << endl;
+    // strCat1: Hello, World!
+
+    char *strCat2 = strncat(strDest, "ABCDEFG", 3);
+    cout << "strCat2: " << strCat2 << endl;
+    // strCat2: Hello, World!ABC
+
+    // 確保指標不會溢位
+    char *strCat3 = strncat(strDest, "abcdefghijklmnopqrstuvwxyz", sizeof(strDest) - strlen(strDest) - 1);
+    cout << "strCat3: " << strCat3 << endl;
+    // strCat3: Hello, World!ABCabc
+    
+    return 0;
+}
+```
+
+
+
+## cstdlib Library (字串與數字轉譯庫)
+
+### 字串轉文字
+
+- **int atoi(const char *str);**
+
+- **double atof(const char *str);**
+
+```cpp
+#include <iostream>
+#include <cstdlib>
+using namespace std;
+
+/**
+ * int atoi(const char *str);
+ * 字串轉 int
+ *
+ * double atof(const char *str);
+ * 字串轉 double
+ */
+int main()
+{
+    char intStr[10] = "-123";
+    int intValue = atoi(intStr);
+    cout << "intValue * 2: " << intValue * 2 << endl;
+    // intValue * 2: -246
+
+    char floatStr[10] = "3.14";
+    double floatValue = atof(floatStr);
+    cout << "floatValue / 2: " << floatValue / 2 << endl;
+    // floatValue / 2: 1.57
+
+    return 0;
+}
+```
+
+### 數字轉字串
+
+- **char *itoa(int value, char *str, int base);**
+
+```cpp
+#include <iostream>
+#include <cstdlib>
+using namespace std;
+
+/**
+ * char *itoa(int value, char *str, int base);
+ * 數字轉字串
+ *
+ * int value: 要轉為字串的數字
+ * char *str: 轉換後的字串要存放的位置
+ * int base: 要轉換成多少進制
+ *
+ * return char*: 字串的記憶體位置
+ */
+int main()
+{
+    char str[50];
+    int num = 15;
+    char *numStrOf10 = itoa(num, str, 10);
+    cout << "numStrOf10: " << numStrOf10 << endl;
+    // numStrOf10: 15
+
+    char *numStrOf2 = itoa(num, str, 2);
+    cout << "numStrOf2: " << numStrOf2 << endl;
+    // numStrOf2: 1111
+
+    return 0;
 }
 ```

@@ -9,7 +9,7 @@ int main()
     cout << "a: " << a << ", b: " << b << endl;
     // output: a: 2, b: 5
 
-    swap(a, b);
+    swap(&a, &b);
     cout << "a: " << a << ", b: " << b << endl;
     // output: a: 5, b: 2
     return 0;
