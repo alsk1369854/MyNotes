@@ -13,6 +13,7 @@
 #include <iomanip> // 設定打印精度 setprecision()
 #include <cstring> // 字串處理函式庫，strlen, strcmp, strcat, strcpy, strtok
 #include <cstdlib> // 字串轉 int or float 函式庫，(atoi, atof, itoa)
+#include <ctime> // 時間計時
 ```
 
 ## Basic C++ program
@@ -107,8 +108,6 @@ int main()
 
 ### Arrays Parameter
 
-<a id="arraysparameter">123</a>
-
 - Array 作為 Function 參數傳遞宣告時，2維以上大小必須寫死。  
 
 - 1維可寫可不寫，就算寫了 compiler 也會忽視掉。
@@ -167,7 +166,7 @@ void arrayToString(int array[][MAX_LEN_COL], int row, int col)
 
 ### Dynamic Arrays
 
-1. 使用 **int *array  = new int [5];** 的方式動態宣告陣列。
+1. 使用 int *array  = new int [5]; 的方式動態宣告陣列。
 
 2. 使用動態宣告，<mark>不會在 function block 結束後自動釋放記憶體</mark>，需要手動加上 **delete [] array;** 來釋放記憶體 ("推薦"釋放結束後直接將指針指向空 **array = nullptr;**) 
 
@@ -378,17 +377,17 @@ int circleArea(double radius, double pi)
 
 ### Base
 
-1. 變數取"址" : 使用 **&variable** 取出變數記憶體地址。
+1. 變數取"址" : 使用 &variable 取出變數記憶體地址。
 
-2. 指標取"值" : 使用 ***pointer** 取出指標指向記憶體地址的值。
+2. 指標取"值" : 使用 *pointer 取出指標指向記憶體地址的值。
 
 3. 宣告指標
    
-   1. 記憶體地址指標 **int *pointer = &variable;** 可存放變數記憶體地址。
+   1. 記憶體地址指標 int *pointer = &variable; 可存放變數記憶體地址。
    
-   2. 參照指標 **int &referencePointer = variable;**  可直接參照變數的值，直接操作原始值。
+   2. 參照指標 int &referencePointer = variable; 可直接參照變數的值，直接操作原始值。
    
-   3. 空指標 **int *pointer = nullptr;** 宣告指標目前未指向任何地址，若不小心 使用了 ***pointer** 取值，則會丟出 run time error 方便 debug。
+   3. 空指標 int *pointer = nullptr; 宣告指標目前未指向任何地址，若不小心 使用了 *pointer 取值，則會丟出 run time error 方便 debug。
 
 ```cpp
 #include <iostream>
@@ -493,7 +492,7 @@ int main(int argc, char *argv[])
     /*
     Input:
         {path/Program.exe} hello, world!
-    
+
     Output:
         argument 1 : C:\Users\ChiaMing\Desktop\CppCode\Basic\ProgramArguments\ProgramArguments.exe
         argument 2 : hello
@@ -505,11 +504,234 @@ int main(int argc, char *argv[])
 
 
 
+## Self-defined data type
+
+### struct (Constructor)
+
+```cpp
+#include <iostream>
+#include <cmath>
+#include <cstring>
+using namespace std;
+
+struct Vector
+{
+    int x;
+    int y;
+    double length()
+    {
+        return sqrt(x * x + y * y);
+    };
+    char *toString(char *str);
+};
+
+int main()
+{
+    Vector vector = {5, 3};
+    cout << "vector.x: " << vector.x << endl;
+    // vector.x: 5
+
+    cout << "vector.y: " << vector.y << endl;
+    // vector.y: 3
+
+    cout << "vector.length(): " << vector.length() << endl;
+    // vector.len(): 5.83095
+
+    char vectorString[1000];
+    vector.toString(vectorString);
+    cout << vectorString;
+    // Vector: {x: 5, y: 3}
+
+    return 0;
+}
+
+char *Vector::toString(char *str)
+{
+
+    strcpy(str, "Vector: {");
+
+    char strX[50];
+    itoa(x, strX, 10);
+    strcat(str, "x: ");
+    strcat(str, strX);
+    strcat(str, ", ");
+
+    char strY[50];
+    itoa(y, strY, 10);
+    strcat(str, "y: ");
+    strcat(str, strY);
+
+    strcat(str, "}\n");
+
+    return str;
+}
+```
+
+### typedef (Type definition)
+
+```cpp
+#include <iostream>
+using namespace std;
+
+typedef long int number;
+
+int main()
+{
+    number num = 5;
+    cout << "num: " << num << endl;
+    // num: 5
+
+    return 0;
+}
+```
+
+### union
+
+### enum
+
+
+
+## Sort String
+
+### Sort name with pointer
+
+- 使用指針，交換地址指向
+
+```cpp
+#include <iostream>
+#include <cstring>
+using namespace std;
+
+const int NAME_LIST_LEN = 5;
+const int NAME_LEN = 10;
+
+void strSwap(char *&str1, char *&str2);
+// void strSwap2(char *str1, char *str2);
+
+int main()
+{
+    char nameList[NAME_LIST_LEN][NAME_LEN] = {
+        {"Ming"},
+        {"Han"},
+        {"Mark"},
+        {"JJ"},
+        {"SNinjo"}};
+
+    char *nameListPtr[5] = {
+        nameList[0],
+        nameList[1],
+        nameList[2],
+        nameList[3],
+        nameList[4]};
+
+    for (int i = 0; i < NAME_LIST_LEN; i++)
+    {
+        for (int j = 0; j < NAME_LIST_LEN - i - 1; j++)
+        {
+            if (strcmp(nameListPtr[j], nameListPtr[j + 1]) > 0)
+            {
+                strSwap(nameListPtr[j], nameListPtr[j + 1]);
+                // strSwap2(nameListPtr[j], nameListPtr[j + 1]);
+            }
+        }
+    }
+
+    for (int i = 0; i < NAME_LIST_LEN; i++)
+    {
+        cout << i << " : " << nameListPtr[i] << endl;
+    }
+    /*
+        0 : Han
+        1 : JJ
+        2 : Mark
+        3 : Ming
+        4 : SNinjo
+    */
+
+    return 0;
+}
+
+void strSwap(char *&str1, char *&str2)
+{
+    char *temp = str1;
+    str1 = str2;
+    str2 = temp;
+}
+
+// void strSwap2(char *str1, char *str2)
+// {
+//     char temp[NAME_LEN];
+//     strcpy(temp, str1);
+//     strcpy(str1, str2);
+//     strcpy(str2, temp);
+// }
+```
+
+### Sort name with string copy
+
+- 使用字串複製，實現字串排序
+
+```cpp
+#include <iostream>
+#include <cstring>
+using namespace std;
+
+const int NAME_LIST_LEN = 5;
+const int NAME_LEN = 10;
+
+void strSwap(char *str1, char *str2);
+
+int main()
+{
+    char nameList[NAME_LIST_LEN][NAME_LEN] = {
+        {"Ming"},
+        {"Han"},
+        {"Mark"},
+        {"JJ"},
+        {"SNinjo"}};
+
+    for (int i = 0; i < NAME_LIST_LEN; i++)
+    {
+        for (int j = 0; j < NAME_LIST_LEN - i - 1; j++)
+        {
+            if (strcmp(nameList[j], nameList[j + 1]) > 0)
+            {
+                strSwap(nameList[j], nameList[j + 1]);
+            }
+        }
+    }
+
+    for (int i = 0; i < NAME_LIST_LEN; i++)
+    {
+        cout << i <<  " : " << nameList[i] << endl;
+    }
+    /*
+        0 : Han
+        1 : JJ
+        2 : Mark
+        3 : Ming
+        4 : SNinjo
+    */
+
+    return 0;
+}
+
+void strSwap(char *str1, char *str2)
+{
+    char temp[NAME_LEN];
+    strcpy(temp, str1);
+    strcpy(str1, str2);
+    strcpy(str2, temp);
+}
+```
+
+
+
 ## cstring Library (字串處裡庫)
 
 ### 字串長度
 
-- **size_t strlen(const char *str);**
+- size_t strlen(const char *str);
 
 ```cpp
 #include <iostream>
@@ -536,7 +758,7 @@ int main()
 
 ### 字串中查找字元
 
-- **char *strchr(const char *str, int character);**
+- char *strchr(const char *str, int character);
 
 ```cpp
 #include <iostream>
@@ -574,7 +796,7 @@ int main()
 
 ### 字串中查找子字串
 
-- **char *strstr(const char *str1, const char *str2);**
+- char *strstr(const char *str1, const char *str2);
 
 ```cpp
 #include <iostream>
@@ -608,17 +830,13 @@ int main()
 
     return 0;
 }
-
-
 ```
-
-
 
 ### 字串比較
 
-- **int strcmp(const char *str1, const char *str2);**
+- int strcmp(const char *str1, const char *str2);
 
-- **int strncmp(const char *str1, const char *str2, unsigned int num);**
+- int strncmp(const char *str1, const char *str2, unsigned int num);
 
 ```cpp
 #include <iostream>
@@ -657,13 +875,11 @@ int main()
 }
 ```
 
-
-
 ### 字串複製
 
-- **char *strcpy(char *dest, const char *source);** // 複製後<mark>"會"</mark>在最後加上 '\0'
+- char *strcpy(char *dest, const char *source); // 複製後<mark>"會"</mark>在最後加上 '\0'
 
-- **char *strncpy(char *dest, const char *source, size_t count);** // 如果<mark>指定要複製的字串長度，小於要被複製的目標字串，複製後則"不會"</mark>在最後加上 '\0'
+- char *strncpy(char *dest, const char *source, size_t count); // 如果<mark>指定要複製的字串長度，小於要被複製的目標字串，複製後則"不會"</mark>在最後加上 '\0'
 
 ```cpp
 #include <iostream>
@@ -707,13 +923,11 @@ int main()
 }
 ```
 
-
-
 ### 字串拼接
 
-- **char *strcat(char *dest, const char *source);**
+- char *strcat(char *dest, const char *source);
 
-- **char *strncat(char *dest, const char *source, size_t count);**
+- char *strncat(char *dest, const char *source, size_t count);
 
 ```cpp
 #include <iostream>
@@ -746,7 +960,69 @@ int main()
     char *strCat3 = strncat(strDest, "abcdefghijklmnopqrstuvwxyz", sizeof(strDest) - strlen(strDest) - 1);
     cout << "strCat3: " << strCat3 << endl;
     // strCat3: Hello, World!ABCabc
-    
+
+    return 0;
+}
+```
+
+
+
+### 字串分割
+
+- char *strtok(char *str, const char *delim);
+
+```cpp
+#include <iostream>
+#include <cstring>
+using namespace std;
+
+const int INPUT_STRING_LEN = 1000;
+const int WORD_LIST_LEN = 100;
+const int WORD_LEN = 50;
+
+
+/**
+ * char *strtok(char *str, const char *delim);
+ * 字串分割
+ * 在給定一個字串後，若要繼續分割，就給 str 參數傳入 nullptr 這將會返回，下一個分割字串的記憶體位置。
+ * 
+ * char *str: 要分割的字串
+ * const char *delim: 作為分割字符的字符集
+ * 
+ * return char*: 分割後的第一個字串記憶體地址
+*/
+int main()
+{
+    // www.chaiming.com/han\\JJ/mark.sninjo]
+    char inputString[INPUT_STRING_LEN];
+    cin >> inputString;
+    char delim[] = "./\\";
+
+    char wordList[WORD_LIST_LEN][WORD_LEN];
+
+    int wordCount = 0;
+    char *p = strtok(inputString, delim);
+    while (p != nullptr)
+    {
+        strcpy(wordList[wordCount], p);
+        wordCount++;
+        p = strtok(nullptr, delim);
+    }
+
+    for (int i = 0; i < wordCount; i++)
+    {
+        cout << i << " : " << wordList[i] << endl;
+    }
+    /*
+        0 : www
+        1 : chaiming
+        2 : com
+        3 : han
+        4 : JJ
+        5 : mark
+        6 : sninjo]
+    */
+
     return 0;
 }
 ```
@@ -757,9 +1033,9 @@ int main()
 
 ### 字串轉文字
 
-- **int atoi(const char *str);**
+- int atoi(const char *str);
 
-- **double atof(const char *str);**
+- double atof(const char *str);
 
 ```cpp
 #include <iostream>
@@ -789,9 +1065,9 @@ int main()
 }
 ```
 
-### 數字轉字串
+### 數字轉字串 (Integer)
 
-- **char *itoa(int value, char *str, int base);**
+- char *itoa(int value, char *str, int base);
 
 ```cpp
 #include <iostream>
@@ -823,3 +1099,37 @@ int main()
     return 0;
 }
 ```
+
+## ctime Library (時間計算)
+
+### 程式計時
+
+```cpp
+#include <iostream>
+#include <ctime>
+using namespace std;
+
+int main()
+{
+
+    clock_t startClock = clock();
+    for (int i = 0; i < 999999999; i++)
+    {
+        ;
+    }
+    clock_t finishClock = clock();
+    
+    cout << "startClock: " << startClock << endl;
+    cout << "finishClock: " << finishClock << endl;
+    cout << "Program running seconds: " << static_cast<double>(finishClock - startClock) / CLOCKS_PER_SEC << endl;
+    /*
+    startClock: 0
+    finishClock: 1430
+    Program running seconds: 1.43
+    */
+
+    return 0;
+}
+```
+
+ 
