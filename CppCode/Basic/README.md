@@ -473,6 +473,96 @@ void swap(int *num1, int *num2)
 }
 ```
 
+## Classes
+
+### Base : Constructor and Destructor
+
+```cpp
+#include <iostream>
+using namespace std;
+
+// 子物件
+class SubObject
+{
+public:
+    // 建構子
+    SubObject() { cout << "SubObject Constructor" << endl; };
+    // 解構子(在物件銷毀時自動調用)
+    ~SubObject() { cout << "~SubObject Destructor" << endl; };
+};
+
+// 主物件
+class MyVector
+{
+public:
+    // 建構子
+    MyVector();
+    MyVector(int len, int defaultValue = 0);
+    // 解構子(在物件銷毀時自動調用)
+    ~MyVector();
+    // 物件方法
+    void print();
+
+private:
+    // 物件屬性
+    int len;
+    int *vector;
+    SubObject subObject;
+};
+
+int main()
+{
+    // 創建 MyVector 物件
+    MyVector myVector(10, 5);
+    // 調用 MyVector 方法
+    myVector.print();
+    /*
+        SubObject Constructor
+        MyVector Constructor
+        Len: 10
+        [5, 5, 5, 5, 5, 5, 5, 5, 5, 5]
+        ~MyVector Destructor
+        ~SubObject Destructor
+    */
+    return 0;
+}
+
+MyVector::MyVector()
+{
+    cout << "MyVector Constructor" << endl;
+    len = 0;
+    vector = nullptr;
+}
+
+MyVector::MyVector(int len, int defaultValue)
+{
+    cout << "MyVector Constructor" << endl;
+    MyVector::len = len;
+    vector = new int[len];
+    for (int i = 0; i < len; i++)
+    {
+        vector[i] = defaultValue;
+    }
+}
+
+MyVector::~MyVector()
+{
+    cout << "~MyVector Destructor" << endl;
+    delete[] vector;
+}
+
+void MyVector::print()
+{
+    cout << "Len: " << len << endl;
+    cout << "[";
+    for (int i = 0; i < len - 1; i++)
+    {
+        cout << vector[i] << ", ";
+    }
+    cout << vector[len - 1] << "]" << endl;
+}
+```
+
 ## Program Arguments
 
 ```cpp
@@ -501,8 +591,6 @@ int main(int argc, char *argv[])
     return 0;
 }
 ```
-
-
 
 ## Self-defined data type
 
@@ -588,8 +676,6 @@ int main()
 ### union
 
 ### enum
-
-
 
 ## Sort String
 
@@ -725,7 +811,28 @@ void strSwap(char *str1, char *str2)
 }
 ```
 
+## Random Number
 
+```cpp
+#include <iostream>
+#include <ctime>
+#include <cstdlib>
+using namespace std;
+
+int main()
+{
+    // newR = (943285761 * oldR + 18763571) mod 32767
+    // 設定隨機亂數的參數為時間
+    srand(time(0));
+    for (int i = 0; i < 10; i++)
+    {
+        // 100 ~ 199 的隨機數
+        int randNumber = (rand() % 100) + 100;
+        cout << randNumber << endl;
+    }
+    return 0;
+}
+```
 
 ## cstring Library (字串處裡庫)
 
@@ -965,8 +1072,6 @@ int main()
 }
 ```
 
-
-
 ### 字串分割
 
 - char *strtok(char *str, const char *delim);
@@ -1026,8 +1131,6 @@ int main()
     return 0;
 }
 ```
-
-
 
 ## cstdlib Library (字串與數字轉譯庫)
 
@@ -1118,7 +1221,7 @@ int main()
         ;
     }
     clock_t finishClock = clock();
-    
+
     cout << "startClock: " << startClock << endl;
     cout << "finishClock: " << finishClock << endl;
     cout << "Program running seconds: " << static_cast<double>(finishClock - startClock) / CLOCKS_PER_SEC << endl;
@@ -1131,5 +1234,3 @@ int main()
     return 0;
 }
 ```
-
- 
