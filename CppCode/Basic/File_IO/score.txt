@@ -1,0 +1,3 @@
+ming 80
+han 90
+mark 70

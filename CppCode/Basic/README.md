@@ -11,9 +11,11 @@
 #include <climits> // 整數類型的極限大小 INT_MAX, INT_MIN ...
 #include <cmath> // 數學運算庫 sqrt(), abs() ...
 #include <iomanip> // 設定打印精度 setprecision()
+#include <string> // 字串處裡函式庫
 #include <cstring> // 字串處理函式庫，strlen, strcmp, strcat, strcpy, strtok
 #include <cstdlib> // 字串轉 int or float 函式庫，(atoi, atof, itoa)
 #include <ctime> // 時間計時
+
 ```
 
 ## Basic C++ program
@@ -216,6 +218,121 @@ void arrayToString(int *array, int len)
         }
     }
     cout << "]";
+}
+```
+
+## String
+
+### Base
+
+- 宣告: string myStr = "Hello";
+
+- 取 char: char myChar = myStr[0];
+
+- 讀取輸入字串:
+  
+  - 讀取一行: getline(cin, myStr);
+  
+  - 自訂義段行: getline(cim, myStr, '#');
+
+- 擷取字串: 
+  
+  - 指定地方開始擷取指定長度: string subStr1 = myStr.substr(0, 5);
+  
+  - 指定地方開始擷取至尾: string subStr1 = myStr.substr(0, 5);
+
+- 尋找文字: 
+  
+  - 尋找文字: size_t strIndex = myStr.find("Hello");
+  
+  - 落未找到文字則會回傳 size_t string::npos
+
+- 插入文字: string insertStr = myStr.insert(2, "ABC");
+
+- 替換文字: string replaceStr = myStr.replace(3, 2, "AB");
+
+- 刪除文字: string eraseStr = myStr.erase(2, 3);
+
+- string 轉 cstring: const char *cStr = myStr.c_str();
+
+- 字串轉數字:
+  
+  - int: int myInt = stoi(intStr);
+  
+  - float: float myFloat = stof(floatStr);
+  
+  - double: double myDouble = stod(doubleStr);
+
+- 數字轉字串:
+  
+  - string numStr = to_string(12345);
+
+```cpp
+#include <iostream>
+#include <string>
+using namespace std;
+
+int main()
+{
+
+    // 讀入一行文字
+    string myInputStr;
+    getline(cin, myInputStr); 
+    // getline(cin, myInputStr, '#'); // # 為自訂義段字符
+    cout << myInputStr << endl;
+
+    // 宣告 string 物件
+    string myStr = "Hello, World!";
+    cout << myStr << endl;
+    char myChar = myStr[0];
+    cout << myChar << endl; // H
+
+    // 擷取子字串
+    string subStr1 = myStr.substr(0, 5);
+    cout << subStr1 << endl; // Hello
+    string subStr2 = myStr.substr(7);
+    cout << subStr2 << endl; // World!
+
+    // 尋找文字，未找到則會回傳 npos
+    size_t strIndex = myStr.find("lo");
+    if (strIndex != string::npos)
+    {
+        cout << strIndex << endl; // 3
+    }
+
+    // 插入文字
+    string insertStr = myStr.insert(5, "ABC");
+    cout << insertStr << endl; // HelloABC, World!
+
+    // 替換文字
+    string replaceStr = myStr.replace(2, 3, "CBA");
+    cout << replaceStr << endl; // HeCBAABC, World!
+
+    // 刪除文字
+    string eraseStr = myStr.erase(2, 2);
+    cout << eraseStr << endl; // HeAABC, World!
+
+    // string to cstring
+    const char *cStr = myStr.c_str();
+    cout << cStr << endl; // HeAABC, World!
+
+    // 字串轉數字
+    string intStr = "123";
+    int myInt = stoi(intStr);
+    cout << myInt << endl; // 123
+    string floatStr = "3.14";
+    float myFloat = stof(floatStr);
+    cout << myFloat << endl; // 3.14
+    string doubleStr = "3.1415926";
+    double myDouble = stod(doubleStr);
+    cout << myDouble << endl; // 3.14159
+
+    // 數字轉字串
+    double myNum = 45678.123;
+    string numStr = to_string(myNum);
+    cout << numStr << endl; // 45678.123000
+
+    return 0;
 }
 ```
 
@@ -560,6 +677,461 @@ void MyVector::print()
         cout << vector[i] << ", ";
     }
     cout << vector[len - 1] << "]" << endl;
+}
+```
+
+### friend
+
+- 指定特定方法或物件，使其能夠訪問自己的私有參數與方法。
+
+```cpp
+class MyVector
+{
+private:
+    int n;
+    friend void test();
+    friend class Test;
+};
+
+class Test
+{
+public:
+    void test(MyVector v)
+    {
+        v.n = 200;
+        cout << v.n << endl;
+    }
+};
+
+void test()
+{
+    MyVector v;
+    cout << v.n << endl;
+}
+```
+
+### Static
+
+- 訪問 static 變數或方法，使用 className::{variableName|metherName()} 
+
+```cpp
+#include <iostream>
+using namespace std;
+
+
+class Rabbit
+{
+
+private:
+    static int count;
+
+public:
+    Rabbit() { Rabbit::count++; };
+    static int publicVariable;
+    static int getCount() { return Rabbit::count; };
+};
+// 初始化 Rabbit static variable
+int Rabbit::count = 0;
+int Rabbit::publicVariable = 0;
+
+int main()
+{
+
+    //call static mether
+    cout << Rabbit::getCount() << endl;
+    // 0
+
+    //class level variable
+    Rabbit r1, r2, r3;
+    cout << Rabbit::getCount() << endl;
+    // 3
+
+    // modify static variable
+    Rabbit::publicVariable = 100;
+    cout << Rabbit::publicVariable << endl;
+    // 100
+
+    return 0;
+}
+```
+
+### Object Pointer
+
+- 未用指針選告的 Object[] 都會預設調用了空參的 constructor 來建構 Object
+
+- 動態的建立多個 Object 並使用不同 constructor
+
+- Object 指針可使用 -> 來訪問物件參數
+  
+  - (*ptrMyVector)->value
+  
+  - this->value
+
+```cpp
+#include <iostream>
+using namespace std;
+
+class MyVector
+{
+public:
+    int len;
+    int *vector;
+    MyVector()
+    {
+        this->len = 0;
+        this->vector = nullptr;
+    };
+    MyVector(int len, int defaultValue = 0)
+    {
+        this->len = len;
+        this->vector = new int[len];
+        for (int i = 0; i < len; i++)
+        {
+            this->vector[i] = defaultValue;
+        }
+    }
+    ~MyVector()
+    {
+        delete[] this->vector;
+    }
+};
+
+int main()
+{
+    int len = 10;
+    MyVector *ptrMyVectorList[len];
+    for (int i = 0; i < len; i++)
+    {
+        ptrMyVectorList[i] = new MyVector(i + 1, i + 1);
+    }
+
+    for (int i = 0; i < len; i++)
+    {
+        MyVector *ptrMyVector = ptrMyVectorList[i];
+        for (int j = 0; j < ptrMyVector->len; j++)
+        {
+            cout << ptrMyVector->vector[j] << ", ";
+        }
+        cout << endl;
+    }
+
+    for (int i = 0; i < len; i++)
+    {
+        delete[] ptrMyVectorList[i];
+    }
+
+    return 0;
+}
+```
+
+### Object Copy
+
+- 若沒有改寫 Copy 方法，C++ 會給一個預設的 Copy 方法為"淺層拷貝"
+
+- 使用選告 MyVector(MyVector &myVector) 構造器來改寫 Copy 方法
+
+```cpp
+#include <iostream>
+using namespace std;
+
+/**
+ * Object 若沒有寫 Copy 方法的話，則會給一個預設的 Copy 方法，但是只作用於淺層 Copy
+ * 使用 MyVector(MyVector &myVector) 構造器改寫 Copy 方法
+ */
+
+class MyVector
+{
+public:
+    int len;
+    int *vector;
+    MyVector(int len, int defaultValue = 0)
+    {
+        cout << "MyVector Constructor" << endl;
+        this->len = len;
+        this->vector = new int[len];
+        for (int i = 0; i < len; i++)
+        {
+            this->vector[i] = defaultValue;
+        }
+    }
+    ~MyVector()
+    {
+        cout << "MyVector Destructor" << endl;
+        delete[] vector;
+    }
+    // 此為 MyVector Object 的 Copy constructor
+    MyVector(const MyVector &myVector)
+    {
+        cout << "MyVector Copy" << endl;
+        this->len = myVector.len;
+        this->vector = new int[this->len];
+        for (int i = 0; i < this->len; i++)
+        {
+            this->vector[i] = myVector.vector[i];
+        }
+    }
+    void print()
+    {
+        cout << "[";
+        for (int i = 0; i < this->len - 1; i++)
+        {
+            cout << this->vector[i] << ", ";
+        }
+        cout << "]\n";
+    }
+};
+
+void func(MyVector v1)
+{
+    v1.vector[0] = 6;
+    v1.print();
+}
+
+int main()
+{
+    MyVector myVector = MyVector(5, 0);
+    myVector.print();
+    myVector.vector[0] = 3;
+    func(myVector);
+    myVector.print();
+
+    return 0;
+}
+```
+
+### Constant
+
+- 選告物件: const MyVector myVector = MyVector();
+  
+  - 被宣告為 const 的物件，值能夠調用自己的 const 方法
+
+- 物件屬性: const int len;
+  
+  - const 附值必須在建構子方法名後使用 :len(len) 的方式附值
+
+- 物件方法: void myMethod() const { .... }
+
+```cpp
+#include <iostream>
+using namespace std;
+
+class MyVector
+{
+public:
+    const int len;
+    double *vector;
+    // 使用 :len() 來給 const 參數初始值
+    MyVector() : len(0), vector(nullptr){};
+    MyVector(int len, double defaultValue) : len(len)
+    {
+        this->vector = new double[len];
+        for (int i = 0; i < len; i++)
+        {
+            this->vector[i] = defaultValue;
+        }
+    };
+    ~MyVector() { delete[] vector; };
+    // 選告 const 方法， const 物件只能夠調用 const 方法
+    void print() const
+    {
+        cout << "[";
+        for (int i = 0; i < this->len; i++)
+        {
+            cout << this->vector[i] << ", ";
+        }
+        cout << "]" << endl;
+    };
+    void test(){};
+};
+
+int main()
+{
+    // const 物件只能夠調用物件的 const 方法
+    const MyVector myVector = MyVector(2, 0.0);
+    myVector.print();
+    // myVector.test(); // const 物件，不可調用非 const 方法
+    return 0;
+}
+```
+
+### Assignments
+
+- 透過宣告 operator 方法來實現 assignments 功能
+  
+  - 改寫 operator=() 方法來使 myVector2 = myVector1 為深度拷貝
+  
+  - 實作 operator==() 方法來實現兩個物件的比較
+
+```cpp
+#include <iostream>
+using namespace std;
+
+class MyVector
+{
+public:
+    int len;
+    int *vector;
+    MyVector(int len)
+    {
+        this->len = len;
+        this->vector = new int[len];
+        for (int i = 0; i < len; i++)
+        {
+            this->vector[i] = 0;
+        }
+    };
+    MyVector &operator=(const MyVector &v)
+    {
+        cout << "call operator=" << endl;
+        if (this != &v)
+        {
+            this->len = v.len;
+            delete[] this->vector;
+            this->vector = new int[v.len];
+            for (int i = 0; i < v.len; i++)
+            {
+                this->vector[i] = v.vector[i];
+            }
+        }
+        return *this;
+    };
+    bool operator==(const MyVector &v)
+    {
+        cout << "call isEqual" << endl;
+        bool isEqual = true;
+        if (this->len != v.len)
+        {
+            isEqual = false;
+        }
+        if (isEqual)
+        {
+            for (int i = 0; i < this->len; i++)
+            {
+                if (this->vector[i] != v.vector[i])
+                {
+                    isEqual = false;
+                    break;
+                }
+            }
+        }
+        return isEqual;
+    }
+    void print() const
+    {
+        cout << "len: " << this->len << ", ";
+        cout << "vector: [";
+        for (int i = 0; i < this->len - 1; i++)
+        {
+            cout << this->vector[i] << ", ";
+        }
+        cout << this->vector[this->len - 1] << "]" << endl;
+    }
+};
+
+int main()
+{
+    MyVector myVector1 = MyVector(10);
+    MyVector myVector2 = MyVector(2);
+
+    myVector1.print(); // len: 10, vector: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+
+    cout << (myVector1 == myVector2) << endl; // call isEqual
+    // 0
+
+    myVector2 = myVector1; // call operator=
+
+    cout << (myVector1 == myVector2) << endl; // call isEqual
+    // 1
+
+    myVector2.len = 5;
+    myVector2.vector[0] = 5;
+
+    myVector1.print(); // len: 10, vector: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+    myVector2.print(); // len: 5, vector: [5, 0, 0, 0, 0]
+    return 0;
+}
+```
+
+## File I/O
+
+### Write File
+
+- 開啟文件 ofstream myFile = ofstream("temp.txt", ios::out);
+  
+  - ios:out 從頭開始寫，刪除全部舊資料，寫入新資料
+  
+  - ios::app 從尾開始寫，不能更改原存在資料
+  
+  - ios::ats 從尾開始寫，能更改原存在資料
+
+- 執行寫入 myFile << "Wirte Text" << endl; 
+
+- 關閉寫入流: myFile.close();
+
+```cpp
+#include <iostream>
+#include <fstream>
+#include <cstdlib>
+using namespace std;
+
+int main(){
+    /*
+    Write file options
+    ios::out (default) The window starts at location(); remove existing data.
+    ios::app The window starts at the end; never modify existing data.
+    ios::ate The window starts at the end; can modify existing data.
+    */
+    ofstream myFile = ofstream("Basic/File_IO/temp.txt", ios::out);
+    cout << static_cast<bool>(myFile) << endl;
+    if(!myFile){
+        exit(1);
+    }
+    myFile << "Hello, world" << endl;
+    myFile << "Pi: " << 3.14 << endl;
+    myFile.close();
+    return 0;
+}
+```
+
+## File Read
+
+- 開啟文件 ifstream myFile = ifstream("score.txt");
+
+- 執行讀取 myFile >> name >> score;
+
+- 關閉讀取流: myFile.close();
+
+```cpp
+#include <iostream>
+#include <fstream>
+#include <cstdlib>
+using namespace std;
+
+int main()
+{
+    ifstream myFile = ifstream("Basic/File_IO/score.txt");
+    if (myFile)
+    {
+        string name = "";
+        int score = 0;
+        int totalScore = 0;
+        int count = 0;
+        while (myFile >> name >> score)
+        {
+            cout << name << " : " <<score << endl;
+            totalScore += score;
+            count++;
+        }
+        cout << "Average score: " << static_cast<double>(totalScore) / count << endl;
+    }
+    else
+    {
+        cout << "File not exist !!" << endl;
+        exit(1);
+    }
+    myFile.close();
+
+    return 0;
 }
 ```
 
@@ -986,7 +1558,7 @@ int main()
 
 - char *strcpy(char *dest, const char *source); // 複製後<mark>"會"</mark>在最後加上 '\0'
 
-- char *strncpy(char *dest, const char *source, size_t count); // 如果<mark>指定要複製的字串長度，小於要被複製的目標字串，複製後則"不會"</mark>在最後加上 '\0'
+- char *strncpy(char *dest, const char *source, size_t count); // 如果<mark>指定要複製的字串長度，小於要被複製的目標字串，複製後則"不會"</mark>在最後加上 '\0'********
 
 ```cpp
 #include <iostream>
