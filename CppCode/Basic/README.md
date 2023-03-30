@@ -8,14 +8,15 @@
 
 ```cpp
 #include <iostream> // I/O函式庫
-#include <climits> // 整數類型的極限大小 INT_MAX, INT_MIN ...
 #include <cmath> // 數學運算庫 sqrt(), abs() ...
-#include <iomanip> // 設定打印精度 setprecision()
 #include <string> // 字串處裡函式庫
+#include <vector> // 陣列函式庫
+#include <stdexcept> // 另外處裡函式庫
+#include <climits> // 整數類型的極限大小 INT_MAX, INT_MIN ...
+#include <iomanip> // 設定打印精度 setprecision()
 #include <cstring> // 字串處理函式庫，strlen, strcmp, strcat, strcpy, strtok
 #include <cstdlib> // 字串轉 int or float 函式庫，(atoi, atof, itoa)
 #include <ctime> // 時間計時
-
 ```
 
 ## Basic C++ program
@@ -218,6 +219,87 @@ void arrayToString(int *array, int len)
         }
     }
     cout << "]";
+}
+```
+
+### Vector library
+
+- 導入: #include<vector>
+
+- 選告: vector<int> intList;
+
+- 方法:
+  
+  - 長度\: intList.size();
+  
+  - 是否為空: intList.empty();
+  
+  - 取值: 
+    
+    1. intList[1];
+    
+    2. intList.at(1);
+  
+  - 第一個: intList.front();
+  
+  - 最後一個: intList.back();
+  
+  - 添加到最後: intList.push_back(1);
+  
+  - 吐出最後一個: intList.pop_back();
+  
+  - 插入: intList.insert(intList.begin() + 1, 8);
+  
+  - 刪除: intList.erase(intList.begin() + 2);
+  
+  - 兩個vector交換: intList.swap(tempVector);
+  
+  - 清空: intList.clear();
+
+```cpp
+#include <iostream>
+#include <vector>
+#include <string>
+using namespace std;
+
+class MyObject
+{
+public:
+    int v;
+    MyObject(int v) : v(v){};
+};
+
+int main()
+{
+    // 一般 vector
+    vector<int> intList;
+    intList.push_back(1);
+    intList.push_back(2);
+    intList.push_back(3);
+    for (int i = 0; i < intList.size(); i++)
+    {
+        cout << intList[i] << ", ";
+    }
+    cout << endl;
+
+    // Object vector
+    vector<MyObject *> myObjectList;
+    myObjectList.push_back(new MyObject(5));
+    myObjectList.push_back(new MyObject(4));
+    myObjectList.push_back(new MyObject(3));
+    for (int i = 0; i < myObjectList.size(); i++)
+    {
+        cout << myObjectList[i]->v << ", ";
+    }
+
+    // 釋放指針 vector 記憶體
+    while (myObjectList.size() > 0)
+    {
+        delete myObjectList.back();
+        myObjectList.pop_back();
+    }
+
+    return 0;
 }
 ```
 
@@ -1052,6 +1134,452 @@ int main()
 }
 ```
 
+## Inheritance And Polymorphism
+
+### inheritance 繼承
+
+- 使用 : public 繼承 super class
+
+- 在 sub class 的 constructor 中使用 : UperClassName() 調用 super class 的 constructor
+
+- 在 sub class 的 Copy constructor 中，需要手動去呼叫 super class 的 Copy Constructor
+
+```cpp
+#include <iostream>
+using namespace std;
+
+class Animal
+{
+protected:
+    string name;
+
+public:
+    Animal()
+    {
+        cout << "Animal no argument constructor" << endl;
+        this->name = "Animal";
+    };
+    Animal(string name)
+    {
+
+        cout << "Animal single argument constructor" << endl;
+        this->name = name;
+    };
+    Animal(const Animal &animal)
+    {
+        cout << "Animal Copy..." << endl;
+        this->name = animal.name;
+    }
+    ~Animal()
+    {
+        cout << "Animal destructor" << endl;
+    }
+    void sleep()
+    {
+        cout << name << " do sleep..." << endl;
+    };
+    void print() const
+    {
+        cout << "Animal: " << name << endl;
+    }
+};
+
+class Dog : public Animal
+{
+public:
+    Dog()
+    {
+        cout << "Dog no argument constructor" << endl;
+    };
+    Dog(string name) : Animal(name)
+    {
+        cout << "Dog single argument constructor" << endl;
+    };
+    Dog(const Dog &dog) : Animal(dog)
+    {
+        cout << "Dog Copy..." << endl;
+    };
+    ~Dog()
+    {
+        cout << "Dog destructor" << endl;
+    }
+    void run()
+    {
+        cout << name << " do run..." << endl;
+    }
+    void print() { Animal::print(); };
+    void print() const
+    {
+        cout << "Dog: ";
+        Animal::print();
+    };
+};
+
+void testFunc(Dog dog) {}
+
+int main()
+{
+    // Dog dog1 = Dog();
+    /*
+    Animal no argument constructor
+    Dog no argument constructor
+    Dog destructor
+    Animal destructor
+    */
+
+    // Dog dog2 = Dog("bemo");
+    /*
+    Animal single argument constructor
+    Dog single argument constructor
+    Dog destructor
+    Animal destructor
+    */
+
+    // Dog dog3 = Dog("marley");
+    // dog3.sleep();
+    // dog3.run();
+    /*
+    Animal single argument constructor
+    Dog single argument constructor
+    marley do sleep...
+    marley do run...
+    Dog destructor
+    Animal destructor
+    */
+
+    // Dog dog4 = Dog();
+    // testFunc(dog4);
+    /*
+    Animal no argument constructor
+    Dog no argument constructor
+    Animal Copy...
+    Dog Copy...
+    Dog destructor
+    Animal destructor
+    Dog destructor
+    Animal destructor
+    */
+
+
+    const Dog dog5 = Dog("dog5");
+    Dog dog6 = Dog("dog6");
+    dog5.print();
+    dog6.print();
+    /*
+    Animal single argument constructor
+    Dog single argument constructor
+    Animal single argument constructor
+    Dog single argument constructor
+    Dog: Animal: dog5
+    Animal: dog6
+    Dog destructor
+    Animal destructor
+    Dog destructor
+    Animal destructor
+    */
+
+
+    return 0;
+}
+```
+
+
+
+### polymorphism 多形
+
+- 父物件使用 virtual 關鍵字來修飾方法，在動態記憶體的作用下調用時，會優先調用子物件的 overwrite 過的方法
+
+- 使用父物件指針陣列來存放多個子物件。
+  
+  -  Parent *parentList[2];
+  
+  - parentList[0] = new Child(1, 2, 3);
+  
+  - parentList[1] = new Child(4, 5,
+
+```cpp
+#include <iostream>
+
+using namespace std;
+
+class Parent
+{
+protected:
+    int x;
+    int y;
+
+public:
+    Parent(int x, int y) : x(x), y(y){};
+    // virtual 方法會延遲處理，若有被繼承的子物件改寫此方法，則會優先使用子物件的方法。
+    virtual void print()
+    {
+        cout << "x:" << this->x << ", y:" << this->y;
+    }
+};
+
+class Child : public Parent
+{
+protected:
+    int z;
+
+public:
+    Child(int x, int y, int z) : Parent(x, y)
+    {
+        this->z = z;
+    };
+    void print()
+    {
+        Parent::print();
+        cout << ", z:" << this->z;
+    }
+};
+
+main()
+{
+
+    const int PARENT_LIST_LEN = 3;
+    // 使用物件指標來實現 Polymorphism
+    Parent *parentList[PARENT_LIST_LEN];
+    parentList[0] = new Child(1, 2, 3);
+    parentList[1] = new Child(4, 5, 6);
+    parentList[2] = new Child(7, 8, 9);
+
+    // 調用子物件所改寫的 print
+    for (int i = 0; i < PARENT_LIST_LEN; i++)
+    {
+        parentList[i]->print();
+        cout << endl;
+    }
+
+    // 釋放動態記憶體
+    for (int i = 0; i < PARENT_LIST_LEN; i++)
+    {
+        delete parentList[i];
+    }
+
+    return 0;
+}
+```
+
+
+
+### Generic 泛型
+
+- 在 class 上方宣告 template <typename T> 來使用泛型
+  
+  - 在 class 外實作方法實也需要加上 template 宣告
+
+- 在物件使用時才決定型態 Object<int>  object = Object(5); 
+
+```cpp
+#include <iostream>
+#include <string>
+using namespace std;
+
+template <typename T>
+class Parent
+{
+protected:
+    T x;
+    T y;
+
+public:
+    Parent(T x, T y) : x(x), y(y){};
+    virtual void print()
+    {
+        cout << "x:" << this->x;
+        cout << ", y:" << this->y;
+    };
+};
+
+template <typename T>
+class Child : public Parent<T>
+{
+protected:
+    T z;
+
+public:
+    Child(T x, T y, T z) : Parent<T>(x, y)
+    {
+        this->z = z;
+    };
+    void print();
+};
+
+int main()
+{
+
+    Child<double> doubleChild(0.5, 8, 64);
+    cout << "doubleChild: ";
+    doubleChild.print();
+    cout << endl;
+
+    Child<string> stringChild = Child<string>("A", "B", "C");
+    cout << "stringChild: ";
+    stringChild.print();
+
+    return 0;
+}
+
+template <typename T>
+void Child<T>::print()
+{
+    Parent<T>::print();
+    cout << ", z:" << this->z;
+}
+```
+
+
+
+## Exception
+
+### 繼承結構
+
+- exception
+  
+  - logic_error
+    
+    - domain_error
+    
+    - invalid_argument
+    
+    - length_error
+    
+    - out_of_range
+  
+  - runtime_error
+    
+    - range_error
+    
+    - overflow_error
+    
+    - underflow_error
+
+```cpp
+
+```
+
+
+
+## Header File
+
+- 當案結構
+  
+  - src
+    
+    - MyVector
+      
+      - MyVector.h
+      
+      - MyVector.cpp
+    
+    - Main.cpp
+
+- 在 .h  中定義方法
+  
+  - 加上 #pragma 宣告，讓編譯器知道他是需要被群組編譯的
+
+- 在 .cpp 中實現方法
+
+### Main.cpp
+
+```cpp
+#include <iostream>
+#include <string>
+#include "MyVector/MyVector.cpp"
+// #include "MyVector/MyVector.h" // using command line: g++ -o main.exe HeaderFile.cpp MyVector/MyVector.cpp
+using namespace std;
+
+int main()
+{
+    MyVector myVector = MyVector(5, 3);
+    cout << "length: " << myVector.length << endl;
+
+    cout << "myVector[]: " << myVector[0] << endl;
+
+    cout << "myVector.toString: " << myVector.toString() << endl;
+
+    return 0;
+}
+```
+
+### MyVector.h
+
+```cpp
+#pragma
+#include <string>
+using namespace std;
+
+class MyVector
+{
+public:
+    const int length;
+    double *vector;
+    MyVector();
+    MyVector(int length, double defaultValue = 0);
+    MyVector(const MyVector &myVector);
+    ~MyVector();
+    double &operator[](int index);
+    string toString();
+};
+```
+
+### MyVector.cpp
+
+```cpp
+#include "MyVector.h"
+#include <string>
+using namespace std;
+
+MyVector::MyVector() : length(0)
+{
+    this->vector = nullptr;
+};
+
+MyVector::MyVector(int length, double defaultValue) : length(length)
+{
+    this->vector = new double[length];
+    for (int i = 0; i < length; i++)
+    {
+        this->vector[i] = defaultValue;
+    }
+}
+
+MyVector::MyVector(const MyVector &myVector) : length(myVector.length)
+{
+    int len = myVector.length;
+    this->vector = new double[len];
+    for (int i = 0; i < len; i++)
+    {
+        this->vector[i] = myVector.vector[i];
+    }
+}
+
+MyVector::~MyVector()
+{
+    delete[] this->vector;
+}
+
+double &MyVector::operator[](int index)
+{
+    return this->vector[index];
+}
+
+string MyVector::toString()
+{
+    string str = "MyVector:{";
+    str += "length:" + to_string(this->length) + ", ";
+    str += "vector:[";
+    for (int i = 0; i < this->length - 1; i++)
+    {
+        str += to_string(this->vector[i]) + ", ";
+    }
+    str += to_string(this->vector[this->length - 1]) + "]";
+    str += "}";
+    return str;
+}
+```
+
 ## File I/O
 
 ### Write File
@@ -1093,13 +1621,21 @@ int main(){
 }
 ```
 
-## File Read
+### File Read
 
 - 開啟文件 ifstream myFile = ifstream("score.txt");
 
 - 執行讀取 myFile >> name >> score;
 
 - 關閉讀取流: myFile.close();
+
+- 檢查是否讀到了最尾 myFile.eof(); 讀到沒有資料了就會回傳 true
+
+- 一次讀取一行，使用 string library getLine()
+
+- 忽視讀寫頭指向的字元 myFile.ignore();
+
+#### Example 1:
 
 ```cpp
 #include <iostream>
@@ -1123,6 +1659,38 @@ int main()
             count++;
         }
         cout << "Average score: " << static_cast<double>(totalScore) / count << endl;
+    }
+    else
+    {
+        cout << "File not exist !!" << endl;
+        exit(1);
+    }
+    myFile.close();
+
+    return 0;
+}
+```
+
+#### Example 2:
+
+```cpp
+#include <iostream>
+#include <fstream>
+#include <cstdlib>
+#include <string>
+using namespace std;
+
+int main()
+{
+    ifstream myFile = ifstream("Basic/File_IO/score.txt");
+    if (myFile)
+    {
+        while (!myFile.eof())
+        {
+            string lineStr;
+            getline(myFile, lineStr);
+            cout << lineStr << endl;
+        }
     }
     else
     {
