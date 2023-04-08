@@ -1,0 +1,7 @@
+http://www.iot-ctr.com/ctr?dev_num=0&operate=on
+http://www.iot-ctr.com/ctr?dev_num=2&operate=on
+http://www.iot-ctr.com/ctr?dev_num=3&operate=on
+
+http://www.iot-ctr.com/ctr?dev_num=0&operate=off
+http://www.iot-ctr.com/ctr?dev_num=2&operate=off
+http://www.iot-ctr.com/ctr?dev_num=3&operate=off

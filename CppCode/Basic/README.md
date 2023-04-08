@@ -11,6 +11,11 @@
 #include <cmath> // 數學運算庫 sqrt(), abs() ...
 #include <string> // 字串處裡函式庫
 #include <vector> // 陣列函式庫
+#include <queue> // queue
+#include <stack> // stack
+#include <set> // set
+#include <map> // map
+#include <algorithm> // sort、find_if
 #include <stdexcept> // 另外處裡函式庫
 #include <climits> // 整數類型的極限大小 INT_MAX, INT_MIN ...
 #include <iomanip> // 設定打印精度 setprecision()
@@ -77,6 +82,276 @@ int main()
 
     cout << "Average grade: " << avgGrade << endl;
 
+    return 0;
+}
+```
+
+## 資料結構 (Data Structure)
+
+### Array List
+
+```cpp
+#include <iostream>
+#include <vector>
+using namespace std;
+
+int main()
+{
+    // create Array List
+    vector<int> arrayList = vector<int>();
+
+    // add values
+    for (int i = 0; i < 10; i++)
+    {
+        arrayList.push_back(i);
+    }
+
+    // print values
+    // 0, 1, 2, 3, 4, 5, 6, 7, 8, 9,
+    for (int i = 0; i < arrayList.size(); i++)
+    {
+        int &value = arrayList.at(i);
+        cout << value << ", ";
+    }
+
+    return 0;
+}
+```
+
+### Queue
+
+```cpp
+#include <iostream>
+#include <queue>
+using namespace std;
+
+int main()
+{
+    // create queue
+    queue<int> qu;
+
+    // add values
+    for (int i = 0; i < 10; i++)
+    {
+        qu.push(i);
+    }
+
+    // print values
+    // 0, 1, 2, 3, 4, 5, 6, 7, 8, 9,
+    while (!qu.empty())
+    {
+        int &value = qu.front(); // 讀最前項
+        cout << value << ", ";
+        qu.pop(); // 吐出最前項
+    }
+    cout << endl;
+    cout << "qu.size(): " << qu.size();
+
+    return 0;
+}
+```
+
+### Double Ended Queue
+
+```cpp
+#include <iostream>
+#include <deque>
+
+using namespace std;
+
+int main() {
+    deque<int> d = {1, 2, 3, 4};  // [1, 2, 3, 4]
+
+    d.push_back(5); // [1, 2, 3, 4, 5]
+    d.pop_front(); // [2, 3, 4, 5]
+    d.push_front(0); // [0, 2, 3, 4, 5]
+    d.pop_back(); // [0, 2, 3, 4]
+
+    // 印出 deque 內所有內容, c++11 才支援
+    // 0 2 3 4
+    for (int &i : d) {
+        cout << i << " ";
+    }
+    cout << "\n";
+
+    // 0 2 3
+    cout << d[0] << " " << d[1] << " " << d[2] << "\n";
+
+    return 0;
+}
+```
+
+### Stack
+
+```cpp
+#include <iostream>
+#include <stack>
+using namespace std;
+
+int main(){
+    // create stack
+    stack<int> myStack;
+
+    // push values to stack
+    for(int i=0; i<10; i++){
+        myStack.push(i);
+    }
+
+    // pop stack values
+    // 10, 8, 7, 6, 5, 4, 3, 2, 1, 0,
+    while(!myStack.empty()){
+        int &value = myStack.top();
+        cout << value << ", ";
+        myStack.pop();
+    }
+    return 0;
+}
+```
+
+### Set
+
+```cpp
+#include <iostream>
+#include <set>
+using namespace std;
+
+int main()
+{
+    // create set
+    set<int> mySet = {3, 1};
+
+    // add values to set
+    mySet.insert(2);
+    mySet.insert(5);
+    mySet.insert(4);
+    mySet.insert(5);
+    mySet.insert(4);
+
+    // delete value 2
+    mySet.erase(2);
+
+    // print set values
+    // 1 3 4 5
+    for (const int &s : mySet)
+    {
+        cout << s << " ";
+    }
+    cout << "\n";
+
+    return 0;
+}
+```
+
+### Unordered Set
+
+```cpp
+#include <iostream>
+#include <unordered_set>
+using namespace std;
+
+int main() {
+    // create unordered set
+    unordered_set<int> myUnorderedSet{2, 4, 6, 8};
+
+    // add value to unordered set
+    myUnorderedSet.insert(4);
+
+    // delete value 2 
+    myUnorderedSet.erase(2);
+
+    // print set values
+    // 8 6 4
+    for (const auto &s : myUnorderedSet) {
+        cout << s << " ";
+    }
+    cout << "\n";
+
+    return 0;
+}
+```
+
+### Map
+
+```cpp
+#include <iostream>
+#include <map>
+#include <string>
+using namespace std;
+
+int main()
+{
+    // creat map
+    map<string, int> myMap = {
+        {"one", 1}};
+
+    // add map key value
+    myMap["two"] = 2;
+    myMap["three"] = 3;
+
+    // get value by key
+    // myMap["three"]: 3
+    cout << "myMap[\"three\"]: " << myMap["three"] << endl;
+
+    // check key exists
+    // myMap.find("four"): 0
+    cout << "myMap.find(\"four\"): " << (myMap.find("four") != myMap.end()) << endl;
+
+    // foreach map
+    /*
+    key: one, value: 1
+    key: three, value: 3
+    key: two, value: 2
+    */
+    for (pair<string, int> entry : myMap)
+    {
+        cout << "key: " << entry.first << ", value: " << entry.second << endl;
+    }
+
+    // clear map
+    myMap.clear();
+    return 0;
+}
+```
+
+### Unordered Map
+
+```cpp
+#include <iostream>
+#include <unordered_map>
+#include <string>
+using namespace std;
+
+int main()
+{
+    // creat map
+    unordered_map<string, int> myMap = {
+        {"one", 1}};
+
+    // add map key value
+    myMap["two"] = 2;
+    myMap["three"] = 3;
+
+    // get value by key
+    // myMap["three"]: 3
+    cout << "myMap[\"three\"]: " << myMap["three"] << endl;
+
+    // check key exists
+    // myMap.find("four"): 0
+    cout << "myMap.find(\"four\"): " << (myMap.find("four") != myMap.end()) << endl;
+
+    // foreach map
+    /*
+    key: three, value: 3
+    key: two, value: 2
+    key: one, value: 1
+    */
+    for (auto [key, value] : myMap)
+    {
+        cout << "key: " << key << ", value: " << value << endl;
+    }
+
+    // clear map
+    myMap.clear();
     return 0;
 }
 ```
@@ -298,6 +573,98 @@ int main()
         delete myObjectList.back();
         myObjectList.pop_back();
     }
+
+    return 0;
+}
+```
+
+### Sort
+
+- `#include <algorithm>`
+
+- sort(iterator begin, iterator end, sort method);
+
+```cpp
+#include <iostream> 
+#include <algorithm>  // sort libaray
+#include <vector>
+
+using namespace std;
+
+bool myCompare(int a, int b)
+{
+    return a > b; // 降序排列
+}
+
+int main()
+{
+    int arr[] = {5, 4, 1, 7, 3, 8, 9, 10, 6, 2};
+    vector<int> v(arr, arr + 10);
+
+    // 升序 (default)
+    cout << "ascending order: ";
+    sort(v.begin(), v.begin() + 5);
+    for (int i : v)
+    {
+        cout << i << " ";
+    }
+    cout << endl;
+
+    // 降序
+    cout << "descending order:";
+    sort(v.begin(), v.end(), [](int x, int y)
+         { return x > y; });
+    for (int i : v)
+    {
+        cout << i << " ";
+    }
+    cout << endl;
+
+    return 0;
+}
+```
+
+### Find item
+
+- `#include <algorithm>`
+
+- find_if(iterator begin, iterator end, find method);
+
+```cpp
+#include <iostream> 
+#include <algorithm>  // sort libaray
+#include <vector>
+
+using namespace std;
+
+bool myCompare(int a, int b)
+{
+    return a > b; // 降序排列
+}
+
+int main()
+{
+    int arr[] = {5, 4, 1, 7, 3, 8, 9, 10, 6, 2};
+    vector<int> v(arr, arr + 10);
+
+    // 升序 (default)
+    cout << "ascending order: ";
+    sort(v.begin(), v.begin() + 5);
+    for (int i : v)
+    {
+        cout << i << " ";
+    }
+    cout << endl;
+
+    // 降序
+    cout << "descending order:";
+    sort(v.begin(), v.end(), [](int x, int y)
+         { return x > y; });
+    for (int i : v)
+    {
+        cout << i << " ";
+    }
+    cout << endl;
 
     return 0;
 }
@@ -1283,15 +1650,13 @@ int main()
 }
 ```
 
-
-
 ### polymorphism 多形
 
 - 父物件使用 virtual 關鍵字來修飾方法，在動態記憶體的作用下調用時，會優先調用子物件的 overwrite 過的方法
 
 - 使用父物件指針陣列來存放多個子物件。
   
-  -  Parent *parentList[2];
+  - Parent *parentList[2];
   
   - parentList[0] = new Child(1, 2, 3);
   
@@ -1361,8 +1726,6 @@ main()
 }
 ```
 
-
-
 ### Generic 泛型
 
 - 在 class 上方宣告 template <typename T> 來使用泛型
@@ -1429,11 +1792,11 @@ void Child<T>::print()
 }
 ```
 
-
-
 ## Exception
 
 ### 繼承結構
+
+- 導入 #incldue<stdexcept>包
 
 - exception
   
@@ -1456,10 +1819,306 @@ void Child<T>::print()
     - underflow_error
 
 ```cpp
+#include <iostream>
+#include <stdexcept>
+#include <string>
+using namespace std;
 
+// 自定義 exception
+class MyException : public logic_error
+{
+public:
+    MyException(const string &msg) : logic_error(msg.c_str()){};
+};
+
+void fun(int array[], int len) 
+{
+    int b;
+    cin >> b;
+    if (b < 0 || b >= len)
+    {
+        // 使用自定義 exception
+        // throw MyException("input index out of range.");
+
+        throw logic_error("input index out of range.");
+    }
+    cout << "index: " << b << ", data: " << array[b];
+}
+
+int main()
+{
+    int arrayLen = 5;
+    int array[arrayLen] = {1, 2, 3, 4, 5};
+
+    try
+    {
+        fun(array, arrayLen);
+    }
+    catch (logic_error e)
+    {
+        cout << "catch error here!!!" << endl;
+        // 錯誤訊息
+        cout << e.what();
+    }
+
+    return 0;
+}
 ```
 
+## C++ 11 新特性 (New feature)
 
+### 成員變數初始化 (Initialize member variables)
+
+- 直接在宣告成員變數時給予初始值
+
+```cpp
+#include <iostream>
+using namespace std;
+
+class MyObject
+{
+public:
+    int x = 1;
+    int y = 2;
+};
+
+int main()
+{
+    MyObject obj = MyObject();
+    cout << obj.x << endl;
+    return 0;
+}
+```
+
+### 枚舉類 (Enum class)
+
+- 使用 enum class 來宣告枚舉類
+
+```cpp
+#include <iostream>
+using namespace std;
+
+enum class MyEnum
+{
+    One,
+    Two,
+    Three
+};
+
+int main()
+{
+    MyEnum myEnum = MyEnum::Two;
+    return 0;
+}
+```
+
+### 自動斷型 (Auto inference)
+
+- 宣告 auto 類型讓編譯器自動做類型判斷
+
+```cpp
+#include <iostream>
+#include <vector>
+using namespace std;
+
+// 自動推斷返回值 (老版本寫法)
+// template <typename T, typename U>
+// auto add2(T x, U y) -> decltype(x + y)
+// {
+//     return x + y;
+// }
+
+// 自動推斷返回值
+template <typename T, typename U>
+auto add2(T x, U y)
+{
+    return x + y;
+}
+
+
+int main()
+{
+    vector<pair<int, int>> numberList = {{1, 2}, {3, 4}, {5, 6}};
+    /*
+    cbegin：返回指向容器中第一個元素的 const_iterator。
+    begin：返回指向序列中第一個元素的 iterator。
+    cend：返回一個指向容器中尾後元素的 const_iterator。
+    end：返回指向序列中尾後元素的 iterator。
+    */
+
+    // 原寫法
+    cout << "general: " << endl;
+    vector<pair<int, int>>::iterator it = numberList.begin();
+    for (; it != numberList.cend(); it++)
+    {
+        cout << it->first << ", " << it->second << endl;
+    }
+
+    // 使用 auto 自動推斷類型
+    cout << "auto inference: " << endl;
+    for (auto it = numberList.begin(); it != numberList.cend(); it++)
+    {
+        cout << it->first << ", " << it->second << endl;
+    }
+    cout << endl;
+
+    // 自動推斷返回值
+    cout << add2(1, 0.3) << endl;
+    cout << add2(1, 2) << endl;
+
+    return 0;
+}
+```
+
+### For迴圈 (For loops)
+
+```cpp
+#include <iostream>
+#include <vector>
+#include <map>
+using namespace std;
+
+int main()
+{
+    vector<int> nums = {1, 2, 3};
+    for (int num : nums)
+    {
+        cout << num << ", ";
+    }
+    cout << endl;
+
+    map<int, string> numMap = {{1, "one"}, {2, "two"}, {3, "three"}};
+    for (auto [key, value] : numMap)
+    {
+        cout << key << ":" << value << endl;
+    }
+
+    return 0;
+}
+```
+
+### 構造函數
+
+- 使用 constexpr 修飾詞來選告，將常量計算提前至編譯階段完成
+
+```cpp
+#include <iostream>
+using namespace std;
+
+/**
+ * 使用 constexpr 修飾詞，來將常量的計算值，提前至編譯階段計算，提升程式效率
+ * 
+*/
+constexpr int pow(int x, int y)
+{ // e.g. x^4 = 16
+    int result = 1;
+    while (y != 0)
+    {
+        result *= x;
+        y--;
+    }
+    return result;
+}
+
+int main()
+{
+    int numberList[pow(2, 4)] = {pow(2, 2)};
+    cout << sizeof(numberList) / sizeof(numberList[0]) << endl;
+    cout << numberList[0] << endl;
+
+    constexpr int x = 3 * 2 + 5;
+    cout << x << endl;
+    return 0;
+}
+```
+
+### Unique 指針 (unique_ptr)
+
+- 導入 #include <memory> 包
+
+- 使用 make_unique<>(); 來宣告動態記憶體指針
+  
+  - 在{}作用域範圍消失後，動態分配的記憶體會自動釋放掉
+
+```cpp
+#include <iostream>
+#include <memory>
+using namespace std;
+
+class MyObject
+{
+public:
+    int x = 0;
+    int y = 0;
+    MyObject();
+    MyObject(int x, int y) : x(x), y(y){};
+    void print()
+    {
+        cout << "x:" << x << ", y:" << y << endl;
+    }
+};
+
+int main()
+{
+    // 舊寫法，需要自己手動 delete 釋放記憶體空間
+    MyObject *obj1 = new MyObject(1, 2);
+    delete obj1;
+
+    // 使用 unique_ptr 在{} 結束後會自動的釋放動態記憶體空間
+    unique_ptr<MyObject> obj2 = make_unique<MyObject>(3, 4);
+    obj2->print();
+
+    // 使用 unique_ptr 宣告陣列需要手動初始化 
+    int numListLen = 5;
+    unique_ptr<int[]> numList = make_unique<int[]>(numListLen);
+    for (int i = 0; i < numListLen; i++)
+    {
+        numList[i] = 0;
+    }
+     for (int i = 0; i < numListLen; i++)
+    {
+        cout << numList[i] << ", ";
+    }
+    return 0;
+}
+```
+
+### Lambda 表達式
+
+- 簡化匿名韓式使用發法
+  
+  - `[](int x){return x};`
+
+```cpp
+#include <iostream>
+#include <algorithm>
+#include <vector>
+using namespace std;
+
+int main()
+{
+    vector<int> nums = {1, 2, 3, 4, 5};
+    vector<int> evenNums;
+
+    vector<int>::iterator evenNumIt = find_if(nums.begin(), nums.end(), [](int x)
+                                              { return x % 2 == 0; });
+
+    while (evenNumIt != nums.end())
+    {
+        evenNums.push_back(*evenNumIt);
+        evenNumIt = find_if(evenNumIt+1, nums.end(), [](int x)
+                            { return x % 2 == 0; });
+    }
+
+    for (int i : evenNums)
+    {
+        cout << i << ", ";
+    }
+    // 2, 4,
+
+    return 0;
+}
+```
 
 ## Header File
 

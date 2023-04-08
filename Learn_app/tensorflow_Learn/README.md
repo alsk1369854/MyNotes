@@ -1,4 +1,5 @@
 # Tensorflow
+
 - 1. Tensor 類型
 - 2. Tensor 創建
 - 3. Tensor 索引與切片
@@ -19,9 +20,9 @@
 - 18. 輸出方式
 - 19. 誤差計算
 - 20. 梯度下降
-  
 
 ## 1. Tensor 類型
+
 - 1-1. Tensor 支持的類型
 - 1-2. Tensor 使用 cpu/gpu 的資源
 - 1-3. Tensor to Numpy
@@ -31,32 +32,40 @@
 - 1-7. 判斷是否為 Tensor or Variable 物件
 
 ### 1-1. Tensor 支持的類型
+
 - int, float, double
 - bool
 - string
 
 Tensor 在創建類型時會自動識別數據類型，若要指定類型的話就需給定 'dtype' 參數
+
 - int:   dtype=tf.int8 | int16 | int32 | int64 
 - float: dtype=tf.float16 | float32 | float64 | double
 - bool:  dtype=tf.bool
 - string:dtype=tf.string
-```python
-# int 自動辨識類型
-t_int = tf.convert_to_tensor(1)
-print(t_int)
-# tf.Tensor(1, shape=(), dtype=int32)
+  
+  ```python
+  # int 自動辨識類型
+  t_int = tf.convert_to_tensor(1)
+  print(t_int)
+  # tf.Tensor(1, shape=(), dtype=int32)
+  ```
 
 # float 自動辨識類型
+
 t_float = tf.convert_to_tensor(1.)
 print(t_float)
+
 # tf.Tensor(1.0, shape=(), dtype=float32)
 
-# 指定類型為 double 
+# 指定類型為 double
+
 t_double = tf.convert_to_tensor(1, dtype=tf.double) 
 print(t_double)
-# tf.Tensor(1.0, shape=(), dtype=float64)
-```
 
+# tf.Tensor(1.0, shape=(), dtype=float64)
+
+```
 ### 1-2. Tensor 使用 cpu/gpu 的資源
 cpu 與 gpu 資源不能互通，只能訪問到同資源底下的資料
 ```python
@@ -73,6 +82,7 @@ print(t_gpu.device)
 ```
 
 ### 1-3. Tensor to Numpy
+
 ```python
 # Tensor to Numpy
 data = tf.range(5)
@@ -91,6 +101,7 @@ print(float(data)) # 1.0
 ```
 
 ### 1-4. Tensor 維度訊息
+
 - .ndim : 獲取維度
 - .shape : 獲取維度結構
 - .dtype : 獲取 tensor 數據類型
@@ -125,15 +136,21 @@ tf.Tensor(3, shape=(), dtype=int32)
 ```
 
 ### 1-5. Tensor 數據類型轉換
+
+
+
 使用 cast(tensor, dtype) 來轉換 tensor 的數據類型，只要邏輯說的通就可以
+
 - tensor: 轉換的目標 tensor 物件
 - dtype: 要轉換的數據類型
 
 Tensor 支持的 'dtype' 參數類型
+
 - int:   dtype=tf.int8 | int16 | int32 | int64 
 - float: dtype=tf.float16 | float32 | float64 | double
 - bool:  dtype=tf.bool
 - string:dtype=tf.string
+
 ```python
 data = tf.range(5)
 # tf.Tensor([0 1 2 3 4], shape=(5,), dtype=int32)
@@ -144,20 +161,23 @@ print(result)
 # tf.Tensor([0. 1. 2. 3. 4.], shape=(5,), dtype=float32)
 
 # bool to int32
-data = tf.constant([True, False])
-# tf.Tensor([True False], shape=(2,), dtype=bool)
+data = tf.constant([True, False]) 
 result = tf.cast(data, dtype=tf.int32)
 print(result)
 # tf.Tensor([1 0], shape=(2,), dtype=int32)
 
 # int32 to bool
 data = tf.constant([0, 1])
-# tf.Tensor([0 1], shape=(2,), dtype=int32)
 result = tf.cast(data, dtype=tf.bool)
 print(result)
-# tf.Tensor([False  True], shape=(2,), dtype=bool)
+# tf.Tensor([False True], shape=(2,), dtype=bool)
 ```
 
+
+
+ 
+
+```
 ### 1-6. Variable 可訓練的 Tensor
 對於模型訓練我們需要不斷對 w 與 b 兩參數做梯度更新，因此需要將他們 Tensor 類型轉換為 Variable 方可更新梯度
 $$y = x*w+b$$
@@ -174,9 +194,11 @@ print(result.trainable)
 ```
 
 ### 1-7. 判斷是否為 Tensor or Variable 物件
+
 使用 tf.is_tensor() 來判斷物件是否為 Tensor or Variable 
 
 也可使用 isinstance(object, tf.Tensor|tf.Variable) 來針對兩個物件做特殊判斷
+
 ```python
 data_tensor = tf.range(5)
 # tf.Tensor([0 1 2 3 4], shape=(5,), dtype=int32)
@@ -191,15 +213,18 @@ print(tf.is_tensor(data_variable)) # True
 print(isinstance(data_variable, tf.Tensor)) # False
 print(isinstance(data_variable, tf.Variable)) # True
 ```
+
 <br/>
 
-## 2. Tensor 創建 
+## 2. Tensor 創建
+
 - 2-1. 從 Numpy 或 List 型態轉為 Tensor 型態
 - 2-2. 初始化 0. Tensor
 - 2-3. 初始化 1. Tensor
 - 2-4. 初始化 值填充創建 Tensor
 
 ### 2-1. 從 Numpy 或 List 型態轉為 Tensor 型態
+
 ```python
 # 1. 從 Numpy 轉 Tensor ***數據類型為 float64***
 tf.convert_to_tensor(np.zeros([2,2]))
@@ -217,6 +242,7 @@ print(tf.constant([1,2,3]))
 ```
 
 ### 2-2. 初始化 0 Tensor
+
 ```python
 # 1. 初始化為 0. Tensor
 tf.zeros([1,2])
@@ -231,6 +257,7 @@ tf.zeros(a.shape)
 ```
 
 ### 2-3. 初始化 1 Tensor
+
 ```python
 # 1. 初始化為 1. Tensor
 tf.ones([1,2])
@@ -245,6 +272,7 @@ tf.ones(a.shape)
 ```
 
 ### 2-4. 初始化 值填充創建 Tensor
+
 ```python
 # 1. 定值填充創建
 print(tf.fill([1,2], 5))
@@ -282,9 +310,11 @@ data = tf.random.uniform([10], maxval=10 ,dtype=tf.int32)
 print(tf.gather(data, index))
 # tf.Tensor([0 9 1 9 3 4 8 5 9 8], shape=(10,), dtype=int32)
 ```
+
 <br/>
 
 ## 3. Tensor 索引與切片
+
 - 3-1. 基本索引方式
 - 3-2. Start:End
 - 3-3. Start:End:Step
@@ -294,6 +324,7 @@ print(tf.gather(data, index))
 - 3-7. boolean_mask()
 
 ### 3-1. 基本索引方式
+
 ```python
 # [case, b, h, w, rgb]
 a = tf.random.normal([5, 10, 28, 28, 3])
@@ -304,7 +335,9 @@ print(a[0, 1].shape)
 ```
 
 ### 3-2. Start:End
+
 返回一段，包含 Start 不包含 End
+
 ```python
 # 1. 單維度操作
 a = tf.range(10)
@@ -326,6 +359,7 @@ print(b[:, :, :, :, 0].shape)
 ```
 
 ### 3-3. Start:End:Step
+
 ```python
 # 1. 單維度操作
 a = tf.range(10)
@@ -343,6 +377,7 @@ print(b[:, ::2, :, :, 0].shape)
 ```
 
 ### 3-4. "..." 省略號
+
 ```python
 # [case, b, h, w, rgb]
 a = tf.random.normal([5, 10, 28, 28, 3])
@@ -357,6 +392,7 @@ print(a[0,0,...,0].shape)
 ```
 
 ### 3-5. gather()
+
 ```python
 # data = [classes, students, subjects]
 data = tf.random.uniform([4,35,8], maxval=100, dtype=tf.int32)
@@ -372,6 +408,7 @@ print(tf.gather(data, axis=1, indices=[3, 7, 11]).shape)
 ```
 
 ### 3-6. gather_nd()
+
 ```python
 # 3-6. gather_nd() =====================================================
 # data = [classes, students, subjects]
@@ -386,6 +423,7 @@ print(tf.gather_nd(data, indices=[[0,1], [0,2], [1,4], [1,5]]).shape)
 ```
 
 ### 3-7. boolean_mask()
+
 ```python
 # data = [classes, students, subjects]
 data = tf.random.uniform([4,3,2], maxval=100, dtype=tf.int32)
@@ -407,15 +445,18 @@ result = tf.boolean_mask(data, axis=1, mask=[
 print(result.shape)
 # (4, 2)
 ```
+
 <br/>
 
 ## 4. Tensor 維度變換
+
 - 4-1. reshape() 維度重塑
 - 4-2. transpose() 維度調換
 - 4-3. expand_dims() 維度提升
 - 4-4. squeeze() 維度下降
-  
+
 ### 4-1. reshape() 維度重塑
+
 ```python
 # data = [b, h, w, rgb]
 data = tf.random.normal([5, 28, 28, 3])
@@ -439,6 +480,7 @@ print(result.shape)
 ```
 
 ### 4-2. transpose() 維度調換
+
 ```python
 # data = [b, h, w, rgb]
 data = tf.random.normal([5, 28, 28, 3])
@@ -464,6 +506,7 @@ print(result.shape)
 ```
 
 ### 4-3. expand_dims() 維度提升
+
 ```python
 # data = [classes, students, subjects]
 data = tf.random.uniform([4,35,8], maxval=100, dtype=tf.int32)
@@ -481,6 +524,7 @@ print(result.shape)
 ```
 
 ### 4-4. squeeze() 維度下降
+
 ```python
 data = tf.zeros([1, 2, 1, 1, 3])
 
@@ -495,15 +539,18 @@ result = tf.squeeze(data, axis=-2)
 print(result.shape)
 # (1, 2, 1, 3)
 ```
+
 <br/>
 
-
 ## 5. Tensor 廣展
+
 將一向量廣展為指定的多維向量
+
 - 5-1. broadcast_to() :使用參照的方式複製Tensor，不佔用多餘的記憶體空間(用於在訓練時添加基本常量)
 - 5-2. tile() :與broadcast_to()雷同，但此方法實質複製了Tensor並佔用記憶體空間
 
 ### 5-1. broadcast_to() 使用範例
+
 ```python
 # data = [classes, students, subjects]
 data = tf.ones([2,2,3])
@@ -556,7 +603,9 @@ print(result)
 #  [[1. 1. 1.]
 #   [1. 1. 1.]]], shape=(2, 2, 3), dtype=float32)
 ```
+
 ### 5-2. tile() 使用範例
+
 ```python
 # data = [classes, students, subjects]
 data = tf.ones([1,2,3])
@@ -578,12 +627,14 @@ print(result)
 ```
 
 ## 6. Tensor 數學運算
+
 - 6-1. (+, -, *, /)
 - 6-2. (tf.math.log(), tf.exp())
 - 6-3. (pow(), sqrt())
 - 6-4. (@, matmul()) 矩陣相乘
 
 ### 6-1. (+, -, *, /)
+
 ```python
 a = tf.ones([2,2])
 # tf.Tensor(
@@ -624,10 +675,12 @@ print(result)
 ```
 
 ### 6-2. (tf.math.log(), tf.exp())
+
 - tf.math.log(x) :底預設 log<sub> e</sub><sup>x</sup> 如需換底則許須使用換底公式 (log<sub>e </sub>x / log<sub>e </sub>y = log<sub>y </sub>x)
 - tf.exp(x) : e<sup>x</sup>
 
 #### tf.math.log()
+
 ```python
 data = tf.ones([2,2])
 # tf.Tensor(
@@ -648,6 +701,7 @@ print(result)
 ```
 
 #### tf.exp()
+
 ```python
 data = tf.ones([2,2])
 # tf.Tensor(
@@ -662,12 +716,14 @@ print(result)
 ```
 
 ### 6-3. (pow(), sqrt())
+
 - pow(x, y)
-$$pow(x, y) = x^y$$
+  $$pow(x, y) = x^y$$
 - sqrt(x)
-$$sqrt(x) = \sqrt{x}$$
+  $$sqrt(x) = \sqrt{x}$$
 
 #### pow()
+
 ```python
 data = tf.fill([2,2], 2.)
 # tf.Tensor(
@@ -688,6 +744,7 @@ print(result)
 ```
 
 #### sqrt()
+
 ```python
 data = tf.fill([2,2], 4.)
 # tf.Tensor(
@@ -702,7 +759,9 @@ print(result)
 ```
 
 ### 6-4. (@, matmul()) 矩陣相乘
+
 在 Tenser 矩陣乘法中是以最低的2維度來做運算, 3維以上不變 
+
 ```python
 a = tf.fill([2,2], 2.)
 # tf.Tensor(
@@ -735,12 +794,14 @@ result = a @ b
 print(result.shape)
 # (5, 7, 3, 4)
 ```
+
 <br/>
 
 ## 7. 實作 向前傳播(Forward): 修正 loss 最佳化預測解果
 
 $$ out_i = x_iw_i+b_i $$ 
 $$ loss = \frac{1}{n} (\sum_{i=0}^{n-1}(y_i-out_i)^2)  $$
+
 ```python
 import tensorflow as tf
 from tensorflow import keras
@@ -805,10 +866,10 @@ for epoch in range(3): # 設定 train_db 資料集重複訓練次數
             # input layer 2 : [128, 256] => [128, 128]
             l2 = l1@w2+b2
             l2 = tf.nn.relu(l2) # Relu 非線型函數: max(0, l1)
-            
+
             # input layer 3 : [128, 128] => [128, 10]
             out = l2@w3+b3
-            
+
             # 求預測誤差 mean(sum((y-out)^2))
             loss = tf.square(y-out)
             loss = tf.reduce_mean(loss)
@@ -828,11 +889,12 @@ for epoch in range(3): # 設定 train_db 資料集重複訓練次數
         # 打印當前訓練結果
         if step % 100 == 0:
             print(epoch, step, 'loss: ', float(loss))
-
 ```
+
 <br/>
 
 ## 8. Tensor 分割與合併
+
 - 8-1. 合併方法
   - concat()
   - stack()
@@ -841,42 +903,61 @@ for epoch in range(3): # 設定 train_db 資料集重複訓練次數
   - unstack()
 
 ### 8-1. 合併方法
+
 - concat() : 組合兩 Tensor 除了組合維度外其餘維度大小必須相同
 - stack() : 合併兩 Tensor 所有維度必須相同
-```python
-# data = [students, scores]
-data_1 = tf.ones([2, 4])
-# tf.Tensor(
-# [[1. 1. 1. 1.]
-#  [1. 1. 1. 1.]], shape=(2, 4), dtype=float32)
-data_2 = tf.zeros([1, 4])
-# tf.Tensor([[0. 0. 0. 0.]], shape=(1, 4), dtype=float32)
+  
+  ```python
+  # data = [students, scores]
+  data_1 = tf.ones([2, 4])
+  # tf.Tensor(
+  # [[1. 1. 1. 1.]
+  #  [1. 1. 1. 1.]], shape=(2, 4), dtype=float32)
+  data_2 = tf.zeros([1, 4])
+  # tf.Tensor([[0. 0. 0. 0.]], shape=(1, 4), dtype=float32)
+  ```
 
 # concat() 組合兩 Tensor 除了組合維度外其餘維度大小必須相同， [2, 4]&[1, 4] => [3,4]
+
 # axis: 組合維度
+
 result = tf.concat([data_1, data_2], axis=0)
 print(result)
+
 # tf.Tensor(
+
 # [[1. 1. 1. 1.]
-#  [1. 1. 1. 1.]
-#  [0. 0. 0. 0.]], shape=(3, 4), dtype=float32)
+
+# [1. 1. 1. 1.]
+
+# [0. 0. 0. 0.]], shape=(3, 4), dtype=float32)
 
 # stack() 合併兩 Tensor 所有維度必須相同，在 axis=0 擴展合併 = [2, 4]&[2, 4] => [2, 2, 4]
+
 # axis: 合併後擴展的維度
+
 data_2 = tf.zeros([2, 4])
+
 # tf.Tensor(
+
 # [[0. 0. 0. 0.]
-#  [0. 0. 0. 0.]], shape=(2, 4), dtype=float32)
+
+# [0. 0. 0. 0.]], shape=(2, 4), dtype=float32)
 
 result = tf.stack([data_1, data_2], axis=0)
 print(result)
-# tf.Tensor(
-# [[[1. 1. 1. 1.]
-#   [1. 1. 1. 1.]]
-#  [[0. 0. 0. 0.]
-#   [0. 0. 0. 0.]]], shape=(2, 2, 4), dtype=float32)
-```
 
+# tf.Tensor(
+
+# [[[1. 1. 1. 1.]
+
+# [1. 1. 1. 1.]]
+
+# [[0. 0. 0. 0.]
+
+# [0. 0. 0. 0.]]], shape=(2, 2, 4), dtype=float32)
+
+```
 ### 8-2. 分割方法
 - split : 維度切片
 - unstack : 展開維度
@@ -908,8 +989,8 @@ print(result[0].shape) # (3, 4)
 print(result[1].shape) # (3, 4)
 ```
 
-
 ## 9. 數據統計
+
 - 9-1. 向量范數
 - 9-2. 取(最大/最小/平均)值
 - 9-3. 最大與最小值索引
@@ -917,6 +998,7 @@ print(result[1].shape) # (3, 4)
 - 9-5. 去重複
 
 ### 9-1. 向量范數
+
 L1-Norm:
 $$ ||x||_1 = \sum_k|x_k|$$
 
@@ -974,10 +1056,11 @@ print(result)
 ```
 
 ### 9-2. 取(最大/最小/平均)值
+
 - reduce_max()
 - reduce_min()
 - reduce_mean()
-  
+
 ```python
 data = tf.convert_to_tensor([[2, 1, 3],[2, 1, 3]], dtype=tf.float32)
 print(data)
@@ -1022,38 +1105,51 @@ print(result)
 ```
 
 ### 9-3. 最大與最小值索引
+
 - argmax()
 - argmin()
-```python
-data = tf.convert_to_tensor([[2, 1, 3],[3, 1, 2]], dtype=tf.float32)
-print(data)
-# tf.Tensor(
-# [[2. 1. 3.]
-#  [2. 1. 3.]], shape=(2, 3), dtype=float32)
+  
+  ```python
+  data = tf.convert_to_tensor([[2, 1, 3],[3, 1, 2]], dtype=tf.float32)
+  print(data)
+  # tf.Tensor(
+  # [[2. 1. 3.]
+  #  [2. 1. 3.]], shape=(2, 3), dtype=float32)
+  ```
 
 # argmax()
+
 # 預設 axis=0
+
 result = tf.argmax(data)
 print(result)
+
 # tf.Tensor([1 0 0], shape=(3,), dtype=int64)
 
 # 指定維度
+
 result = tf.argmax(data, axis=1)
 print(result)
+
 # tf.Tensor([2 0], shape=(2,), dtype=int64)
 
 # argmin()
+
 # 預設 axis=0
+
 result = tf.argmin(data)
 print(result)
+
 # tf.Tensor([0 0 1], shape=(3,), dtype=int64)
 
 # 指定維度
+
 result = tf.argmax(data, axis=1)
 print(result)
-# tf.Tensor([2 0], shape=(2,), dtype=int64)
-```
 
+# tf.Tensor([2 0], shape=(2,), dtype=int64)
+
+```
 ### 9-4. 數據比較
 - equal()
 ```python
@@ -1093,23 +1189,30 @@ correct_rate = right_count / out.ndim
 ```
 
 ### 9-5. 去重複
+
 使用 unique() 去重後會返回兩個 Tensor
+
 1. 去重後的 Tensor
 2. 原數據對應去重後的 Tensor 的索引位置 
-```python
-data = tf.constant([4, 2, 2, 4, 3])
+   
+   ```python
+   data = tf.constant([4, 2, 2, 4, 3])
+   ```
 
 # unique()
+
 result = tf.unique(data)
 print(len(result)) # 2
 print(result[0]) # tf.Tensor([4 2 3], shape=(3,), dtype=int32)
 print(result[1]) # tf.Tensor([0 1 1 0 2], shape=(5,), dtype=int32)
 
-
 # 還原
+
 reduction = tf.gather(result[0], result[1])
 print(reduction)
+
 # tf.Tensor([4 2 2 4 3], shape=(5,), dtype=int32)
+
 ```
 <br/>
 
@@ -1156,6 +1259,7 @@ print(result)
 ```
 
 ### 10-2. argsort(): 取得排序解果對映原數據的索引 Tensor
+
 - 升序: 預設 | direction='ASCENDING'
 - 降序: direction='DESCENDING'
 
@@ -1193,7 +1297,9 @@ print(result)
 ```
 
 ### 10-3. tf.math.top_k(): 取得排序後的前 k 個值
+
 使用 tf.math.top_k() 後會返回排序後的 tensor 以及對應原數據的索引 tensor 調取方法如下
+
 ```python
 data = tf.random.uniform([3, 3], maxval=10, dtype=tf.int32)
 print(data)
@@ -1216,9 +1322,11 @@ print(result[1]) # 同等於 result.indices
 #  [2 1]
 #  [0 2]], shape=(3, 2), dtype=int32)
 ```
+
 <br/>
 
 ## 11. 實作 計算前 Top k 的預測結果準確率
+
 將預測結果前 Top k 對應的結果索引轉置為如下矩陣
 |    | b1 | b2 |
 |----|----|----|
@@ -1232,6 +1340,7 @@ print(result[1]) # 同等於 result.indices
 |Top2|  1 |  1 |
 
 兩矩陣做 equal 比較，計算 True 值便可得出前 Top k 的預測解果涵蓋真實結果的比例
+
 - 取 Top1 準確率為: 0.5 = 1/2
 - 取 Top2 準確率為: 1.0 = 2/2
 
@@ -1291,15 +1400,16 @@ print('top 1~6 acc: ', acc)
 # top1 預測結果:  [3 1 2 2 0 2 5 5 2 4]
 # 真實結果:  [5 0 2 4 2 1 3 3 3 0]
 # top 1~6 acc:  [0.10000000149011612, 0.4000000059604645, 0.6000000238418579, 0.8999999761581421, 0.8999999761581421, 1.0]
-
 ```
 
 ## 12. Tensor 填充與複製
+
 - 12-1. tf.pad() : 維度邊緣填充
 - 12-2. tf.tile() : 真實複製元素
 - 12-3. tf.broadcast_to() : 參照複製元素
 
 ### 12-1. tf.pad() : 維度邊緣填充
+
 - paddings: 維度(上下 | 左右)填充的單位數
 - constant_values: 填充的值(預設為0)
 
@@ -1341,7 +1451,9 @@ print(result)
 ```
 
 ### 12-2. tf.tile() : 真實複製元素
+
 會實際的增加記憶體使用量
+
 - input: 要複製的 tensor 對象
 - multiples: 各維度要複製的倍數
 
@@ -1374,9 +1486,11 @@ print(result)
 ```
 
 ### 12-3. tf.broadcast_to() : 參照複製元素
+
 不會實際的增加記憶體使用量
 
 tensor在使用 "+" 運算符時，也會自動 broadcast 為相同大小的矩陣做相加
+
 - input: 要複製的 tensor
 - shape: 指定複製後的 shape
 
@@ -1404,39 +1518,49 @@ print(result)
 #   [3 4 5]
 #   [6 7 8]]], shape=(2, 3, 3), dtype=int32)
 ```
+
 <br/>
 
 ## 13. Tensor 限幅
+
 - 13-1. tf.maximum()|minimum()|clip_by_value() 限制上下限
 - 13-2. tf.clip_by_norm() 範數限幅
 - 13-3. tf.clip_by_global_norm() 全局的範數限幅
 
 ### 13-1. tf.maximum()|minimum()|clip_by_value() 限制上下限
+
 - tf.maximum() 限制下限
 - tf.minimum() 限制上限
 - tf.clip_by_value() 限制上下限
-```python
-data = tf.range(-5, 6)
-print(data)
-# tf.Tensor([-5 -4 -3 -2 -1  0  1  2  3  4  5], shape=(11,), dtype=int32)
+  
+  ```python
+  data = tf.range(-5, 6)
+  print(data)
+  # tf.Tensor([-5 -4 -3 -2 -1  0  1  2  3  4  5], shape=(11,), dtype=int32)
+  ```
 
 # tf.maximum() 限制下限
+
 result = tf.maximum(data, 2)
 print(result)
+
 # tf.Tensor([2 2 2 2 2 2 2 2 3 4 5], shape=(11,), dtype=int32)
 
 # tf.minimum() 限制上限
+
 result = tf.minimum(data, -2)
 print(result)
+
 # tf.Tensor([-5 -4 -3 -2 -2 -2 -2 -2 -2 -2 -2], shape=(11,), dtype=int32)
 
 # tf.clip_by_value() 限制上下限
+
 result = tf.clip_by_value(t=data, clip_value_min=-3, clip_value_max=3)
 print(result)
+
 # tf.Tensor([-3 -3 -3 -2 -1  0  1  2  3  3  3], shape=(11,), dtype=int32)
 
 ```
-
 ### 13-2. tf.clip_by_norm() 範數限幅
 根據範數結果對 tensor 做等比例的縮放
 ```python
@@ -1460,11 +1584,14 @@ print('norm: ', tf.norm(result))
 ```
 
 ### 13-3. tf.clip_by_global_norm() 全局的範數限幅
+
 tf.clip_by_global_norm() 可以全群局的對 gradient 的結果限幅，以避免下面兩種情況發生
+
 - 1. Exploding: 因訓練步伐過大導致，訓練震盪
 - 2. Vanishing: 因訓練步伐過小導致，訓練停滯
 
 下方範例故意加大輸入範圍，導致 Exploding 的問題發生，並在 gradient 修正時使用限幅來解決 Exploding 的問題
+
 ```python
 import tensorflow as tf
 from tensorflow import keras
@@ -1529,10 +1656,10 @@ for epoch in range(3): # 設定 train_db 資料集重複訓練次數
             # input layer 2 : [128, 256] => [128, 128]
             l2 = l1@w2+b2
             l2 = tf.nn.relu(l2) # Relu 非線型函數: max(0, l1)
-            
+
             # input layer 3 : [128, 128] => [128, 10]
             out = l2@w3+b3
-            
+
             # 求預測誤差 mean(sum((y-out)^2))
             loss = tf.square(y-out)
             loss = tf.reduce_mean(loss)
@@ -1556,44 +1683,54 @@ for epoch in range(3): # 設定 train_db 資料集重複訓練次數
         # 打印當前訓練結果
         if step % 100 == 0:
             print(epoch, step, 'loss: ', float(loss))
-
 ```
+
 <br/>
 
 ## 14. 高階操作 根據座標(取值|更新值|生成座標點)
+
 - 14-1. tf.where(): 取座標位址
 - 14-2. tf.scatter_nd(): 根據座標更新值
 - 14-3. tf.meshgrid(): 生成座標點
 - 14-4. 運用 tf.meshgrid() 繪製 z = sin(x) + sin(y)  
 
 ### 14-1. tf.where(): 取座標位址
+
 - condition: (boolean_mask | point_positions)
 - x: 真值取值 與 座標取值
 - y: 非真值取值
-```python
-# 真值取值(根據座標取值) ===================================
-data = tf.random.normal([2,2])
-print(data)
-# tf.Tensor(
-# [[-1.3280066  -0.26919734]
-#  [ 0.45089418 -0.5666146 ]], shape=(2, 2), dtype=float32)
-mask = tf.constant([[True, False],
+  
+  ```python
+  # 真值取值(根據座標取值) ===================================
+  data = tf.random.normal([2,2])
+  print(data)
+  # tf.Tensor(
+  # [[-1.3280066  -0.26919734]
+  #  [ 0.45089418 -0.5666146 ]], shape=(2, 2), dtype=float32)
+  mask = tf.constant([[True, False],
                     [False, True]])
+  ```
 
 # 取 mask 座標位置
+
 position = tf.where(condition=mask)
 print(position)
+
 # tf.Tensor(
+
 # [[0 0]
-#  [1 1]], shape=(2, 2), dtype=int64)
+
+# [1 1]], shape=(2, 2), dtype=int64)
 
 # 根據 座標位置取值
+
 result = tf.gather_nd(data, position)
 print(result)
+
 # tf.Tensor([-1.3280066 -0.5666146], shape=(2,), dtype=float32)
 
-
 # 真值與非真值分別取值 ======================================
+
 data_one = tf.ones([2,2])
 data_zero = tf.zeros([2,2])
 
@@ -1602,12 +1739,14 @@ mask = tf.constant([[True, False],
 
 result = tf.where(condition=mask, x=data_one, y=data_zero)
 print(result)
+
 # tf.Tensor(
+
 # [[1. 0.]
-#  [0. 1.]], shape=(2, 2), dtype=float32)
+
+# [0. 1.]], shape=(2, 2), dtype=float32)
 
 ```
-
 ### 14-2. tf.scatter_nd(): 根據座標更新值
 更新值的 shape 初始化都是 0 元素
 - indices: 更新值得索引
@@ -1641,6 +1780,7 @@ print(result)
 ```
 
 ### 14-3. tf.meshgrid(): 生成座標點
+
 ```python
 # 生成 x:0~2, y0~2 的所有整數座標點
 x = tf.linspace(start=0, stop=2, num=3) # 0~2, 取3個點
@@ -1675,7 +1815,8 @@ print(result)
 #  [2. 2.]], shape=(9, 2), dtype=float64)
 ```
 
-### 14-4. 運用 tf.meshgrid() 繪製 z = sin(x) + sin(y)  
+### 14-4. 運用 tf.meshgrid() 繪製 z = sin(x) + sin(y)
+
 ```python
 import tensorflow as tf
 import matplotlib.pyplot as plt
@@ -1709,17 +1850,17 @@ plt.contour(point_x, point_y, z)
 plt.colorbar()
 plt.show()
 ```
+
 <br/>
 
-
-
-
 ## 15. 數據加載
+
 - 15-1. tensorflow.keras.datasets: tensorflow 中自帶的測試資料集
 - 15-2. tf.data.Dataset.from_tensor_slices() 數據封裝為 tensor 數據集
 - 15-3. 數據加載 完整使用範例
 
 ### 15-1. tensorflow.keras.datasets: tensorflow 中自帶的測試資料集
+
 - boston housing
   - Boston housing price regression dataset.
 - mnist/fashion mnist
@@ -1769,21 +1910,28 @@ print(y[:5])
 ```
 
 ### 15-2. tf.data.Dataset.from_tensor_slices() 數據封裝為 tensor 數據集
+
 - tf.data.Dataset.from_tensor_slices(): 數據封裝為 tensor 數據集
   - 15-2-1. shuffle(buffer_siz): 數據隨機打亂
   - 15-2-2. map(map_func): 數據預處理
   - 15-2-3. batch(batch_size): 數據批量處理數量
   - 15-2-4. repeat(num): 數據重新跌代次數
-```python
-import tensorflow as tf
-from tensorflow.keras import datasets
+    
+    ```python
+    import tensorflow as tf
+    from tensorflow.keras import datasets
+    ```
 
-# 加載 cifar10 dataset 
-# all_data = [50k, 32, 32, 3], [10k, 32, 32, 3] 
+# 加載 cifar10 dataset
+
+# all_data = [50k, 32, 32, 3], [10k, 32, 32, 3]
+
 (x, y), (test_x, test_y) = datasets.cifar10.load_data()
 
 # x, y 封裝為 tensor dataset
+
 # ==========================
+
 db = tf.data.Dataset.from_tensor_slices((x, y))
 data = next(iter(db))
 print(len(data)) # 2
@@ -1791,13 +1939,14 @@ print(data[0].shape) # (32, 32, 3)
 print(data[1].shape) # (1,)
 
 # x 封裝為 tensor dataset
+
 # ==========================
+
 db = tf.data.Dataset.from_tensor_slices(x)
 data = next(iter(db))
 print(data.shape) # (32, 32, 3)
 
 ```
-
 #### 15-2-1. shuffle(buffer_siz): 數據隨機打亂程度
 - buffer_siz: 數值越大數據打亂效果越好
 ```python
@@ -1814,17 +1963,23 @@ db = db.shuffle(10000)
 ```
 
 #### 15-2-2. map(map_func): 數據預處理
-- map_func: 數據預處理的 callback function
-```python
-import tensorflow as tf
-from tensorflow.keras import datasets
 
-# 加載 cifar10 dataset 
-# all_data = [50k, 32, 32, 3], [10k, 32, 32, 3] 
+- map_func: 數據預處理的 callback function
+  
+  ```python
+  import tensorflow as tf
+  from tensorflow.keras import datasets
+  ```
+
+# 加載 cifar10 dataset
+
+# all_data = [50k, 32, 32, 3], [10k, 32, 32, 3]
+
 (x, y), (test_x, test_y) = datasets.cifar10.load_data()
 db = tf.data.Dataset.from_tensor_slices((x, y))
 
 # 設置預處理函數
+
 def map_func(x, y):
     # 預處理 x
     x = tf.cast(x, dtype=tf.float32)/255
@@ -1835,14 +1990,15 @@ def map_func(x, y):
     return x, y
 
 # 使用 map() 預處理所有資料集
+
 db2 = db.map(map_func=map_func)
 data = next(iter(db2))
 print(data[0].shape) # (32, 32, 3)
 print(data[1])
+
 # tf.Tensor([0. 0. 0. 0. 0. 0. 1. 0. 0. 0.], shape=(10,), dtype=float32)
 
 ```
-
 #### 15-2-3. batch(batch_size): 數據批量處理數量
 - batch_size: 一次處理的資料量 (預設為1)
 ```python
@@ -1862,13 +2018,18 @@ print(data[1].shape) # (64, 1)
 ```
 
 #### 15-2-4. repeat(count): 數據重新跌代次數
-- count: 跌代循環次數 (預設為1)
-```python
-import tensorflow as tf
-from tensorflow.keras import datasets
 
-# 加載 cifar10 dataset 
-# all_data = [50k, 32, 32, 3], [10k, 32, 32, 3] 
+- count: 跌代循環次數 (預設為1)
+  
+  ```python
+  import tensorflow as tf
+  from tensorflow.keras import datasets
+  ```
+
+# 加載 cifar10 dataset
+
+# all_data = [50k, 32, 32, 3], [10k, 32, 32, 3]
+
 (x, y), (test_x, test_y) = datasets.cifar10.load_data()
 db = tf.data.Dataset.from_tensor_slices((test_x, test_y))
 
@@ -1877,19 +2038,21 @@ iter_db = iter(db)
 for data in iter_db:
     count += 1
 print('before len: ', count)
+
 # before len:  10000
 
 # 設定跌代循環2次
+
 db = db.repeat(count=2)
 count = 0
 iter_db = iter(db)
 for data in iter_db:
     count += 1
 print('after len: ', count)
+
 # after len:  20000
 
 ```
-
 ### 15-3. 數據加載 完整使用範例
 範例中使用 cifar10 資料集
 - tf.data.Dataset.from_tensor_slices(): 數據封裝為 tensor 數據集
@@ -1924,7 +2087,7 @@ def get_cifar10_dataset():
     ds_test = tf.data.Dataset.from_tensor_slices((test_x, test_y))
     ds_test = ds_test.map(map_func=cifar10_map_func)
     ds_test = ds_test.shuffle(10000).batch(100)
-    
+
     return ds, ds_test
 
 # 加載數據
@@ -1933,9 +2096,11 @@ data = next(iter(ds))
 print(data[0].shape) # (100, 32, 32, 3)
 print(data[1].shape) # (100, 10)
 ```
+
 <br/>
 
 ## 16. 實作 模型測試
+
 ```python
 import tensorflow as tf
 from tensorflow import keras
@@ -2001,10 +2166,10 @@ for epoch in range(3): # 設定 ds_train 資料集重複訓練次數
             # input layer 2 : [128, 256] => [128, 128]
             l2 = l1@w2+b2
             l2 = tf.nn.relu(l2) # Relu 非線型函數: max(0, l1)
-            
+
             # input layer 3 : [128, 128] => [128, 10]
             out = l2@w3+b3
-            
+
             # 求預測誤差 mean(sum((y-out)^2))
             loss = tf.square(y-out)
             loss = tf.reduce_mean(loss)
@@ -2030,7 +2195,7 @@ for epoch in range(3): # 設定 ds_train 資料集重複訓練次數
 
     total_correct, total_num = 0, 0
     for step, (x_test, y_test) in enumerate(ds_test):
-        
+
         # [b, 784] => [b, 256] => [b, 128] => [b, 10]
         h1 = tf.nn.relu(x_test@w1+b1)
         h2 = tf.nn.relu(h1@w2+b2)
@@ -2059,10 +2224,12 @@ for epoch in range(3): # 設定 ds_train 資料集重複訓練次數
 <br/>
 
 ## 17. 全連接層
+
 - 17-1. tf.keras.layers.Dense() 創建全連接層
 - 17-2. tf.keras.Sequential() 創建網路層容器
 
 ### 17-1. tf.keras.layers.Dense() 創建全連接層
+
 ```python
 # 創建一個輸出為 10 的全連接層
 # 方法一
@@ -2087,6 +2254,7 @@ print(net.kernel.shape) # (20, 10)
 ```
 
 ### 17-2. tf.keras.Sequential() 創建網路層容器
+
 ```python
 import tensorflow as tf
 from tensorflow import keras
@@ -2135,18 +2303,19 @@ for p in model.trainable_variables:
 # dense_2/bias:0 (10,)
 ```
 
-
 <br/>
 
 ## 18. 輸出方式
+
 - 18-1. tf.sigmoid() 將輸出解果控制在 0~1 之間
-$$sigmoid(x) = \frac{1}{1+e^-x}$$
+  $$sigmoid(x) = \frac{1}{1+e^-x}$$
 - 18-2. tf.nn.sortmax() 使所有預測結果之合為 1
-$$sortmax(x)_j = \frac{e^x_j}{\sum_{k}e^x_k}, for:j=1,...,k.$$
+  $$sortmax(x)_j = \frac{e^x_j}{\sum_{k}e^x_k}, for:j=1,...,k.$$
 - 18-3. tf.tanh() 將輸出解果控制在 -1~1 之間
-$$tanh(x) = \frac{\sinh(x)}{\cosh(x)} = \frac{(e^x - e^{-x})}{(e^x + e^{-x})}$$
+  $$tanh(x) = \frac{\sinh(x)}{\cosh(x)} = \frac{(e^x - e^{-x})}{(e^x + e^{-x})}$$
 
 ### 18-1. tf.sigmoid() 將輸出解果控制在 0~1 之間
+
 ```python
 data = tf.linspace(-2,2,5)
 # tf.Tensor([-2. -1.  0.  1.  2.], shape=(5,), dtype=float64)
@@ -2157,6 +2326,7 @@ print(result)
 ```
 
 ### 18-2. tf.nn.sortmax() 使所有預測結果之合為 1
+
 ```python
 data = tf.linspace(-2,2,5)
 # tf.Tensor([-2. -1.  0.  1.  2.], shape=(5,), dtype=float64)
@@ -2167,6 +2337,7 @@ print(result)
 ```
 
 ### 18-3. tf.tanh() 將輸出解果控制在 -1~1 之間
+
 ```python
 data = tf.linspace(-2,2,5)
 # tf.Tensor([-2. -1.  0.  1.  2.], shape=(5,), dtype=float64)
@@ -2179,14 +2350,17 @@ print(result)
 <br/>
 
 ## 19. 誤差計算
+
 - 19-1. MSE
 - 19-2. Cross Entropy Loss (交叉熵)
 - 19-3. Cross Entropy Numerical Stability (交叉熵數值穩定性)
 - Hinge Loss (使用於 SVM,Support Vector Machine 較多)
 
 ### 19-1. MSE
+
 $$loss = \frac{1}{N}\sum(y-out)^2$$
 $$L_{2-norm} = \sqrt{\sum(u-out)^2}$$
+
 ```python
 # MSE ---------------
 y = tf.constant([1, 2, 3, 0, 2])
@@ -2204,13 +2378,18 @@ print(loss3) # tf.Tensor(0.44715032, shape=(), dtype=float32)
 ```
 
 ### 19-2. Cross Entropy Loss (交叉熵)
+
 - 19-2-1. 分類問題計算(多輸出節點)
 - 19-2-2. 二分類問題(單輸出節點)
-#### 熵 Entropy: 驚喜度越高熵越低，驚喜度越低熵越高 ; 越亂熵越高，越有條理熵越低
-$$H(p) = -\sum P(x)\log_2 P(x)$$
+  
+  #### 熵 Entropy: 驚喜度越高熵越低，驚喜度越低熵越高 ; 越亂熵越高，越有條理熵越低
+  
+  $$H(p) = -\sum P(x)\log_2 P(x)$$
 
 #### 交叉熵 Cross Entropy
+
 ##### 19-2-1. 分類問題計算(多輸出節點)
+
 $$D_{KL}(p|q):表示p與q的散度，當p=q時解果為0$$
 $$ H(p,g) = -\sum p(x)\log_2 q(x)$$
 $$ H(p,g) = H(p) + D_{KL}(p|q)$$
@@ -2220,12 +2399,12 @@ for p:one-hot encoding
 $$H(p:[0,1,0]) = -1 \log 1= 0$$
 $$H(y:[0,1,0],out:[p_0,p_1,p_3]) =  0 + D_{KL}(p|q) = -1 \log q_1$$
 
-
 ```text
 例子1(loss大):
 P : y = [1, 0, 0, 0, 0]
 Q : out = [0.4, 0.3, 0.05, 0.05, 0.2]
 ```
+
 $$H(P_1,Q_1) = -\sum P_1(i) \log Q_1(i)$$
 $$ = -(1 \log 0.4 + 0 \log 0.3 + 0 \log 0.05 + 0 \log 0.05 + 0 \log 0.2)$$
 $$ = - \log 0.4$$
@@ -2236,10 +2415,12 @@ $$ \approx 0.916 $$
 P : y = [1, 0, 0, 0, 0]
 Q : out = [0.98, 0.01, 0, 0, 0.01]
 ```
+
 $$H(P_1,Q_1) = -\sum P_1(i) \log Q_1(i)$$
 $$ = -(1 \log 0.98 + 0 \log 0.01 + 0 \log 0 + 0 \log 0 + 0 \log 0.01)$$
 $$ = - \log 0.98$$
 $$ \approx 0.02 $$
+
 ```python
 # Categorical Cross Entropy (分類問題交叉熵)
 # 函數計算使用
@@ -2265,6 +2446,7 @@ print(loss3) # tf.Tensor(0.35667497, shape=(), dtype=float32)
 ```
 
 ##### 19-2-2. 二分類問題(單輸出節點)
+
 以貓(cat)狗(dog)二分類為例
 $$H(P,Q) = - P(cat) \log Q(cat) - (1-P(cat)) \log (1-Q(cat))$$
 $$P(dog) = (1-P(cat))$$
@@ -2272,6 +2454,7 @@ $$H(P,Q) = - \sum_{i=(cat,dog)} P(i) \log Q(i)$$
 $$ = -P(cat) \log Q(cat) - P(dog) \log Q(dog)$$
 y 為真實結果 p 為預測結果
 $$-(y \log p + (1-y) \log (1-p))$$
+
 ```python
 # Binary Cross Entropy (二分類問題交叉熵)
 # 函數計算使用
@@ -2297,15 +2480,19 @@ print(loss3) # tf.Tensor(0.3566748, shape=(), dtype=float32)
 ```
 
 ### 19-3. Cross Entropy Numerical Stability (交叉熵數值穩定性)
+
 - tf.losses.categorical_crossentropy(y, logit, from_logits=True)
 - tf.losses.binary_crossentropy(y, logit, from_logits=True)
-```python
-# 誤差數值穩定性預防 
-# y 必須是 one_hot encoding
-# 網路最後一層輸出結果為 logit (未經過 softmax) 
-# 設定參數 from_logit=True 表示預測結果為 logit
+  
+  ```python
+  # 誤差數值穩定性預防 
+  # y 必須是 one_hot encoding
+  # 網路最後一層輸出結果為 logit (未經過 softmax) 
+  # 設定參數 from_logit=True 表示預測結果為 logit
+  ```
 
 # 模擬網路層輸出
+
 y = tf.constant([[0., 1.]]) # one_hot encoding
 x = tf.random.normal([1, 784])
 w = tf.random.normal([784, 2])
@@ -2313,24 +2500,30 @@ b = tf.zeros([2])
 
 logit = x@w+b
 print('logit: ', logit) 
+
 # logit:  tf.Tensor([[ 16.132626 -11.485327]], shape=(1, 2), dtype=float32)
 
 # (推薦)方法一: 使用 from_logit=true Tensorflow 內部處理數值穩定性問題
+
 loss_with_logit = tf.losses.categorical_crossentropy(y_true=y, y_pred=logit, from_logits=True)
 print('loss_with_logit: ', loss_with_logit)
+
 # loss_with_logit:  tf.Tensor([27.617952], shape=(1,), dtype=float32)
 
 # (不推薦)方法二: 自己使用 softmax 將 logit 轉換為 prob (有風險會出現 NaN 數值不穩定問題)
+
 prob = tf.math.softmax(logit)
 print('porb: ', prob)
+
 # porb:  tf.Tensor([[1.0000000e+00 1.0131545e-12]], shape=(1, 2), dtype=float32)
+
 loss_with_prob = tf.losses.categorical_crossentropy(y_true=y, y_pred=prob)
 print('loss_with_prob: ', loss_with_prob)
+
 # loss_with_prob:  tf.Tensor([16.118095], shape=(1,), dtype=float32)
+
 ```
 <br/>
 
 ## 20. 梯度下降
-
-
-
+```

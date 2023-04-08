@@ -46,6 +46,10 @@
         "cstring": "cpp",
         "ctime": "cpp",
         "fstream": "cpp",
-        "sstream": "cpp"
+        "sstream": "cpp",
+        "unordered_set": "cpp",
+        "list": "cpp",
+        "map": "cpp",
+        "set": "cpp"
     }
 }
