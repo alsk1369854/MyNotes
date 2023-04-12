@@ -36,12 +36,8 @@ with tf.GradientTape() as tape:
     tape.watch([w]) # 監聽要梯度的 tensor 物件
     y2 = x*w # 要求導的函數宣告在 tf.GradientTape() 範圍內
     [w_grad] = tape.gradient(target=y2, sources=[w]) # y2 對 w 進行求導
-    print(w_grad) # tf.Tensor(2.0, shape=(), dtype=float32)
+    print(w_grad) # tf.Tensor(2.0, shape=(), dtype=float32) 
 ```
-
-
-
-### 
 
 ### 重複求導
 
@@ -61,7 +57,14 @@ with tf.GradientTape(persistent=True) as tape:
     # 可重複調用 gradient() 方法進行求導
     [x_grad] = tape.gradient(target=y2, sources=[x]) 
     print(x_grad) # tf.Tensor(1.0, shape=(), dtype=float32)
-
 ```
 
 
+
+### 2階求導
+
+
+
+```python
+
+```

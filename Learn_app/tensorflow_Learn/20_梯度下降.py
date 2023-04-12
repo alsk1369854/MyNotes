@@ -1,7 +1,7 @@
 import tensorflow as tf
 
-w = tf.constant(1.)
 x = tf.constant(2.)
+w = tf.constant(1.)
 b = tf.constant(0.0)
 y = x*w
 
@@ -34,16 +34,17 @@ y = x*w
 
 
 # 二階求導
+secondGradient = None
 with tf.GradientTape() as t1:
     t1.watch([w])
-
+    oneGradient = None
     with tf.GradientTape() as t2:
-        t2.watch([w, b])
+        t2.watch([x, w, b])
         y = x*w+b
         # 一階求導
-    [dy_dw, dy_db] = t2.gradient(y, [w, b])
-    print(dy_dw) 
+        oneGradient= t2.gradient(y, [x, w, b])
+    print(oneGradient)
 
-        # 可重複調用 gradient() 方法進行求導
-d2y_dw2 = t1.gradient(dy_dw, [w])
-print(d2y_dw2)  # tf.Tensor(1.0, shape=(), dtype=float32)
+    # 再次對 dy_dx 求導
+    secondGradient = t1.gradient(oneGradient[0], [w])
+print(secondGradient[0])  # tf.Tensor(1.0, shape=(), dtype=float32)
