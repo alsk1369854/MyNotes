@@ -1,14 +1,15 @@
 # TypeScript
 
-
-
 ## tsconfig.config
+
 ### 如何產生 tsconfig.json
+
 ```base
 tsc --init
 ```
 
 ### tsconfig.json 的預設
+
 ```json
 {
     "compilerOptions": {
@@ -23,6 +24,7 @@ tsc --init
 ```
 
 ### 我常用的 tsconfig.json 配置
+
 ```json
 {
   "compilerOptions": {
@@ -49,8 +51,8 @@ tsc --init
 }
 ```
 
-
 ### Overall
+
 ```json
 {
   "compileOnSave": false,    //編輯器在儲存檔案的時候根據tsconfig.json重新產生編譯檔案
@@ -111,7 +113,7 @@ tsc --init
     /* 其他選項 */
     "experimentalDecorators": true,        // 啟用裝飾器
     "emitDecoratorMetadata": true,          // 為裝飾器提供元數據的支持
-        
+
     /* 進階選項 */
     "skipLibCheck": true,                     //不會檢查引入的函式庫檔案
     "forceConsistentCasingInFileNames": true // 確保檔案的大小寫一致
@@ -123,7 +125,7 @@ tsc --init
     "node_modules"
   ],
   "extends": "./tsconfig.base.json",         //把基礎配置抽離成tsconfig.base.json檔案，然後引入
-  
+
   "references": [                             // 指定依赖的程式路徑
      {"path": "./common"}
   ],
