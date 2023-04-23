@@ -1,7 +1,5 @@
 # pymysql library
 
-
-
 ## Installation library
 
 ```bash
@@ -14,8 +12,6 @@ pip install json
 # install all libraries above
 pip install -r requirements.txt
 ```
-
-
 
 ## Database connection
 
@@ -49,10 +45,7 @@ class DBUtil:
             column = column + 1
 
         return results
-
 ```
-
-
 
 ### main.py
 
@@ -67,8 +60,6 @@ if __name__ == '__main__':
     conn.commit()
     DBUtil.close_resource(cursor, conn)
 ```
-
-
 
 ## CRUD
 
@@ -117,7 +108,7 @@ def get_room_records_between_two_datetime(cursor, room_id, start_datetime, end_d
     # 查詢時間區段，房間中所監測到人物記錄(每個人物在區段時間內第一次被檢測到的記錄)
     sql = "select * " \
           "from attendance_record " \
-          "where date_time_stamp in (	select min(date_time_stamp) as date_time_stamp " \
+          "where date_time_stamp in (    select min(date_time_stamp) as date_time_stamp " \
           "                             from testDB.attendance_record " \
           "                             where room = %s " \
           "                             and date_time_stamp between %s and %s " \
@@ -151,12 +142,7 @@ def get_room_records_between_two_datetime(cursor, room_id, start_datetime, end_d
         attendance_record_list.append(attendance_record)
 
     return attendance_record_list
-
 ```
-
-
-
-
 
 ### CUD
 
@@ -171,10 +157,7 @@ def insert_new_attendance_record(cursor, attendance_record: AttendanceRecord):
     # 執行 sql 語句
     cursor.execute(sql, (attendance_record.room._id,
                    attendance_record.person._id, attendance_record.date_time_stamp))
-
 ```
-
-
 
 ## Object to json
 
@@ -192,10 +175,7 @@ class JSONUtil:
     @staticmethod
     def __obj_dict(obj):
         return obj.__dict__
-
 ```
-
-
 
 ### main.py
 
