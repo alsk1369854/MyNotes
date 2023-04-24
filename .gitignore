@@ -3,7 +3,6 @@
 
 # 忽略 .webm 文件
 *.webm
-*.rar
 
 # python
 *.pyc
@@ -13,3 +12,7 @@
 
 # cpp
 *.exe
+
+# ignore 壓縮包
+*.rar
+*.gz

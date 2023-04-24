@@ -10,11 +10,11 @@ ENV BASEPATH /usr/local
 # set terminal default work path and use variable
 WORKDIR ${BASEPATH}
 
-# init container
-RUN touch myInit.txt
+# init curl
+RUN ynm install -y curl
 
 # export port number
 EXPOSE 80
 
 # default run terminal command
-CMD /bin/bash
+ENTRYPOINT [ "curl", "-s", "http://ip.cn" ]
