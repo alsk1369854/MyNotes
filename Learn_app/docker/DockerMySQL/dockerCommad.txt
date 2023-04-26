@@ -1,0 +1,8 @@
+# 運行 MySQL 容器
+docker run -p 3306:3306 --name myMysql -v C:/mysql/conf:/etc/mysql/conf.d -v C:/mysql/logs:/logs -v C:/mysql/data:/var/lib/mysql -e MYSQL_ROOT_PASSWORD=root -d mysql
+
+# 備分所有資料庫
+docker exec myMysql sh -c ' exec mysqldump --all-databases -uroot -p"root" ' > C:/mysql/all-databases.sql
+
+# 備分單個資料庫
+docker exec myMysql sh -c ' exec mysqldump myDB -uroot -p"root" ' > C:/mysql/myDB.sql
