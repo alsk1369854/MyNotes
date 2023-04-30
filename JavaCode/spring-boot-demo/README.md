@@ -7,7 +7,6 @@
 com.example.DemoApplication.java
 
 ```java
-
 @SpringBootApplication
 public class DemoApplication {
 
@@ -23,7 +22,6 @@ public class DemoApplication {
 com.example.controller.HelloController.java
 
 ```java
-
 @RestController
 public class HelloController {
 
@@ -73,6 +71,7 @@ application-{module}.properties
 ## 日誌工具 slf4j 與 logback
 
 ### Spring boot 預設使用: slf4j and logback 處理日誌
+
 ```text
 slf4j: 日誌工具的 interface，類似於 JDBC
 https://www.slf4j.org/legacy.html
@@ -81,6 +80,7 @@ logback: 日誌紀錄工具
 ```
 
 ### 日誌相關 application.properties 配置
+
 ```properties
 # 指定日誌打印級別
 #logging.level.com.example=trace
@@ -95,10 +95,12 @@ logging.pattern.console=%d{yyyy-MM-dd} [%thread] %-5level %logger{50} - %msg%n
 ```
 
 ### (延伸)自訂義 logback-spring.xml 配置
+
 - path: src/main/resources/logback-spring.xml
-```xml
-<?xml version="1.0" encoding="UTF-8"?>
-<configuration  scan="true" scanPeriod="60 seconds" debug="false">
+  
+  ```xml
+  <?xml version="1.0" encoding="UTF-8"?>
+  <configuration  scan="true" scanPeriod="60 seconds" debug="false">
     <!-- 應用名稱 -->
     <property name="APP_NAME" value="ApplicationName"/>
     <!-- Log 輸出根目錄 -->
@@ -121,7 +123,7 @@ logging.pattern.console=%d{yyyy-MM-dd} [%thread] %-5level %logger{50} - %msg%n
             </springProfile>
         </encoder>
     </appender>
-
+  
     <!-- 輸出日誌檔案 -->
     <appender name="info" class="ch.qos.logback.core.rolling.RollingFileAppender">
         <!-- 日誌策略配置 -->
@@ -140,13 +142,13 @@ logging.pattern.console=%d{yyyy-MM-dd} [%thread] %-5level %logger{50} - %msg%n
         <!--            <onMismatch>DENY</onMismatch>-->
         <!--        </filter>-->
     </appender>
-
+  
     <root level="info">
         <appender-ref ref="console" />
         <appender-ref ref="info" />
     </root>
-</configuration>
-```
+  </configuration>
+  ```
 
 ## webjars 置入外部工具包
 
@@ -214,6 +216,7 @@ http://localhost/webjars/jquery/...
 ![](screenshots/img_1.png)
 
 ### 片段引用
+
 ```html
 在要抽取的標籤上加入 th:fragment="templateName" 標籤
 path: templates/dashboard.html
@@ -226,7 +229,9 @@ path: templates/emp/list.html
 也可透過類選擇器做引用
 [(~{dashboard::#sidebarMenu})]
 ```
+
 五不同的引用方法
+
 - **th:insert**: 將片段插入聲明標籤內
 - **th:replace**: 片段置換於聲明標籤
 - **th:include**: 只抽取引用的內容，插入聲明標籤內
@@ -238,7 +243,6 @@ path: templates/emp/list.html
 **在 Spring 中配置映射**
 
 ```java
-
 @Controller
 public class ThymeleafController {
     @RequestMapping("/thymeleaf")
@@ -396,7 +400,6 @@ public class MyLocaleResolver implements LocaleResolver {
 - path: src/main/java/com/example/demo/config/MyMvcConfig.java
 
 ```java
-
 @Configuration
 public class MyMvcConfig implements WebMvcConfigurer {
     @Bean
@@ -407,8 +410,11 @@ public class MyMvcConfig implements WebMvcConfigurer {
 ```
 
 ## 地址重定向與內部轉發
+
 ### 地址重定向
+
 Client 端地址會改變
+
 ```java
 @Controller
 public class Example{
@@ -423,7 +429,9 @@ public class Example{
 ```
 
 ### 內部轉發
+
 Server 內部自行處理，Client 端地址部不發生變化
+
 ```java
 @Controller
 public class Example{
@@ -439,14 +447,15 @@ public class Example{
 
 ## RestfulCRUD
 
-|         | RestfulCRUD   |  普通CRUD(URL來分區操作)  |
-| --------   | -----  | ----  |
-| 查詢      | emp--GET   |   getEmp     |
-| 添加        |   emp--POST   |   addEmp?xxx   |
-| 修改        |    emp/{id}--PUT    |  updateEmp?xxx  |
-| 刪除        |    emp/{id}--DELETE    |  deleteEmp?xxx  |
+|     | RestfulCRUD      | 普通CRUD(URL來分區操作) |
+| --- | ---------------- | ---------------- |
+| 查詢  | emp--GET         | getEmp           |
+| 添加  | emp--POST        | addEmp?xxx       |
+| 修改  | emp/{id}--PUT    | updateEmp?xxx    |
+| 刪除  | emp/{id}--DELETE | deleteEmp?xxx    |
 
 ### Spring Boot 中對應的映射標籤
+
 - GetMapping("/xxx")
 - PostMapping("/xxx")
 - PutMapping("/xxx")
@@ -455,12 +464,14 @@ public class Example{
 ### 使用 hiddenmethod 讓 spring boot 解析為對應請求
 
 #### 在 application.properties 啟用 hiddenmethod 功能
+
 ```properties
 # 啟用 hiddenmethod 過濾器功能
 spring.mvc.hiddenmethod.filter.enabled=true
 ```
 
 #### 在 from 表單中添加 _method 屬性(value 不區分大小寫)
+
 ```html
 <form action="/emp" method="POST">
   <input type="hidden" name="_method" value="put">
@@ -469,6 +480,7 @@ spring.mvc.hiddenmethod.filter.enabled=true
 ```
 
 #### 在 spring 設置路徑映射
+
 ```java
 import com.example.demo.entities.Employee;
 
@@ -484,14 +496,19 @@ public class EmployeeController {
 ```
 
 ## 錯誤處理與訂製錯誤頁面
+
 ### 訂製錯誤頁面
+
 在靜態目錄在模板目錄下 error 目錄新增對應裝態的 .html 文件，在錯誤發生時就會顯示對應的錯誤頁面
+
 - 無模板工具: src/main/resources/static/error/xxx.html
 - 有模板： src/main/resources/{templates_base}/error/xxx.html
 - 可用 4xx.html 與 5xx.html 頁面，來制定涵蓋所有 4 與 5 系列的錯誤響應頁面
 
 ### 錯誤頁面響應能獲取的訊息
+
 使用 thymeleaf 模板工具能夠直接透過 **${status}** 拿出對應的錯誤訊息
+
 - timestamp: 時間戳
 - status: 狀態碼
 - error: 錯誤提示
@@ -500,8 +517,11 @@ public class EmployeeController {
 - errors: JSR303數據檢驗的錯誤都在這裡
 
 ### 添加自定義的錯誤訊息
+
 path: src/main/java/com/example/demo/exception
+
 #### 建立 ExceptionHandler 類，管理錯誤拋出
+
 ```java
 // 異常管理類
 @ControllerAdvice
@@ -534,6 +554,7 @@ public class MyExceptionHandler {
 ```
 
 #### 建立 ErrorAttributes 類，管理錯誤信息回傳
+
 ```java
 // 設置 Error 丟出時，附帶的錯誤信息
 @Component
@@ -557,129 +578,151 @@ public class MyErrorAttributes extends DefaultErrorAttributes {
 ```
 
 ## 註冊 Serverlet 三大組件
+
 - 註冊 Servlet
 - 註冊 Filter
 - 註冊 Listener
 
 ### 註冊 Servlet
+
 #### 1. 創建自定義 Servlet
+
 - path: src/main/java/com/example/demo/servlet/MyServlet.java
-```java
-public class MyServlet extends HttpServlet {
+  
+  ```java
+  public class MyServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         doPost(req, resp);
     }
-
+  
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         resp.getWriter().write("My Servlet...");
     }
-}
-```
-#### 註冊至容器中
+  }
+  ```
+  
+  #### 註冊至容器中
+
 - path: src/main/java/com/example/demo/config/MyServerConfig.java
-```java
-@Configuration
-public class MyServerConfig {
+  
+  ```java
+  @Configuration
+  public class MyServerConfig {
     // 註冊 Servlet
     @Bean
     public ServletRegistrationBean myServlet() {
         // 全地址使用 Servlet
         // ServletRegistrationBean<MyServlet> registrationServlet = new ServletRegistrationBean(new MyServlet());
-
+  
         // 指定地址使用 Servlet
         ServletRegistrationBean<MyServlet> registrationServlet = new ServletRegistrationBean(new MyServlet());
         registrationServlet.setUrlMappings(Arrays.asList("/myservlet"));
-
+  
         return registrationServlet;
     }
-}
-```
+  }
+  ```
 
 ### 註冊 Filter
+
 #### 1. 創建自定義 Filter
+
 - path: src/main/java/com/example/demo/filter/MyFilter.java
-```java
-public class MyFilter implements Filter {
+  
+  ```java
+  public class MyFilter implements Filter {
     @Override
     public void init(FilterConfig filterConfig) throws ServletException {
         Filter.super.init(filterConfig);
     }
-
+  
     @Override
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
         System.out.println("My Filter...");
         // 放行通過
         filterChain.doFilter(servletRequest, servletResponse);
     }
-
+  
     @Override
     public void destroy() {
         Filter.super.destroy();
     }
-}
-```
-#### 註冊至容器中
+  }
+  ```
+  
+  #### 註冊至容器中
+
 - path: src/main/java/com/example/demo/config/MyServerConfig.java
-```java
-@Configuration
-public class MyServerConfig {
+  
+  ```java
+  @Configuration
+  public class MyServerConfig {
     // 註冊 Filter
     @Bean
     public FilterRegistrationBean<MyFilter> myFilter() {
         // 全地址使用 Filter
         // FilterRegistrationBean<MyFilter> registrationFilter = new FilterRegistrationBean<>(new MyFilter());
-
+  
         // 指定地址使用 Filter
         FilterRegistrationBean<MyFilter> registrationFilter = new FilterRegistrationBean<>(new MyFilter());
         registrationFilter.setUrlPatterns(Arrays.asList("/myfilter"));
-
+  
         return registrationFilter;
     }
-}
-```
+  }
+  ```
 
 ### 註冊 Listener
+
 #### 1. 創建自定義 Listener
+
 - path: src/main/java/com/example/demo/listener/MyListener.java
-```java
-public class MyListener implements ServletContextListener {
+  
+  ```java
+  public class MyListener implements ServletContextListener {
     @Override
     public void contextInitialized(ServletContextEvent sce) {
         System.out.println("Web 應用啟動...");
     }
-
+  
     @Override
     public void contextDestroyed(ServletContextEvent sce) {
         System.out.println("Web 應用關閉...");
     }
-}
-```
-#### 註冊至容器中
+  }
+  ```
+  
+  #### 註冊至容器中
+
 - path: src/main/java/com/example/demo/config/MyServerConfig.java
-```java
-@Configuration
-public class MyServerConfig {
+  
+  ```java
+  @Configuration
+  public class MyServerConfig {
     // 註冊 Listener
     @Bean
     public ServletListenerRegistrationBean myListener(){
         ServletListenerRegistrationBean<MyListener> registrationListener = new ServletListenerRegistrationBean<>(new MyListener());
         return registrationListener;
     }
-}
-```
+  }
+  ```
 
 ## 使用其他 Servlet 容器
+
 - tomcat(預設)
 - jetty(長連接優勢)
 - undertow(多執行續優勢)
 
 ### 修改配置方法，以 Maven 為例
+
 - path: pom.xml
-```xml
-<!-- 使用其他 Servlet 容器-->
-<project>
+  
+  ```xml
+  <!-- 使用其他 Servlet 容器-->
+  <project>
     <dependency>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-web</artifactId>
@@ -698,5 +741,5 @@ public class MyServerConfig {
         <!-- 使用 jetty -->
         <!-- <artifactId>spring-boot-starter-jetty</artifactId> error-->
     </dependency>
-</project>
-```
+  </project>
+  ```
