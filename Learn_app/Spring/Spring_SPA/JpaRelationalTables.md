@@ -179,6 +179,12 @@ public static class Phone {
 ## 一對多 [@OneToMany]
 
 - 將依賴關係維護在，單
+- 雙向關聯
+  - @OneToMany(mappedBy = {one value name}) : 指定關聯維護在單方
+  
+  - @JsonManagedReference : 建立關聯數據，指定在單方
+  
+  - @JsonBackReference : 忽略關聯數據，指定在多方 
 
 ```java
 @Entity(name = "Person")
