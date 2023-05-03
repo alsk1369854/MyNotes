@@ -1,0 +1,37 @@
+## React Event
+	class Demo extends React.Component{
+	    /*
+	        (1).透過onXxx屬性指定事件處理函數(注意大小寫)
+	            a.React使用的是自定義(合成)事件, 而不是使用原生DOM事件 => 為了更好的兼容性
+	            b.React中的事件是透過事件委託方式處理的(委託給組件最外層的元素) => 為了高效
+	        (2).透過event.target得到發生事件的DOM元素對象
+	    */
+	    render(){
+	        return(
+	            <div>
+	                <input ref={this.myInput1} type="text" placeholder="點擊按鈕顯示"/>&nbsp;
+	                <button onClick={this.showMsg1}>點擊顯示左側文字</button>&nbsp;
+	                <input onBlur={this.showMsg2} type="text" placeholder="失去焦點顯示"/>
+	            </div>
+	        )
+	    }
+	
+	    // React.createRef調用後返回一個容器, 該容器允許處存ref所標示的節點,該容器是"專人專用的"的 
+	    myInput1 = React.createRef();
+	
+	    // 點擊按鈕顯示函數
+	    showMsg1 = () =>{
+	        console.log("@ myInput1",this.myInput1);
+	        const {current} = this.myInput1;
+	        alert(current.value);
+	    }
+	
+	    // 失去焦點顯示函數
+	    showMsg2 = (event) =>{
+	        console.log(event);
+	        const {target} = event;
+	        alert(target.value);
+	    }
+	}
+	
+	ReactDOM.render(<Demo/>, document.getElementById('test'));

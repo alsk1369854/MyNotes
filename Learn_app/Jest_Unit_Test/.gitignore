@@ -1,5 +1,0 @@
-# 忽略 npm 包
-/node_modules
-
-# 忽略測試報告
-/coverage

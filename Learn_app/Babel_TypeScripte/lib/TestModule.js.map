@@ -1,1 +1,0 @@
-{"version":3,"file":"TestModule.js","names":[],"sources":["../src/TestModule.ts"],"sourcesContent":["export default () => 'I\\'m Test Module';"],"mappings":";;;;;;eAAe;EAAA,OAAM,kBAAkB;AAAA;AAAA"}

@@ -1,1 +1,0 @@
-Users can put firmware binaries and models here to update flash content.

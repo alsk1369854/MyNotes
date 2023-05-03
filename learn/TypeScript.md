@@ -1,0 +1,10 @@
+# TypeScript
+
+
+
+## tsconfig.config
+
+```typescript
+
+
+```

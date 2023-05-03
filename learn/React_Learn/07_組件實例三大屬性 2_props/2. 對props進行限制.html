@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <!-- <meta name="viewport" content="width=device-width, initial-scale=1.0"> -->
+    <title>對props進行限制</title>
+</head>
+<body>
+    <!-- 容器 -->
+    <div id="test1"></div>
+    <div id="test2"></div>
+    <div id="test3"></div>
+
+    <!-- React 核心庫 -->
+    <script src="https://unpkg.com/react@17/umd/react.development.js" crossorigin></script>
+    <!-- React 拓展功能: 用於支持React與DOM溝通 -->
+    <script src="https://unpkg.com/react-dom@17/umd/react-dom.development.js" crossorigin></script>
+    <!-- 語言翻譯: ES6 => ES5 ; jsx => js -->
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <!-- 引入prop-types, 用於對組件標籤屬性進行限制 --> 
+    <script src="https://unpkg.com/prop-types@15.6/prop-types.js"></script>
+
+    <script type="text/babel"> // type="text/babel" 一定要寫babel
+        // 創建類式組件
+        class Person extends React.Component{
+            render(){
+                const {name, age, sex, speak} = this.props;
+                console.log(this.props)
+                return(
+                    <ul onClick={speak}>
+                        <li>姓名: {name}</li>
+                        <li>性別: {sex}</li>
+                        <li>年齡: {age+1}</li>   
+                    </ul>
+                )
+            }
+
+        }
+        // 對標籤屬性進行類型、必要性的限制
+        Person.propTypes = {
+            name: PropTypes.string.isRequired, //限制name為字串, 且必須存在
+            sex: PropTypes.string, // 限制sex為字串
+            age: PropTypes.number, // 限制age為數字
+            speak: PropTypes.func, // 限制speak為函數
+        }
+        // 指定默認屬性值
+        Person.defaultProps = {
+            sex: "不男不女",
+            age: 18
+        }
+
+ 
+        // 渲染組件到頁面
+        ReactDOM.render(<Person name="jerry" speak={speak}/>, document.getElementById('test1'))
+        ReactDOM.render(<Person name="susan" age={18} sex="女"/>, document.getElementById('test2'))
+        const data = {name:"tom", age:16}
+        const data2 = {...data, sex:"女", name:"jack"}; // 複製物件, 合併新值
+        ReactDOM.render(<Person {...data2}/>, document.getElementById('test3'))
+
+        function speak(){
+            console.log("Hi");
+        }
+
+    </script>
+</body>
+</html>
