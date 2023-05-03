@@ -1,6 +1,7 @@
 # npm package
 
 > ## npm cli
+
 ```shell
 # 建立 npm package
 npm init
@@ -26,7 +27,6 @@ npm version major # update to 2.0.0
 # npm 外部依賴包安裝
 npm install --save <package name> # 運行依賴
 npm install --save-dev <package name> # 開發依賴
-
 ```
 
 > ## package.json 說明
@@ -72,5 +72,4 @@ npm install --save-dev <package name> # 開發依賴
         "babel-preset-es2015": "^6.24.1"
     },
 }
-
 ```
