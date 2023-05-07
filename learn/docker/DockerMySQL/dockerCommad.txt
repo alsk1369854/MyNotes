@@ -6,3 +6,13 @@ docker exec myMysql sh -c ' exec mysqldump --all-databases -uroot -p"root" ' > C
 
 # 備分單個資料庫
 docker exec myMysql sh -c ' exec mysqldump myDB -uroot -p"root" ' > C:/mysql/myDB.sql
+
+
+# financial_management_system_mysql
+docker run -p 3306:3306 --name financial_management_system_mysql -v /financial_management_system/mysql/conf:/etc/mysql/conf.d -v /financial_management_system/mysql/backup:/etc/mysql/backup -v /financial_management_system/mysql/logs:/logs -v /financial_management_system/mysql/data:/var/lib/mysql -e MYSQL_ROOT_PASSWORD=root -d mysql:8.0.33
+
+cd /Users/liangchiaming
+docker run -p 3306:3306 --name financial_management_system_mysql \
+-v "$(pwd)/mysql/backup":/etc/mysql/backup \
+-v "$(pwd)/mysql/data":/var/lib/mysql \
+-e MYSQL_ROOT_PASSWORD=root -d mysql:8.0.33 
