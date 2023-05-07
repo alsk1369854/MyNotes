@@ -12,7 +12,7 @@ WORKDIR ${BASEPATH}
 # copy file
 COPY myText.txt /usr/local/tempText.txt
 # add file
-# install from https://www.oracle.com/tw/java/technologies/javase/javase8-archive-downloads.html
+# install from
 ADD jdk-8u202-linux-x64.tar.gz /usr/local/
 # install from https://tomcat.apache.org/download-90.cgi
 ADD apache-tomcat-9.0.74.tar.gz /usr/local/
