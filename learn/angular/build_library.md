@@ -1,14 +1,10 @@
 # Build angular library
 
-
-
 ## Check lib name (檢查包名)
 
 - 在 [NPM](https://www.npmjs.com/) 中搜尋包名，確認想要的名稱是否已被別人使用了
 
 - angular lib 建議以 "ngx-" 做為包名開頭
-  
-  
 
 ## Create angular library app (建立庫應用)
 
@@ -38,13 +34,11 @@ cd ngx-my-test-lib/
 ng generate library ngx-my-test
 ```
 
-
-
 ## Declare dependencies on other libs (聲明對其他庫的依賴)
 
 ```bash
-# install bootstrap
-npm i bootstrap
+# install angular bootstrap
+ng add @ng-bootstrap/ng-bootstrap
 ```
 
 ### my-lib/package.json (庫的包配置文件)
@@ -56,7 +50,7 @@ npm i bootstrap
   "peerDependencies": {
     "@angular/common": "^15.2.0",
     "@angular/core": "^15.2.0",
-    "bootstrap": "^5.2.3" // add dependencies
+    "@ng-bootstrap/ng-bootstrap": "^14.1.1" // add dependencies
   },
   "dependencies": {
     "tslib": "^2.3.0"
@@ -64,8 +58,6 @@ npm i bootstrap
   "sideEffects": false
 }
 ```
-
-
 
 ## Editing library (編輯庫組件)
 
@@ -75,7 +67,7 @@ npm i bootstrap
 import { Component } from '@angular/core';
 
 @Component({
-  selector: 'lib-ngx-my-test',
+  selector: 'ngx-my-test',
   template: `
     <div 
       *ngFor="let alertContent of alertContentList" 
@@ -87,7 +79,7 @@ import { Component } from '@angular/core';
     <button 
       type="button" 
       class="btn btn-primary"
-      (click)="onClickButton">
+      (click)="onClickButton()">
       add alert
     </button>
   `,
@@ -103,7 +95,49 @@ export class NgxMyTestComponent {
   }
 
 }
-
 ```
 
-  
+## Build angular library and publish to npm (打包與發布)
+
+### 1. Update lib version tag (更新庫版本標籤)
+
+```json
+{
+  "name": "ngx-my-test",
+  "version": "0.0.1", // update your new version, must be change 
+  "peerDependencies": {
+    "@angular/common": "^15.2.0",
+    "@angular/core": "^15.2.0",
+    "bootstrap": "^5.2.3"
+  },
+  "dependencies": {
+    "tslib": "^2.3.0"
+  },
+  "sideEffects": false
+}
+```
+
+
+
+### 2. build and publish to npm
+
+```bash
+# build my angular libs
+ng build
+
+# change directory to lib of dist
+cd dist/ngx-my-test
+
+# login npm
+npm login
+
+# check login user
+npm whoami
+
+# publish lib to npm
+npm publish
+```
+
+## Publish to npm (發布至 npm)
+
+### login npm (登入)

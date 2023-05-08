@@ -1,62 +1,85 @@
 # Java Web
+
 ## 簡介
+
 ### 1. tomcat 防止中文亂碼
+
 + tomcat 8 之前
 + tomcat 8 之後
-### 2. Servlet 繼承關係
+  
+  ### 2. Servlet 繼承關係
 + 1 繼承關係
 + 2 相關方法
-### 3 Servlet的生命週期
-### 4 Http協議
-### 5 會話
-### 6 服務器內部轉發以及客戶端重定向
-### 7 Thymeleaf 用來幫助我們做view render 的一個技術
-### 8 保存作用域
+  
+  ### 3 Servlet的生命週期
+  
+  ### 4 Http協議
+  
+  ### 5 會話
+  
+  ### 6 服務器內部轉發以及客戶端重定向
+  
+  ### 7 Thymeleaf 用來幫助我們做view render 的一個技術
+  
+  ### 8 保存作用域
 + request
 + session
 + application
 
 ## 1. tomcat 防止中文亂碼
+
 ### tomcat 8 之前
+
 #### get:
+
 ```java
 String fname = request.getParameter("name");        
 byte[] bytes = fname.getBytes("ISO-8859-1");
 String name = new String(bytes,"utf-8");
-```  
+```
+
 #### post:
+
 ```java
 request.setCharacterEncoding("utf-8");
 String fname = request.getParameter("name");
 ```
+
 <br/>
 
 ### tomcat 8 之後
+
 #### get:
+
 ```java
 // 不用配置
-```  
+```
+
 #### post:
+
 ```java
 request.setCharacterEncoding("utf-8");
 String fname = request.getParameter("name");
 ```
 
 ## 2. Servlet 繼承關係 - 重點查看的是(service(request, response))
+
 ### 1 繼承關係
+
     javax.com.servlet.Servlet (interface)
         javax.com.servlet.GenericServlet (abstract)
             javax.com.servlet.http.HttpServlet (abstract)
 
 ### 2 相關方法
+
     1. javax.com.servlet.Servlet (interface):
         init(ServletConfig var1) - 初始化方法
         void service(ServletRequest var1, ServletResponse var2) - 服務方法
         void destroy() - 銷毀方法
-
+    
     2. javax.com.servlet.GenericServlet (abstract):
         public abstract void service(ServletRequest var1, ServletResponse var2) - 仍然是抽象的
-
+    
     3. javax.com.servlet.http.HttpServlet (abstract):
         protected void service(HttpServletRequest req, HttpServletResponse resp) - 不是抽象的
         1. String method = req.getMethod(); - 獲取請求的方式
@@ -67,7 +90,7 @@ String fname = request.getParameter("name");
                 this.doPut(req, resp);
             } else if (method.equals("DELETE")) {
             ....
-
+    
         3. 在HttpServlet這個類中，do方法都差不多:
            protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
                String msg = lStrings.getString("http.method_post_not_supported");
@@ -91,6 +114,7 @@ String fname = request.getParameter("name");
         4) 因此，我們在創建servlet時，我們才會去考愈請求方式，從而決定重寫哪個do方法
 
 ## 3 Servlet的生命週期
+
     1. 生命週期: 從出身到死亡的過程就是生命週期。對應servlet中的三個方法: init(), service(), destroy() 
     2. 默認情況下:
         第一次請求時，這個servlet會先進行實例化(調用構造方法), 初始化(調用init()), 然後服務(調用service())
@@ -119,6 +143,7 @@ String fname = request.getParameter("name");
                 2. 不要根據成員變量的值做邏輯判斷
 
 ### 4 Http協議
+
     1. Http 稱為超文本傳輸協議
     2. Http 是無狀態的
     3. Http 請求響應包含兩個部分: 請求、響應
@@ -137,6 +162,7 @@ String fname = request.getParameter("name");
             3. 響應體: 響應的實際內容(比如請求add.html頁面，響應就是<html><head><body><form>...)
 
 ### 5 會話
+
     1. Http是無狀態的
         - HTTP 無狀態: 服務器無法判斷兩次請求是否是同一個Client發送的，還是不同Client所發送的
         - 無狀態帶來的實現問題: 第一次請求式是添加商品到購物車，第二次請求是結帳; 如果兩次請求Server無法區分是同一個Client，就會導致混亂
@@ -148,7 +174,7 @@ String fname = request.getParameter("name");
             HttpSession session = request.getSession(); -> 獲取當前會話，沒有則創建一個新的
             request.getSession(true); -> 效果和不帶參數相同
             request.getSession(false); -> 獲取當前會話，沒有則返回null，不會創建新的
-
+    
             session.getId(); -> 獲取 sessionID
             session.isNew(); -> 判斷當前session是否是新的
             session.getMaxInactiveInterval(); -> session的非激活間隔時常，默認1800秒 (如: 網頁閒置過久後，需要重新登入)
@@ -163,6 +189,7 @@ String fname = request.getParameter("name");
             void session.removeAttribute(String key);
 
 ### 6 服務器內部轉發以及客戶端重定向
+
     1. Server內部轉發: request.getRequestDispatcher("demo2").forward(request,response); // Server內部轉發給 /demo2 處理請求  
         - 一次請求響應的過程，對於Client端而言，內部經過多少次轉發，Client端是不知道的
         - 最終地址欄沒有變化
@@ -171,6 +198,7 @@ String fname = request.getParameter("name");
         - 地址欄有變化
 
 ### 7 Thymeleaf 用來幫助我們做view render 的一個技術
+
     1. 添加thymeleaf的jar包
     2. 新建一個Servlet類ViewBaseServlet
     3. 在web.xml文件中添加配置
@@ -179,7 +207,7 @@ String fname = request.getParameter("name");
                 <param-name>view-prefix</param-name>
                 <param-value>/</param-value>
             </context-param>
-
+    
         - 配置後墜 view-suffix
             <context-param>
                 <param-name>view-suffix</param-name>
@@ -197,16 +225,19 @@ String fname = request.getParameter("name");
         th:if   ,   th:unless   ,   th:each ,   th:text
 
 ### 8 保存作用域
+
     原始強況下，保存作用域我們可以認為有四個: page(頁面級別，現在幾乎不用), request, session, application
     1) request: 一次請求響應範圍
     2) session: 一次會話範圍有效
     3) application: 一次應用程序範圍有效
 
 ### 9 路徑問題
+
     1) 絕對路徑
     2) 相對路徑
 
 ### 10 xml
+
     1) 概念
         HTML: 超文本標記語言
         XML: 可懬展的標記語言
@@ -217,6 +248,7 @@ String fname = request.getParameter("name");
         3) XML 正文
 
 ### 11 DispatchServlet 使用反射提供一個中央Servlet
+
     1. 配置 Controller Bean 這個對應依據我們存儲在 applicationContext.xml 中
         <bean id="customer" class="JavaWeb.customer.controllers.CustomerController"></bean>
         通過DOM技術我們去解析XML文件，在中央控制器中形成一個 beanMap 容器，用來存放所有的 controller 組件實例
@@ -243,6 +275,7 @@ String fname = request.getParameter("name");
             }
 
 ## 12 Servlet 初始化方法
+
     1. 初始化方法有兩個: init(), init(config)
         1) 帶參數:
             public void init(ServletConfig config) throws ServletException {
@@ -276,7 +309,7 @@ String fname = request.getParameter("name");
             <com.servlet-name>IndexServlet</com.servlet-name>
             <url-pattern>/index</url-pattern>
         </com.servlet-mapping>
-        
+    
     3. 也可以透過註解的方式進行配置:
         @WebServlet(urlPatterns = {"/index"},
                 initParams = {
@@ -296,6 +329,7 @@ String fname = request.getParameter("name");
             String value = servletContext.getInitParameter(key);
 
 ## 13 什麼是業務層
+
     MVC: Model(模型)、View(視圖)、Controller(控制器)
     View: 用於做數據展示以及和用戶交互的一個介面
     Controller: 能夠接收客戶端的清求，具體的業務功能還是需要借助模型組件來完成
@@ -317,6 +351,7 @@ String fname = request.getParameter("name");
                 6. ....
 
 ## 14 IOC
+
     1) 耦合/依賴
         依賴是指XXX離不開xxx
         在軟體系統中，層與層之間是存在依賴的。我們也稱之為耦合
@@ -329,7 +364,7 @@ String fname = request.getParameter("name");
             如果這句話出現在servlet的類中，也就是說customerService是一個成員變量，那麼這個customerService的作用域(生命週期)因該就是這個servlet實例級別
         2) 之後我們在applicationContext.xml中定義了這個customerService。然後透過解析XML，產生customerService的實例，存放在beanMap中，這個beanMap在一個beanFactory中
             因此，我們轉移(改變)了之前的service實例，dao實例等等他們的生命週期。控制權從程序員轉移到beanFactory。這個現象我們稱之為控制反轉。
-
+    
         依賴注入:
         1) 之前我們在控制層出現代碼: CustomerService customerService = new CustomerServiceImpl();
             那麼，控制層和service層級存在耦合。
@@ -340,6 +375,7 @@ String fname = request.getParameter("name");
             </bean>
 
 ## 15 過濾器 Filter
+
     1) Filter也屬於Servlet規範
     2) Filter開發步驟: 新建類實現Filter接口，然後實現其中三個方法: init, doFilter, destoy
         配置Filter, 可以用註解@WebFilter, 也可以使用xml文件 <filter><filter-mapping>
@@ -349,8 +385,8 @@ String fname = request.getParameter("name");
         2) 如果採取的是註解的方式進行配置， 那麼過濾器鏈的攔截順序是按照類名遞增的先後順序排序的
         3) 如果採取的是xml的方式進行配置，那麼按照配置的先後順序來進行排序
 
-
 ## 16 事務管理 (TransActionManager, ThreadLocal, OpenSessionInViewFilter)
+
     1) 涉及到的組件
         - OpenSessionInViewFilter
         - TransactionManager
@@ -370,7 +406,7 @@ String fname = request.getParameter("name");
                     createMap(t, value);            // 默認情況下map是每有初始化的，那麼第一次往其中添加數據時，進行初始化
                 }
             }
-
+    
         - get 
             public T get() {
                 Thread t = Thread.currentThread();  // 獲取當前線程
@@ -385,8 +421,9 @@ String fname = request.getParameter("name");
                 }
                 return setInitialValue();
             }
-                
+
 ## 17 監聽器(Listener, ContextLoaderListener)
+
     1) ServletContextListener - 監聽ServletContext對象創建和銷毀過程
     2) HttpSessionListener - 監聽HttpSession對象創建和銷毀過程
     3) ServletRequestListener - 監聽ServletRequest對象創建和銷毀過程
@@ -394,7 +431,7 @@ String fname = request.getParameter("name");
     4) ServletContextAttributeListener - 監聽ServletContext的包存作用愈的改動(add, remove, replace)
     5) HttpSessionAttributeListener - 監聽HttpSession的包存作用愈的改動(add, remove, replace)
     6) ServletRequestAttributeListener - 監聽ServletRequest的包存作用愈的改動(add, remove, replace)
-
+    
     7) HttpSessionBindingListener - 監聽某個對象在Session域中的創建與移除
     8) HttpSessionActivationListener - 監聽某個對象在Session域中的序列化和反序列化
 
