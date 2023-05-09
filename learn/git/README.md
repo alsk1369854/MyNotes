@@ -141,6 +141,30 @@ git add .
 git commit -a -m "merge myNewContentBranch"
 ```
 
+
+
+## rebase (重定根基)
+
+### 合併
+
+- git rebase {main_barnch}
+
+- 將此分支歷史節點拼接至目標分支節點後
+
+```bash
+git rebase myMasterBranch
+```
+
+### 取消 rebase
+
+- 回到主要分支，使用下行命令回到 rebase 前的狀態
+
+```bash
+git reset ORIG_HEAD
+```
+
+
+
 ## pull (拉取)
 
 ### 拉取遠程庫分支置當前本地分隻
