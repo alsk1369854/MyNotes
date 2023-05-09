@@ -18,6 +18,9 @@ npm publish
 # npm @<scope>/<package> 推送更新
 npm publish --access=public 
 
+# npm 下架
+npm unpublish
+
 # npm 版本更新 
 # current version 1.0.0
 npm version patch # update to 1.0.1 

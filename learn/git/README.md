@@ -1,11 +1,3 @@
-## Git flow (Git 開發模式)
-
-![](Git_And_GitHub_Images/git開發模式.png)
-
-## Git  constructor (Git 結構)
-
-![](Git_And_GitHub_Images/git架構.png)
-
 # Git
 
 ## init (建立版本控制)

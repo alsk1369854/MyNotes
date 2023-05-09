@@ -53,8 +53,6 @@ export class AppModule { }
 ng add {package_name}
 ```
 
-
-
 ## Module (模型組件)
 
 ### create module (建立模型組件)
@@ -81,8 +79,6 @@ import { MyModule } from './my-module/my-module.module.ts';
 export class AppModule { }
 ```
 
-
-
 ### router module (路由組件)
 
 ```bash
@@ -90,8 +86,6 @@ export class AppModule { }
 # --module=app 告訴 ng generate 把它註冊到 AppModule 的 imports 陣列中。
 ng generate module app-routing --flat --module=app
 ```
-
-
 
 ## Tools
 
