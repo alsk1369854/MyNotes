@@ -1,7 +1,5 @@
 # shell file
 
-
-
 ## Shell file
 
 #### my_shell.sh
@@ -12,15 +10,11 @@
 touch mytext.txt
 ```
 
-
-
 ## 給與目綠執行 .sh 的權限
 
 ```bash
 chmod u+x *.sh
 ```
-
-
 
 ## 執行 Shell file
 

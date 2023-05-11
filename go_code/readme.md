@@ -8,25 +8,19 @@
 go version
 ```
 
-
-
 ## Go with vscode
 
 ### 1. Install vscode extension module
 
 1. golang.go
 
-
-
 ### 2. Update go module
 
--  Open search bar : ctr + shift + P
+- Open search bar : ctr + shift + P
 
 ```bash
 Go: Install/Update tools
 ```
-
-
 
 ### 3. Create go app directory
 
@@ -37,8 +31,6 @@ mkdir hello-world
 
 go mod init hello-world
 ```
-
-
 
 ### 4. Create main.go file
 
@@ -54,9 +46,33 @@ package main
 import "fmt"
 
 func main() {
-	name := "ming"
-	fmt.Println("Hello: " + name)
+    name := "ming"
+    fmt.Println("Hello: " + name)
 }
 ```
 
+## Command
 
+### env
+
+#### show
+
+```bash
+go env
+```
+
+#### set
+
+- go env -w {ENV_NAME}={value}
+
+```bash
+go env -w GO111MODULE=on
+```
+
+
+
+### run
+
+```bash
+go run main/main.go
+```

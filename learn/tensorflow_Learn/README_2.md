@@ -59,12 +59,28 @@ with tf.GradientTape(persistent=True) as tape:
     print(x_grad) # tf.Tensor(1.0, shape=(), dtype=float32)
 ```
 
-
-
 ### 2階求導
 
-
-
 ```python
+# 二階求導
+x = tf.constant(2.)
+w = tf.constant(1.)
+b = tf.constant(0.0)
+secondGradient = None
+with tf.GradientTape() as t1: 
+    t1.watch([w, x])
+    oneGradient = None
+    with tf.GradientTape() as t2:
+        t2.watch([x, w, b])
+        y = x*w+b
+        # 一階求導
+        oneGradient= t2.gradient(y, [x, w, b])
+    print(oneGradient)
+    # [<tf.Tensor: shape=(), dtype=float32, numpy=1.0>, 
+    # <tf.Tensor: shape=(), dtype=float32, numpy=2.0>, 
+    # <tf.Tensor: shape=(), dtype=float32, numpy=1.0>]
 
+    # 再次對 dy_dx 求導
+    secondGradient = t1.gradient(oneGradient[0], [y])
+print(secondGradient[0])  # tf.Tensor(1.0, shape=(), dtype=float32)
 ```
