@@ -42,10 +42,6 @@ go get gorm.io/driver/postgres
 go get github.com/joho/godotenv
 ```
 
-
-
-
-
 ### Creat basic file
 
 #### .evn
@@ -68,20 +64,18 @@ db.database=test_db
 package initializers
 
 import (
-	"log"
+    "log"
 
-	"github.com/joho/godotenv"
+    "github.com/joho/godotenv"
 )
 
 func LoadEnv() {
-	err := godotenv.Load()
-	if err != nil {
-		log.Fatal("Error load .env file")
-	}
+    err := godotenv.Load()
+    if err != nil {
+        log.Fatal("Error load .env file")
+    }
 }
 ```
-
-
 
 ##### connectDB.go
 
@@ -89,31 +83,29 @@ func LoadEnv() {
 package initializers
 
 import (
-	"log"
-	"os"
+    "log"
+    "os"
 
-	"gorm.io/driver/postgres"
-	"gorm.io/gorm"
+    "gorm.io/driver/postgres"
+    "gorm.io/gorm"
 )
 
 var DB *gorm.DB
 
 func ConnectDB() {
-	dsn := "host=" + os.Getenv("db.host") +
-		" user=" + os.Getenv("db.user") +
-		" password=" + os.Getenv("db.password") +
-		" dbname=" + os.Getenv("db.database") +
-		" port=" + os.Getenv("db.port") +
-		" sslmode=disable"
-	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
-	if err != nil {
-		log.Fatal("Failed to connect to database")
-	}
-	DB = db
+    dsn := "host=" + os.Getenv("db.host") +
+        " user=" + os.Getenv("db.user") +
+        " password=" + os.Getenv("db.password") +
+        " dbname=" + os.Getenv("db.database") +
+        " port=" + os.Getenv("db.port") +
+        " sslmode=disable"
+    db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
+    if err != nil {
+        log.Fatal("Failed to connect to database")
+    }
+    DB = db
 }
 ```
-
-
 
 #### main.go
 
@@ -123,38 +115,34 @@ package main
 package main
 
 import (
-	"api-CRUD/initializers"
-	"errors"
-	"net/http"
-	"os"
-	"strconv"
+    "api-CRUD/initializers"
+    "errors"
+    "net/http"
+    "os"
+    "strconv"
 
-	"github.com/gin-gonic/gin"
+    "github.com/gin-gonic/gin"
 )
 
 func index(c *gin.Context) {
-	c.HTML(http.StatusOK, "index.html", nil)
+    c.HTML(http.StatusOK, "index.html", nil)
 }
 
 func init() {
-	initializers.LoadEnv()
-	initializers.ConnectDB()
+    initializers.LoadEnv()
+    initializers.ConnectDB()
 }
 
 func main() {
-	router := gin.Default()
-	router.Static("/static", "./static")
-	router.LoadHTMLGlob("templates/*.html")
+    router := gin.Default()
+    router.Static("/static", "./static")
+    router.LoadHTMLGlob("templates/*.html")
 
-	router.GET("/", index)
+    router.GET("/", index)
 
-	router.Run("localhost:" + os.Getenv("PORT"))
+    router.Run("localhost:" + os.Getenv("PORT"))
 }
 ```
-
-
-
-
 
 ## API
 

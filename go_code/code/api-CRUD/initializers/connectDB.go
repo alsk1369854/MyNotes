@@ -15,7 +15,7 @@ func ConnectDB() {
 		" user=" + os.Getenv("db.user") +
 		" password=" + os.Getenv("db.password") +
 		" dbname=" + os.Getenv("db.database") +
-		" port=" + os.Getenv("db.port") +
+		// " port=" + os.Getenv("db.port") +
 		" sslmode=disable"
 	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
 	if err != nil {
