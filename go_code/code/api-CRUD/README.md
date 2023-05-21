@@ -18,6 +18,8 @@ go mod init myapp
 go get -u github.com/gin-gonic/gin
 ```
 
+
+
 #### GORM
 
 - 物件關聯映射庫
@@ -28,7 +30,7 @@ go get -u gorm.io/gorm
 
 ##### SQL
 
-###### PortgreSQL
+###### PostgreSQL
 
 ```bash
 go get gorm.io/driver/postgres

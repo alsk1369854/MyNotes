@@ -141,8 +141,6 @@ git add .
 git commit -a -m "merge myNewContentBranch"
 ```
 
-
-
 ## rebase (重定根基)
 
 ### 合併
@@ -162,8 +160,6 @@ git rebase myMasterBranch
 ```bash
 git reset ORIG_HEAD
 ```
-
-
 
 ## pull (拉取)
 

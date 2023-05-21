@@ -10,6 +10,8 @@ go version
 
 ## Go with vscode
 
+[設定 Go 開發的Visual Studio Code | Microsoft Learn](https://learn.microsoft.com/zh-tw/azure/developer/go/configure-visual-studio-code)
+
 ### 1. Install vscode extension module
 
 1. golang.go
@@ -68,8 +70,6 @@ go env
 ```bash
 go env -w GO111MODULE=on
 ```
-
-
 
 ### run
 
