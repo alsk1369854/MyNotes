@@ -23,10 +23,6 @@ which aws
 aws --version
 ```
 
-
-
-
-
 ### AWS Lambda cli
 
 [AWS Lambda doc](https://docs.aws.amazon.com/zh_tw/lambda/latest/dg/gettingstarted-awscli.html)
