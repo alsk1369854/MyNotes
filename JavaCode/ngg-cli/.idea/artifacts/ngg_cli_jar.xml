@@ -1,0 +1,8 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="ngg-cli:jar">
+    <output-path>$PROJECT_DIR$/out/artifacts/ngg_cli_jar</output-path>
+    <root id="archive" name="ngg-cli.jar">
+      <element id="module-output" name="ngg-cli" />
+    </root>
+  </artifact>
+</component>
