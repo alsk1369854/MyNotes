@@ -34,6 +34,7 @@ func init() {
 
 func main() {
 	router := gin.Default()
+
 	// http://localhost/static/text.txt
 	router.Static("/static", "./resources/static")
 	router.LoadHTMLGlob("resources/templates/*.html")

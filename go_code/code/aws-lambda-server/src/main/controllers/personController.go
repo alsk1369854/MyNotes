@@ -27,9 +27,9 @@ func GetPersonAll(c *gin.Context) {
 }
 
 func CreatePerson(c *gin.Context) {
-	newPerson := models.Person{}
+	newPerson := &models.Person{}
 
-	jsonParseErr := c.Bind(&newPerson)
+	jsonParseErr := c.Bind(newPerson)
 
 	if jsonParseErr != nil {
 		c.IndentedJSON(http.StatusBadRequest, gin.H{
@@ -68,8 +68,8 @@ func GetPersonById(c *gin.Context) {
 func UpdatePersonById(c *gin.Context) {
 	id := c.Param("id")
 
-	var srcPerson models.Person
-	jsonParseErr := c.Bind(&srcPerson)
+	srcPerson := &models.Person{}
+	jsonParseErr := c.Bind(srcPerson)
 	if jsonParseErr != nil {
 		c.IndentedJSON(http.StatusBadRequest, gin.H{
 			"error": exceptions.PersonJsonParseException().Error(),
@@ -92,7 +92,6 @@ func UpdatePersonById(c *gin.Context) {
 func DeletePersonById(c *gin.Context) {
 	id := c.Param("id")
 
-	// ...
 	message, err := services.DeletePersonById(id)
 	if err != nil {
 		c.IndentedJSON(http.StatusBadRequest, gin.H{
@@ -106,8 +105,7 @@ func DeletePersonById(c *gin.Context) {
 
 func InitPersonControllerRouters(router *gin.Engine) {
 	// /person/id
-	var baseURL = "/person"
-	personRouter := router.Group(baseURL)
+	personRouter := router.Group("/person")
 	{
 		personRouter.GET("/:id", GetPersonById)
 		personRouter.GET("/all", GetPersonAll)
