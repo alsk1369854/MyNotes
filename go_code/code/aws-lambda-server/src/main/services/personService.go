@@ -2,22 +2,24 @@ package services
 
 import (
 	"aws-lambda-server/src/main/db"
+	"aws-lambda-server/src/main/enums"
 	"aws-lambda-server/src/main/exceptions"
 	"aws-lambda-server/src/main/models"
 )
 
-func GetPersonAll(gender string) ([]*models.Person, error) {
+func GetPersonAll() ([]*models.Person, error) {
 	persons := []*models.Person{}
-	if gender != "" {
-		// db.DB.Find(&persons, "gender = ?", gender)
-		db.DB.Where(&models.Person{
-			Gender: gender,
-		}).Find(&persons)
-		return persons, nil
-	}
-
 	db.DB.Find(&persons)
+	return persons, nil
+}
 
+func GetPersonAllByGender(gender enums.PersonGender) ([]*models.Person, error) {
+	persons := []*models.Person{}
+
+	// db.DB.Find(&persons, "gender = ?", gender)
+	db.DB.Where(&models.Person{
+		Gender: gender,
+	}).Find(&persons)
 	return persons, nil
 }
 

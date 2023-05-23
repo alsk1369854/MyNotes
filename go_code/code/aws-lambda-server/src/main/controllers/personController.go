@@ -1,6 +1,7 @@
 package controllers
 
 import (
+	"aws-lambda-server/src/main/enums"
 	"aws-lambda-server/src/main/exceptions"
 	"aws-lambda-server/src/main/models"
 	"aws-lambda-server/src/main/services"
@@ -10,20 +11,19 @@ import (
 )
 
 func GetPersonAll(c *gin.Context) {
-	gender, ok := c.GetQuery("gender")
-
+	queryGender, ok := c.GetQuery("gender")
 	if !ok {
-		gender = ""
+		gender := enums.PersonGender(queryGender)
+		persons, err := services.GetPersonAllByGender(gender)
+		if err != nil {
+			c.IndentedJSON(http.StatusInternalServerError, gin.H{
+				"error": err.Error(),
+			})
+			return
+		}
+		c.IndentedJSON(http.StatusOK, persons)
 	}
 
-	persons, err := services.GetPersonAll(gender)
-	if err != nil {
-		c.IndentedJSON(http.StatusInternalServerError, gin.H{
-			"error": err.Error(),
-		})
-		return
-	}
-	c.IndentedJSON(http.StatusOK, persons)
 }
 
 func CreatePerson(c *gin.Context) {

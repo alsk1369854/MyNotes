@@ -28,7 +28,10 @@ func routerHandler(c *gin.Context){
     gender, ok := c.GetQuery("gender")
 
     // http://.../person/{id}
-    id := c.Param("id")
+    id := c.Param("id")
 
+    // ORM body
+    person := &modules.Person{}
+    parseErr := c.Bind(person)
 }
 ```
