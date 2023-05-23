@@ -404,7 +404,7 @@ docker run -it --volume-from {my_container1} {IMAGE}
 docker build -f Dockerfile -t ming/centos1:1.0 . 
 ```
 
-### 範例一 (CMD 命令)
+#### 範例一 (CMD 命令)
 
 - 下方 Dockerfile 最後一行是使用 CMD 來執行命令，此時我們如果使用 **docker run -it {image} echo "Hi~"** ，來執行此 Dockerfile 創建的鏡像，此時原先的 /bin/bash 指令將會新的指令覆蓋，只單單執行下行命令
   
@@ -433,7 +433,7 @@ EXPOSE 80
 CMD ["/bin/bash"]
 ```
 
-### 範例二 (ENTRYPOINT 拼接命令)
+#### 範例二 (ENTRYPOINT 拼接命令)
 
 - 下方 Dockerfile 最後一行是使用 ENTRYPOINT 來執行命令，此時我們如果使用 **docker run -it {image} -i** ，來執行此 Dockerfile 創建的鏡像，此時 -i 指令將會被拼接再原指令的後命變為執行下行命令
   
@@ -462,7 +462,7 @@ EXPOSE 80
 ENTRYPOINT [ "curl", "-s", "http://ip.cn" ]
 ```
 
-### 範例三 (ONBUILD 被繼承時的前置準備工作)
+#### 範例三 (ONBUILD 被繼承時的前置準備工作)
 
 - 下方 Dockerfile 最後一行使用了 ONBUILD ，這項會使此 Dockerfile 生成的鏡像，在被其他 Dockerfile 使用 FROM 引用建立時，將會優先執行被參照的 Dockerfile 的 ONBUILD 指令任務 
 
@@ -492,7 +492,7 @@ CMD ["/bin/bash"]
 ONBUILD RUN echo "prepare become FROM image..."
 ```
 
-### 範例四 (COPY、ADD 添加文件至鏡像)
+#### 範例四 (COPY、ADD 添加文件至鏡像)
 
 - COPY 指令會將宿主機的文件拷貝至鏡像中
 
@@ -530,6 +530,86 @@ EXPOSE 8080
 
 # default run terminal command
 CMD /usr/local/apache-tomcat-9.0.74/bin/startup.sh && tail -F /usr/local/apache-tomcat-9.0.74/bin/catalina.sh
+```
+
+### 推送鏡像 (push)
+
+- docker push {image_name}
+
+```bash
+# 登入 docker
+docker login
+
+# 添加版本號
+docker tag fmsserver alsk1369854/fmsserver
+
+# 推送鏡像至 docker hub
+docker push alsk1369854/fmsserver
+```
+
+
+
+## Docker composer
+
+### 編輯
+
+```docker
+version: "1"
+
+services:
+
+  fmsmysql:
+    image: "mysql:8.0.33"
+    container_name: fmsmysql
+    ports:
+      - 3306:3306
+    # restart: always
+    volumes:
+      - ./mysql:/var/lib/mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      # MYSQL_USER: root
+      # MYSQL_PASSWORD: your_password
+      MYSQL_DATABASE: fms
+
+  fmsserver:
+    # build: ./my_super_app
+    image: "alsk1369854/fmsserver"
+    container_name: fmsserver
+    ports:
+      - 8080:8080
+    # restart: always
+    links:
+      - fmsmysql:fmsmysql
+    depends_on:
+      - fmsmysql
+    command: sh -c "/wait && /sayhello"
+    environment:
+      - WAIT_HOSTS=fmsmysql:3306
+      - WAIT_HOSTS_TIMEOUT=300
+      - WAIT_SLEEP_INTERVAL=30
+      - WAIT_HOST_CONNECT_TIMEOUT=30
+
+
+```
+
+### 創建 (up)
+
+```bash
+# 背景運行創建
+docker-compose up -d
+```
+
+### 啟動 (start)
+
+```bash
+docker-compose start
+```
+
+### 停止 (stop)
+
+```bash
+docker-compose stop
 ```
 
 ## Docker run MySQL

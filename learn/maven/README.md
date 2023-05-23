@@ -1,7 +1,5 @@
 # Maven
 
-
-
 # Install
 
 ```bash
