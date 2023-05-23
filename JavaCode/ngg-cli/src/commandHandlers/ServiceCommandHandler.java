@@ -20,9 +20,14 @@ public class ServiceCommandHandler {
 
         String[] paths = dirPath.split("[\\,/]");
         String serviceName = paths[paths.length - 1];
+        StringBuilder serviceDir = new StringBuilder();
+        for (int i = 0; i < paths.length - 1; i++) {
+            String path = paths[i];
+            serviceDir.append(path + "/");
+        }
 
         try {
-            String tsFilePath = dirPath + "/" + serviceName + ".service.ts";
+            String tsFilePath = serviceDir.toString() + serviceName + ".service.ts";
             File tsFile = FileUtil.createFile(tsFilePath);
             String tsContent = ServiceCommandUtil.getDefaultTsContent(serviceName);
             FileUtil.writeFile(tsFile, tsContent);
@@ -33,6 +38,6 @@ public class ServiceCommandHandler {
     }
 
     public static String getHelpMessage() {
-        return "ngg s <service-directory-path>\t\tcreate a angular service";
+        return "ngg s <service-path>\t\t\tcreate a angular service\n";
     }
 }

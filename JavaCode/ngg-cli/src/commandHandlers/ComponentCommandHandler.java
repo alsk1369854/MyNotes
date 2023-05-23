@@ -48,6 +48,6 @@ public class ComponentCommandHandler {
     }
 
     public static String getHelpMessage() {
-        return "ngg c <component-directory-path>\t\tcreate a angular component";
+        return "ngg c <component-directory-path>\tcreate a angular component\n";
     }
 }

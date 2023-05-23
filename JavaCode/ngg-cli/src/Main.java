@@ -7,7 +7,7 @@ public class Main {
 
         Integer argsLen = args.length;
         if (argsLen < 2) {
-            System.out.println(HelpCommandHandler.getHelpMessage());
+            HelpCommandHandler.printHelpMessage();
             return;
         }
 
@@ -22,8 +22,10 @@ public class Main {
             case ServiceCommandHandler.OPTION:
                 ServiceCommandHandler.createService(dirPath);
                 break;
+
+            case HelpCommandHandler.OPTION:
             default:
-                System.out.println(HelpCommandHandler.getHelpMessage());
+                HelpCommandHandler.printHelpMessage();
         }
     }
 }
