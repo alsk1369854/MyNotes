@@ -7,5 +7,3 @@
 ```bash
 which java
 ```
-
-

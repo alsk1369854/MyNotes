@@ -547,8 +547,6 @@ docker tag fmsserver alsk1369854/fmsserver
 docker push alsk1369854/fmsserver
 ```
 
-
-
 ## Docker composer
 
 ### 編輯
@@ -589,8 +587,6 @@ services:
       - WAIT_HOSTS_TIMEOUT=300
       - WAIT_SLEEP_INTERVAL=30
       - WAIT_HOST_CONNECT_TIMEOUT=30
-
-
 ```
 
 ### 創建 (up)
