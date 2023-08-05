@@ -10,7 +10,7 @@ go version
 
 ## Go with vscode
 
-[設定 Go 開發的Visual Studio Code | Microsoft Learn](https://learn.microsoft.com/zh-tw/azure/developer/go/configure-visual-studio-code)
+[設定 Go 開發的 Visual Studio Code | Microsoft Learn](https://learn.microsoft.com/zh-tw/azure/developer/go/configure-visual-studio-code)
 
 ### 1. Install vscode extension module
 
