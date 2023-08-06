@@ -1,7 +1,7 @@
 package linkedlists
 
 import (
-	"datastructutil/datastruct/basicerrors"
+	"datastructutil/datastruct/customerrors"
 	"fmt"
 	"reflect"
 	"sort"
@@ -9,55 +9,59 @@ import (
 	"sync"
 )
 
-type LinkedList[E any] interface {
-	// **Public**
-
+type LinkedList[E comparable] interface {
+	// ** Public **
 	// get
 	GetAt(index int) (element E)
 	GetFirst() (element E)
-	GetLast() (element E)
-	// GetSlice(startIndex int, sliceLen int) (elementArr []E)
-	// IndexOf(element E) (index int)
+	Peek() (element E)
+
+	// get index
+	IndexOf(target E, startIndex int, reverse bool) (targetIndex int)
 
 	// add
 	AddAt(index int, elementArr ...E)
 	AddFirst(elementArr ...E)
-	AddLast(elementArr ...E)
+	Add(elementArr ...E)
+
+	// set
+	SetAt(index int, newElement E) (oldElement E)
 
 	// remove
 	RemoveAt(index int) (element E)
 	RemoveFirst() (element E)
-	RemoveLast() (element E)
-	Clear()
+	Pop() (element E)
 
 	// operation
-	Equal(linkedList LinkedList[E]) bool
-
-	ForEach(callback func(index int, element E))
-	SortBy(less func(a E, b E) bool)
-
+	Equal(linkedList LinkedList[E]) (isEqual bool)
 	Len() (length int)
 	IsEmpty() (isEmpty bool)
+
+	Clear()
+
+	ForEach(callback func(index int, element E) (doBreak bool))
+	Filter(filterFunc func(index int, element E) (doKeep bool)) (newList LinkedList[E])
+	SortBy(lessFunc func(a E, b E) (isLess bool))
 
 	ToArray() (elementArr []E)
 	ToString() (str string)
 
-	// **Private**
-	toLinkedListNodes(elementArr ...E) (headNode *linkedListNode[E], tailNode *linkedListNode[E])
+	// ** Private **
+	createLinkedListNode(elementArr ...E) (length int, headNode *linkedListNode[E], tailNode *linkedListNode[E])
 	getNodeAt(index int) (node *linkedListNode[E])
-	getHeadNode() (node *linkedListNode[E])
-	getTailNode() (node *linkedListNode[E])
 	linkNode(preNode *linkedListNode[E], nextNode *linkedListNode[E])
 	unlinkNode(preNode *linkedListNode[E], nextNode *linkedListNode[E])
+	clearNode(node *linkedListNode[E])
+	forEachNode(startIndex int, reverse bool, callback func(index int, node *linkedListNode[E]) (doBreak bool))
 }
 
-type linkedListNode[E any] struct {
+type linkedListNode[E comparable] struct {
 	pre     *linkedListNode[E]
 	next    *linkedListNode[E]
 	element *E
 }
 
-type linkedList[E any] struct {
+type linkedList[E comparable] struct {
 	LinkedList[E]
 	mutex    sync.Mutex
 	headNode *linkedListNode[E]
@@ -65,93 +69,108 @@ type linkedList[E any] struct {
 	length   int
 }
 
-func NewLinkedList[E any](elementArr ...E) LinkedList[E] {
+func NewLinkedList[E comparable](elementArr ...E) LinkedList[E] {
 	list := &linkedList[E]{length: 0}
-	list.AddLast(elementArr...)
+	list.Add(elementArr...)
 	return list
 }
 
 func (l *linkedList[E]) GetAt(index int) (element E) {
-	if index < 0 || index >= l.length {
-		err := basicerrors.NewIndexOutOfBoundsError(index, l.length)
-		panic(err)
-	}
-
 	return *(l.getNodeAt(index).element)
 }
 
 func (l *linkedList[E]) GetFirst() (element E) {
-	if l.length == 0 {
-		err := basicerrors.NewIsEmptyError()
+	if l.IsEmpty() {
+		err := customerrors.NewIsEmptyError()
 		panic(err)
 	}
 	return l.GetAt(0)
 }
 
-func (l *linkedList[E]) GetLast() (element E) {
-	if l.length == 0 {
-		err := basicerrors.NewIsEmptyError()
+func (l *linkedList[E]) Peek() (element E) {
+	if l.IsEmpty() {
+		err := customerrors.NewIsEmptyError()
 		panic(err)
 	}
 	return l.GetAt(l.length - 1)
 }
 
+func (l *linkedList[E]) IndexOf(target E, startIndex int, reverse bool) (targetIndex int) {
+	targetIndex = -1
+	l.forEachNode(startIndex, reverse, func(i int, node *linkedListNode[E]) (doBreak bool) {
+		if target == *(node.element) {
+			targetIndex = i
+			return true
+		}
+		return false
+	})
+	return targetIndex
+}
+
 func (l *linkedList[E]) AddAt(index int, elementArr ...E) {
+	// add 可接受 index == l.length
 	if index < 0 || index > l.length {
-		err := basicerrors.NewIndexOutOfBoundsError(index, l.length)
+		err := customerrors.NewIndexOutOfBoundsError(index, l.length)
 		panic(err)
 	}
 
-	elementArrLen := len(elementArr)
-	if elementArrLen == 0 {
-		return
-	}
+	var newElementLen int
 
 	// 執行緒安全處理
 	l.mutex.Lock()
 	defer func() {
-		l.length += elementArrLen
+		l.length += newElementLen
 		l.mutex.Unlock()
 	}()
 
-	subListHeadNode, subListTailNode := l.toLinkedListNodes(elementArr...)
+	newElementLen, newElementHeadNode, newElementTailNode := l.createLinkedListNode(elementArr...)
+	if newElementLen == 0 {
+		return
+	}
 
-	if l.length == 0 { // 若此條件滿足 index 必等於 0
-		l.headNode = subListHeadNode
-		l.tailNode = subListTailNode
+	if l.IsEmpty() { // 若此條件滿足 index 必等於 0
+		l.headNode = newElementHeadNode
+		l.tailNode = newElementTailNode
 		return
 	}
 
 	// 單向連接處理
 	if index == 0 {
-		l.linkNode(subListTailNode, l.headNode)
-		l.headNode = subListHeadNode
+		l.linkNode(newElementTailNode, l.headNode)
+		l.headNode = newElementHeadNode
 		return
 	}
 	if index == l.length {
-		l.linkNode(l.tailNode, subListHeadNode)
-		l.tailNode = subListTailNode
+		l.linkNode(l.tailNode, newElementHeadNode)
+		l.tailNode = newElementTailNode
 		return
 	}
 
 	// 雙向連接處理
 	oldNode := l.getNodeAt(index)
 	tempPreNode := oldNode.pre
-	l.linkNode(tempPreNode, subListHeadNode)
-	l.linkNode(subListTailNode, oldNode)
+	l.linkNode(tempPreNode, newElementHeadNode)
+	l.linkNode(newElementTailNode, oldNode)
 }
 
 func (l *linkedList[E]) AddFirst(elementArr ...E) {
 	l.AddAt(0, elementArr...)
 }
 
-func (l *linkedList[E]) AddLast(elementArr ...E) {
+func (l *linkedList[E]) Add(elementArr ...E) {
 	l.AddAt(l.length, elementArr...)
+}
+
+func (l *linkedList[E]) SetAt(index int, newElement E) (oldElement E) {
+	node := l.getNodeAt(index)
+	tempElement := *node.element
+	node.element = &newElement
+	return tempElement
 }
 
 func (l *linkedList[E]) RemoveAt(index int) (element E) {
 	if index < 0 || index >= l.length {
-		err := basicerrors.NewIndexOutOfBoundsError(index, l.length)
+		err := customerrors.NewIndexOutOfBoundsError(index, l.length)
 		panic(err)
 	}
 
@@ -164,6 +183,8 @@ func (l *linkedList[E]) RemoveAt(index int) (element E) {
 
 	if l.length == 1 { // 若此條件滿足 index 必等於 0
 		tempNode := l.headNode
+		l.headNode = nil
+		l.tailNode = nil
 		return *(tempNode.element)
 	}
 
@@ -192,48 +213,81 @@ func (l *linkedList[E]) RemoveAt(index int) (element E) {
 }
 
 func (l *linkedList[E]) RemoveFirst() (element E) {
-	if l.length == 0 {
-		err := basicerrors.NewIsEmptyError()
+	if l.IsEmpty() {
+		err := customerrors.NewIsEmptyError()
 		panic(err)
 	}
 	return l.RemoveAt(0)
 }
 
-func (l *linkedList[E]) RemoveLast() (element E) {
-	if l.length == 0 {
-		err := basicerrors.NewIsEmptyError()
+func (l *linkedList[E]) Pop() (element E) {
+	if l.IsEmpty() {
+		err := customerrors.NewIsEmptyError()
 		panic(err)
 	}
 	return l.RemoveAt(l.length - 1)
 }
 
+func (l *linkedList[E]) Equal(linkedList LinkedList[E]) (isEqual bool) {
+	return reflect.DeepEqual(l, linkedList)
+}
+
+func (l *linkedList[E]) Len() (length int) {
+	return l.length
+}
+
+func (l *linkedList[E]) IsEmpty() (isEmpty bool) {
+	return l.length == 0
+}
+
 func (l *linkedList[E]) Clear() {
+	l.forEachNode(0, false, func(index int, node *linkedListNode[E]) (doBreak bool) {
+		l.clearNode(node)
+		return false
+	})
 	l.headNode = nil
 	l.tailNode = nil
 	l.length = 0
 }
 
-func (l *linkedList[E]) Equal(linkedList LinkedList[E]) bool {
-	return reflect.DeepEqual(l, linkedList)
+func (l *linkedList[E]) ForEach(callback func(index int, element E) (doBreak bool)) {
+	l.forEachNode(0, false, func(index int, node *linkedListNode[E]) (doBreak bool) {
+		return callback(index, *(node.element))
+	})
 }
 
-func (l *linkedList[E]) ForEach(callback func(index int, element E)) {
-	if l.length > 0 {
-		var tempNode = l.headNode
-		var i = 0
-		callback(i, *(tempNode.element))
-		for tempNode.next != nil {
-			tempNode = tempNode.next
-			i++
-			callback(i, *(tempNode.element))
+func (l *linkedList[E]) Filter(
+	filterFunc func(index int, element E) (doKeep bool),
+) (
+	newList LinkedList[E],
+) {
+	newList = NewLinkedList[E]()
+	l.ForEach(func(index int, element E) (doBreak bool) {
+		if filterFunc(index, element) {
+			newList.Add(element)
 		}
-	}
+		return false
+	})
+	return newList
+}
+
+func (l *linkedList[E]) SortBy(lessFunc func(a E, b E) (isLess bool)) {
+	// do sort
+	elementArr := l.ToArray()
+	sort.Slice(elementArr, func(i int, j int) bool {
+		return lessFunc(elementArr[i], elementArr[j])
+	})
+
+	// update linked list
+	l.Clear()
+	l.Add(elementArr...)
 }
 
 func (l *linkedList[E]) ToArray() (elementArr []E) {
 	elementArr = make([]E, l.length)
-	l.ForEach(func(i int, element E) {
+	l.ForEach(func(i int, element E) (doBreak bool) {
 		elementArr[i] = element
+		return false
 	})
 	return elementArr
 }
@@ -247,59 +301,9 @@ func (l *linkedList[E]) ToString() (str string) {
 	return fmt.Sprintf("[%v]", strings.Join(strList, ", "))
 }
 
-func (l *linkedList[E]) SortBy(less func(a E, b E) bool) {
-	// do sort
-	elementArr := l.ToArray()
-	sort.Slice(elementArr, func(i int, j int) bool {
-		return less(elementArr[i], elementArr[j])
-	})
-
-	// update linked list
-	l.Clear()
-	for _, element := range elementArr {
-		l.AddLast(element)
-	}
-}
-
-func (l *linkedList[E]) Len() (length int) {
-	return l.length
-}
-
-func (l *linkedList[E]) IsEmpty() (isEmpty bool) {
-	return l.length == 0
-}
-
-func (l *linkedList[E]) toLinkedListNodes(
-	elementArr ...E,
-) (
-	headNode *linkedListNode[E], tailNode *linkedListNode[E],
-) {
-	elementArrLen := len(elementArr)
-	if elementArrLen == 0 {
-		err := basicerrors.NewIsEmptyError()
-		panic(err)
-	}
-
-	headElement := elementArr[0]
-	headNode = &linkedListNode[E]{element: &headElement}
-	if elementArrLen == 1 {
-		return headNode, headNode
-	}
-
-	var tempNode = headNode
-	for i := 1; i < elementArrLen; i++ {
-		element := elementArr[i]
-		tailNode = &linkedListNode[E]{element: &element}
-		l.linkNode(tempNode, tailNode)
-		tempNode = tailNode
-	}
-
-	return headNode, tailNode
-}
-
 func (l *linkedList[E]) getNodeAt(index int) (node *linkedListNode[E]) {
 	if index < 0 || index >= l.length {
-		err := basicerrors.NewIndexOutOfBoundsError(index, l.length)
+		err := customerrors.NewIndexOutOfBoundsError(index, l.length)
 		panic(err)
 	}
 
@@ -318,12 +322,35 @@ func (l *linkedList[E]) getNodeAt(index int) (node *linkedListNode[E]) {
 	return node
 }
 
-func (l *linkedList[E]) getHeadNode() (node *linkedListNode[E]) {
-	return l.headNode
-}
+func (l *linkedList[E]) createLinkedListNode(
+	elementArr ...E,
+) (
+	length int, headNode *linkedListNode[E], tailNode *linkedListNode[E],
+) {
+	elementArrLen := len(elementArr)
+	if elementArrLen == 0 {
+		return elementArrLen, nil, nil
+	}
 
-func (l *linkedList[E]) getTailNode() (node *linkedListNode[E]) {
-	return l.tailNode
+	headElement := elementArr[0]
+	headNode = &linkedListNode[E]{element: &headElement}
+	if elementArrLen == 1 {
+		return elementArrLen, headNode, headNode
+	}
+
+	var preNode = headNode
+	var i = 1
+	for i < elementArrLen {
+		element := elementArr[i]
+		tailNode = &linkedListNode[E]{element: &element}
+		l.linkNode(preNode, tailNode)
+
+		// afterthought
+		preNode = tailNode
+		i++
+	}
+
+	return elementArrLen, headNode, tailNode
 }
 
 func (l *linkedList[E]) linkNode(preNode *linkedListNode[E], nextNode *linkedListNode[E]) {
@@ -334,4 +361,41 @@ func (l *linkedList[E]) linkNode(preNode *linkedListNode[E], nextNode *linkedLis
 func (l *linkedList[E]) unlinkNode(preNode *linkedListNode[E], nextNode *linkedListNode[E]) {
 	preNode.next = nil
 	nextNode.pre = nil
+}
+
+func (l *linkedList[E]) clearNode(node *linkedListNode[E]) {
+	node.pre = nil
+	node.next = nil
+	node.element = nil
+}
+
+func (l *linkedList[E]) forEachNode(
+	startIndex int, reverse bool, callback func(index int, node *linkedListNode[E]) (doBreak bool),
+) {
+	if l.IsEmpty() {
+		return
+	}
+
+	// initialization
+	var node = l.getNodeAt(startIndex)
+	var i = startIndex
+
+	// create afterhought func
+	afterthought := func() {
+		node = node.next
+		i++
+	}
+	if reverse {
+		afterthought = func() {
+			node = node.pre
+			i--
+		}
+	}
+
+	// for loop
+	for ; node != nil; afterthought() {
+		if callback(i, node) {
+			break
+		}
+	}
 }

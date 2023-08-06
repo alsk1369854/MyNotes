@@ -8,8 +8,8 @@ import (
 
 func TestMap(t *testing.T) {
 	type args struct {
-		linkedlist LinkedList[int]
-		callback   func(index int, element int) string
+		srcList           LinkedList[int]
+		createElementFunc func(index int, element int) string
 	}
 	tests := []struct {
 		name     string
@@ -19,8 +19,8 @@ func TestMap(t *testing.T) {
 		{
 			name: "test 1",
 			args: args{
-				linkedlist: NewLinkedList(0, 1, 2, 3, 4),
-				callback: func(index int, element int) string {
+				srcList: NewLinkedList(0, 1, 2, 3, 4),
+				createElementFunc: func(index int, element int) string {
 					return fmt.Sprintf("@%d", element)
 				},
 			},
@@ -31,7 +31,7 @@ func TestMap(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			wantList := tt.wantList
 
-			newList := Map(tt.args.linkedlist, tt.args.callback)
+			newList := Map(tt.args.srcList, tt.args.createElementFunc)
 
 			if !reflect.DeepEqual(wantList, newList) {
 				t.Error("wround object equal")

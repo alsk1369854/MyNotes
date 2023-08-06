@@ -1,4 +1,4 @@
-package basicerrors
+package customerrors
 
 import (
 	"errors"

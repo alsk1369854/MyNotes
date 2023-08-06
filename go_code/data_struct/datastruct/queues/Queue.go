@@ -2,7 +2,7 @@ package queues
 
 import "datastructutil/datastruct/linkedlists"
 
-type Queue[E any] interface {
+type Queue[E comparable] interface {
 	Enqueue(elementArr ...E)
 	Dequeue() (element E)
 	Peek() (element E)
@@ -10,11 +10,11 @@ type Queue[E any] interface {
 	IsEmpty() (isEmpty bool)
 }
 
-type queue[E any] struct {
+type queue[E comparable] struct {
 	list linkedlists.LinkedList[E]
 }
 
-func NewQueue[E any](elementArr ...E) Queue[E] {
+func NewQueue[E comparable](elementArr ...E) Queue[E] {
 	queue := &queue[E]{
 		list: linkedlists.NewLinkedList(elementArr...),
 	}
@@ -22,7 +22,7 @@ func NewQueue[E any](elementArr ...E) Queue[E] {
 }
 
 func (q *queue[E]) Enqueue(elementArr ...E) {
-	q.list.AddLast(elementArr...)
+	q.list.Add(elementArr...)
 }
 
 func (q *queue[E]) Dequeue() (element E) {
