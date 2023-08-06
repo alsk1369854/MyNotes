@@ -1,6 +1,7 @@
 package linkedlists
 
 import (
+	"fmt"
 	"reflect"
 	"testing"
 )
@@ -362,6 +363,14 @@ func TestRemoveAt(t *testing.T) {
 			wantRemoveEelemnt:       9,
 			wantNewListIndexEelemnt: -1,
 		},
+		{
+			name:                    "test 4",
+			list:                    NewLinkedList(0),
+			args:                    args{index: 0},
+			wantLen:                 0,
+			wantRemoveEelemnt:       0,
+			wantNewListIndexEelemnt: -1,
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -385,7 +394,6 @@ func TestRemoveAt(t *testing.T) {
 }
 
 func TestEqual(t *testing.T) {
-
 	tests := []struct {
 		name     string
 		list     LinkedList[int]
@@ -509,12 +517,14 @@ func TestForEach(t *testing.T) {
 			wantCount := tt.wantCount
 			wantOrder := tt.wantOrder
 
+			var i = 0
 			var count = 0
-			list.ForEach(func(i int, element int) (doBreak bool) {
+			list.ForEach(func(element int) (doBreak bool) {
 				count++
 				if wantOrder[i] != element {
 					t.Error("wround elemnt")
 				}
+				i++
 				return false
 			})
 			if wantCount != count {
@@ -526,7 +536,7 @@ func TestForEach(t *testing.T) {
 
 func TestFilter(t *testing.T) {
 	type args struct {
-		filterFunc func(int, int) bool
+		filterFunc func(int) bool
 	}
 	tests := []struct {
 		name        string
@@ -537,19 +547,19 @@ func TestFilter(t *testing.T) {
 		{
 			name:        "test 1",
 			list:        NewLinkedList(0, 1, 2, 3, 4, 5, 6, 7, 8, 9),
-			args:        args{filterFunc: func(i int, element int) bool { return element < 5 }},
+			args:        args{filterFunc: func(element int) bool { return element < 5 }},
 			wantNewList: NewLinkedList(0, 1, 2, 3, 4),
 		},
 		{
 			name:        "test 2",
 			list:        NewLinkedList[int](),
-			args:        args{filterFunc: func(i int, element int) bool { return element < 5 }},
+			args:        args{filterFunc: func(element int) bool { return element < 5 }},
 			wantNewList: NewLinkedList[int](),
 		},
 		{
 			name:        "test 3",
 			list:        NewLinkedList(0, 1, 2, 3, 4, 5, 6, 7, 8, 9),
-			args:        args{filterFunc: func(i int, element int) bool { return element >= 5 }},
+			args:        args{filterFunc: func(element int) bool { return element >= 5 }},
 			wantNewList: NewLinkedList(5, 6, 7, 8, 9),
 		},
 	}
@@ -608,6 +618,70 @@ func TestSortBy(t *testing.T) {
 			if !reflect.DeepEqual(wantArr, arr) {
 				t.Error("wround result")
 			}
+		})
+	}
+}
+
+func TestRemove(t *testing.T) {
+	type args struct {
+		elementArr []int
+	}
+	tests := []struct {
+		name     string
+		list     LinkedList[int]
+		args     args
+		wantList LinkedList[int]
+	}{
+		{
+			name:     "test 1",
+			list:     NewLinkedList(0, 1, 2, 3, 4, 5, 6, 7, 8, 9),
+			args:     args{elementArr: []int{0, 1, 2, 3, 4}},
+			wantList: NewLinkedList(5, 6, 7, 8, 9),
+		},
+		{
+			name:     "test 2",
+			list:     NewLinkedList[int](),
+			args:     args{elementArr: []int{0, 1, 2, 3, 4}},
+			wantList: NewLinkedList[int](),
+		},
+		{
+			name:     "test 3",
+			list:     NewLinkedList(5, 6, 7, 8, 9),
+			args:     args{elementArr: []int{0, 1, 2, 3, 4}},
+			wantList: NewLinkedList(5, 6, 7, 8, 9),
+		},
+		{
+			name:     "test 4",
+			list:     NewLinkedList(2, 3, 4, 1, 2, 3, 4),
+			args:     args{elementArr: []int{3, 2}},
+			wantList: NewLinkedList(4, 1, 4),
+		},
+		{
+			name:     "test 5",
+			list:     NewLinkedList(5),
+			args:     args{elementArr: []int{2}},
+			wantList: NewLinkedList(5),
+		},
+		{
+			name:     "test 6",
+			list:     NewLinkedList(2),
+			args:     args{elementArr: []int{2}},
+			wantList: NewLinkedList[int](),
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			list := tt.list
+			args := tt.args
+			wantList := tt.wantList
+
+			list.Remove(args.elementArr...)
+			if !wantList.Equal(list) {
+				fmt.Println(list.ToString(), list.Len())
+				fmt.Println(wantList.ToString(), wantList.Len())
+				t.Error("not eqaul")
+			}
+
 		})
 	}
 }

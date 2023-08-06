@@ -1,4 +1,4 @@
-package customerrors
+package datastructerrors
 
 import (
 	"errors"

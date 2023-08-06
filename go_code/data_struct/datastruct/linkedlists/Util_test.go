@@ -9,7 +9,7 @@ import (
 func TestMap(t *testing.T) {
 	type args struct {
 		srcList           LinkedList[int]
-		createElementFunc func(index int, element int) string
+		createElementFunc func(int) string
 	}
 	tests := []struct {
 		name     string
@@ -20,7 +20,7 @@ func TestMap(t *testing.T) {
 			name: "test 1",
 			args: args{
 				srcList: NewLinkedList(0, 1, 2, 3, 4),
-				createElementFunc: func(index int, element int) string {
+				createElementFunc: func(element int) string {
 					return fmt.Sprintf("@%d", element)
 				},
 			},
