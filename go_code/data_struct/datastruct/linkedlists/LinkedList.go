@@ -220,8 +220,8 @@ func (l *linkedList[E]) Remove(elementArr ...E) {
 		}
 		return false
 	})
-
 	removeElementLen = listOfNodesToBeDeleted.Len()
+
 	listOfNodesToBeDeleted.ForEach(func(element interface{}) (doBreak bool) {
 		node := element.(*linkedListNode[E])
 		l.removeNode(node)
