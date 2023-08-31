@@ -67,6 +67,34 @@ class TestList(unittest.TestCase):
         # assert
         self.assertEqual(basicList, ["ming", "mark", "han", "JJ", "BB"])
 
+    def testPop(self):
+        # init
+        basicList = ["ming", "mark", "han"]
+
+        # operate
+        item = basicList.pop()
+
+        # assert
+        self.assertEqual(item, "han")
+        self.assertEqual(basicList, ["ming", "mark"])
+
+    def testDeleteItem(self):
+        # init
+        basicList = ["ming", "mark", "han"]
+
+        # operate
+        del basicList[2]
+
+        # assert
+        self.assertEqual(basicList, ["ming", "mark"])
+
+    def testDelete(self):
+        # init
+        basicList = ["ming", "mark", "han"]
+
+        # operate
+        del basicList
+
 
 if __name__ == "__main__":
     unittest.main()

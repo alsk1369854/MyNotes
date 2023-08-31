@@ -1,32 +1,3 @@
-## venv
-
-### Create venv module
-
-```bash
-python3 -m venv .venv
-```
-
-### Use venv
-
-```bash
-# windows
-.venv\Scripts\activate.bat
-
-# linux
-source .venv/bin/activate
-```
-
-### Close venv
-
-```bash
-deactivate
-```
-
-
-
-## Python.gitignore
-
-```gitignore
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
@@ -187,4 +158,3 @@ cython_debug/
 #  and can be added to the global gitignore or merged into this file.  For a more nuclear
 #  option (not recommended) you can uncomment the following to ignore the entire idea folder.
 #.idea/
-```
