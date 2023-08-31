@@ -1,3 +1,17 @@
+## pip requirement
+
+### create requirements.txt
+
+```textile
+BeautifulSoup==3.2.0
+```
+
+### pip install requirements.txt
+
+```bash
+pip install -r requirements.txt
+```
+
 ## venv
 
 ### Create venv module
@@ -21,8 +35,6 @@ source .venv/bin/activate
 ```bash
 deactivate
 ```
-
-
 
 ## Python.gitignore
 
