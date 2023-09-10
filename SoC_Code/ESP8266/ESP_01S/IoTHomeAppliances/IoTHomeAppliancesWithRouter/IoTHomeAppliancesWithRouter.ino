@@ -26,7 +26,6 @@ String onOperate = "on";
 String offOperate = "off";
 
 void servoAngleToAngle(int startAngle, int endAngle){
-    
   while(startAngle != endAngle){
     myservo.write(startAngle);
     (startAngle < endAngle)? startAngle++ : startAngle--;
@@ -34,11 +33,16 @@ void servoAngleToAngle(int startAngle, int endAngle){
   }
 }
 
+// method: GET
+// mappin: "/"
 void handleRoot() {
  String s = MAIN_page; 
  server.send(200, "text/html", s); 
 }
 
+// method: GET
+// mappin: /operate
+// args: operate = on | off (控制電器開關)
 void handleOperate(){
   String operate = server.arg("operate");
   
