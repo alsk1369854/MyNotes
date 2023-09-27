@@ -1,5 +1,5 @@
 class Utile {
-  static deepCopy(value) {
+  static deepCopy(value: any) {
     if (typeof value !== "object" || value === null) {
       return value;
     }
@@ -7,6 +7,7 @@ class Utile {
     Object.setPrototypeOf(result, Object.getPrototypeOf(value));
     for (const key in value) {
       if (value.hasOwnProperty(key)) {
+        // @ts-ignore
         result[key] = this.deepCopy(value[key]);
       }
     }
