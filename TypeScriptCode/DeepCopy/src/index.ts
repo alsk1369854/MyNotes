@@ -1,5 +1,5 @@
-class Utile {
-  static deepCopy(value: any) {
+export default class BasicUtile {
+  public static deepCopy<T>(value: T): T {
     if (typeof value !== "object" || value === null) {
       return value;
     }
@@ -11,7 +11,7 @@ class Utile {
         result[key] = this.deepCopy(value[key]);
       }
     }
-    return result;
+    return result as T;
   }
 }
 
@@ -21,7 +21,7 @@ let a = {
   },
   b: 2,
 };
-let b = Utile.deepCopy(a);
+let b = BasicUtile.deepCopy(a);
 b.obj1.obj1v = 5;
 console.log(a);
 console.log(b);
