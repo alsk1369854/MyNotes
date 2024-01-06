@@ -8,7 +8,7 @@ export function debounce<A extends any[]>(
   func: (...args: A) => any,
   duration: number = 5000
 ): (...args: A) => void {
-  let timerId: NodeJS.Timeout;
+  let timerId: any;
   return function (...args: any[]) {
     clearTimeout(timerId);
     timerId = setTimeout(() => {
