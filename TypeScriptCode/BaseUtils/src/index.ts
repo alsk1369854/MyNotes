@@ -1,10 +1,4 @@
-import { debounce } from "./Debounce";
+import { RandomUtils } from "./RandomUtils";
 
-const func1 = () => {
-  console.log("func1");
-};
-const newFunc = debounce(func1, 1000);
-
-newFunc();
-newFunc();
-newFunc();
+const randomUtils = new RandomUtils();
+console.log(randomUtils.randomString(20));
