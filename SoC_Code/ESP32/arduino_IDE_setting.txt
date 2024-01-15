@@ -1,0 +1,2 @@
+額外的開發版網址
+https://dl.espressif.com/dl/package_esp32_index.json
