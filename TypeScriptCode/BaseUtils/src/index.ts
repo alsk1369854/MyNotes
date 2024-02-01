@@ -1,4 +1,3 @@
-import { RandomUtils } from "./RandomUtils";
+import { socialShareUtils } from "./web/SocialShareUtils/SocialShareUtils";
 
-const randomUtils = new RandomUtils();
-console.log(randomUtils.randomString(20));
+socialShareUtils.shareToLine(socialShareUtils.TEST_SHARE_URL);
