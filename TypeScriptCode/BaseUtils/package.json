@@ -36,5 +36,8 @@
     "watchify": "^4.0.0"
   },
   "author": "alsk1369854",
-  "license": "MIT"
+  "license": "MIT",
+  "dependencies": {
+    "@angular/forms": "^17.1.2"
+  }
 }
