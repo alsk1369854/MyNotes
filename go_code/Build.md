@@ -3,7 +3,11 @@
 #### macOS or Linux
 
 ```bash
-SET GOOS=linux&SET GOARCH=arm64&go build .
+# build for linux
+env GOOS=darwin GOARCH=arm64 go build .
+
+# build for window .exe
+env GOOS=windows GOARCH=amd64 go build .
 ```
 
 #### Windows
@@ -15,9 +19,3 @@ go env -w GOOS=windows
 go env -w GOARCH=amd64
 go build .
 ```
-
-
-
-
-
-a

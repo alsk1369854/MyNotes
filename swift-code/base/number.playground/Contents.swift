@@ -29,4 +29,3 @@ print(Decimal(0.1) + Decimal(0.2)) // output: "0.3\n"
 // 使用 string 構造器來創建物件，避免精度錯誤
 Decimal(3.24) // 3.240000000000000512
 Decimal(string: "3.24") // 3.24
-

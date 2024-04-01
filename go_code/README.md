@@ -1,7 +1,5 @@
 # Go
 
-
-
 ## 環境安裝
 
 ### 安裝 Golang
@@ -29,10 +27,6 @@ go version
    2. 輸入命令：Go: Install/Update tools
    
    3. 全選所有選項 > OK
-
-
-
-
 
 ## Hello, World!
 
