@@ -1,3 +1,5 @@
+import Foundation
+
 
 struct Human: CustomStringConvertible & Equatable{
     
@@ -114,3 +116,56 @@ struct Singleton {
 
 let singleton = Singleton.getInstance()
 singleton.run()
+
+
+// 計算屬性
+struct Square {
+    public var side:Double
+    
+    public var area:Double {
+        // 在每次調用時，計算面積並回傳
+        get {
+            return pow(side, 2)
+        }
+        // 在修改時，修改邊長
+        set (newValue){
+            side = pow(newValue, 0.5)
+        }
+    }
+}
+var square = Square(side: 10)
+square.area
+square.area = 200
+square.side
+
+
+// 屬性監聽
+struct Circle {
+    
+    public var radius:Double {
+        // 即將修改 willSet
+//        willSet (newValue){
+//
+//        }
+        
+        // 修改完畢 didSet
+        // 在 radius 修改後去更新 area
+        didSet (oldValue){
+            area = Self.getArea(radius: self.radius)
+        }
+    }
+    
+    // lazy 延後到實例化後在賦值 (等到真的被調用時才會進行賦值)
+    lazy private(set) var area:Double = {
+        print("初始化 Circle.area")
+        return Self.getArea(radius: self.radius)
+    }()
+    
+    static private func getArea(radius:Double) -> Double {
+        return pow(radius, 2) * Double.pi
+    }
+}
+var circle = Circle(radius: 3)
+circle.area
+circle.radius = 10
+circle.area
