@@ -1,4 +1,4 @@
-import UIKit
+import Foundation
 
 // 整數類型
 // Int 64bits 預設整數類型

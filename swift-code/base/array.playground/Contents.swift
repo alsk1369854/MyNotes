@@ -3,6 +3,10 @@
 
 
 var array:Array<String> = ["Ming", "Hang", "JJ"]
+
+// 預留取好一定的記憶體空間
+array.reserveCapacity(10)
+
 array.isEmpty
 array.count
 array.first
