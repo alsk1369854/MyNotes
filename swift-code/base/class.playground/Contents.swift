@@ -1,0 +1,5 @@
+
+//runCircularReference()
+//runExtends()
+//runInit()
+runAnyObject()

@@ -205,8 +205,8 @@ struct PercentTest {
 //
 //
 // 👇 下面這幾行會執行測試。
-TrimTest.check()
-print("-------------------")
-LogTest.check()
-print("-------------------")
-PercentTest.check()
+//TrimTest.check()
+//print("-------------------")
+//LogTest.check()
+//print("-------------------")
+//PercentTest.check()
