@@ -15,6 +15,7 @@ from typing import (
 )
 from .interfaces import StringAble, HashAble
 
+
 # 自定義類型
 Vector = Sequence[int]
 
