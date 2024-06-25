@@ -3,7 +3,7 @@ import asyncio
 
 
 def main() -> None:
-    api_key: str = "AIzaSyDX-xiBVg7voqaP1PztvOdoLJhdG6fpIvQ"
+    api_key: str = "..."
     # gemini.exec_google(api_key)
     # gemini.exec_simple(api_key)
     # gemini.exec_llm_chain(api_key)
