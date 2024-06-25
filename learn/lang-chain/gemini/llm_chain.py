@@ -1,23 +1,11 @@
-# https://python.langchain.com/v0.2/docs/tutorials/llm_chain/
-
 import os
-from .chartbot import exec_chatbot
+
 from langchain_google_genai import ChatGoogleGenerativeAI
 from langchain_core.output_parsers import StrOutputParser
 from langchain_core.prompts import ChatPromptTemplate
 
 
-def exec_simple(api_key: str) -> None:
-    # 設置 api key
-    os.environ["GOOGLE_API_KEY"] = api_key
-    # 創建模型
-    model = ChatGoogleGenerativeAI(model="gemini-pro")
-    # 傳送訊息
-    response = model.invoke("Hi, my name is ming.")
-    print(response.content)
-
-
-def exec_chain(api_key: str) -> None:
+def exec_llm_chain(api_key: str) -> None:
     # 設置 api key
     os.environ["GOOGLE_API_KEY"] = api_key
     # 創建模型
@@ -43,6 +31,3 @@ def exec_chain(api_key: str) -> None:
     # 傳送訊息
     response = chain.invoke({"language": "繁體中文", "text": input("text:")})
     print(response)
-
-
-exec_chatbot = exec_chatbot
