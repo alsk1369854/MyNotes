@@ -1,7 +1,9 @@
 # https://python.langchain.com/v0.2/docs/tutorials/retrievers/
 
 import os
+from langchain_core.prompts import ChatPromptTemplate
 from langchain_core.documents import Document
+from langchain_core.runnables import RunnableLambda, RunnablePassthrough
 from langchain_chroma import Chroma
 from langchain_google_genai import (
     GoogleGenerativeAI,
@@ -54,3 +56,34 @@ async def exec_retrieves(api_key: str) -> None:
     #     "cat"
     # )
     # print(vectorstore.similarity_search_by_vector(embedding))
+
+    # Retrievers
+    # 方法一
+    # retriever = RunnableLambda(vectorstore.similarity_search).bind(k=1)  # select top result
+    # print(retriever.batch(["cat", "shark"]))
+    # 方法二
+    retriever = vectorstore.as_retriever(
+        search_type="similarity",
+        search_kwargs={"k": 1},
+    )
+    # print(retriever.batch(["cat", "shark"]))
+
+    message = """
+Answer this question using the provided context only.
+
+{question}
+
+Context:
+{context}
+"""
+
+    prompt = ChatPromptTemplate.from_messages([("human", message)])
+    llm = GoogleGenerativeAI(model="gemini-pro")
+
+    # temp = {"context": retriever, "question": RunnablePassthrough()} | prompt
+    # result = temp.invoke("tell me about cats")
+    # print(result)
+
+    rag_chain = {"context": retriever, "question": RunnablePassthrough()} | prompt | llm
+    response = rag_chain.invoke("tell me about cats")
+    print(response)
