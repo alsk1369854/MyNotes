@@ -5,6 +5,7 @@ from .chatbot import exec_chatbot
 from .simple import exec_simple
 from .llm_chain import exec_llm_chain
 from .retrievers import exec_retrieves
+from .agent import exec_agent
 
 # 未使用 LangChain
 exec_google = exec_google
@@ -13,3 +14,4 @@ exec_simple = exec_simple
 exec_llm_chain = exec_llm_chain
 exec_chatbot = exec_chatbot
 exec_retrieves = exec_retrieves
+exec_agent = exec_agent
