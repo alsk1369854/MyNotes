@@ -3,11 +3,11 @@ from dotenv import load_dotenv, dotenv_values
 # import asyncio
 # import gemini
 # import google_search
-# import tool
+from . import tool 
 # import model
 # import tutor
 
-from .tutor import agent
+# from .tutor import agent
 
 
 def run() -> None:
@@ -24,9 +24,10 @@ def run() -> None:
 
     # tool
     # tool.tavily_search(env["TAVILY_API_KEY"])
+    tool.python_repl()
 
     # model
     # model.openai(env["OPENAI_API_KEY"])
 
     # tutor
-    agent(env["GOOGLE_CSE_ID"], env["OPENAI_API_KEY"])
+    # agent(env["GOOGLE_CSE_ID"], env["OPENAI_API_KEY"])
