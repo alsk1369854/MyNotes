@@ -159,6 +159,7 @@ docker commit -a="author_name" -m="commit_message" {container} {my_image_name}[:
 ```bash
 # 創建並啟動後臺容器
 docker run -d --name={container_name} {image_name | image_ID}
+docker run -dt --name={container_name} {image_name | image_ID}
 
 # 創建並啟動交互式容器
 docker run -it --name={container_name} {{image_name | image_ID}}
@@ -399,6 +400,8 @@ docker run -it --volume-from {my_container1} {IMAGE}
   - -t {image_title}:{image_tag} : 指定鏡像名稱與版本號
   
   - {base_dir_path} : 將哪個目錄做為選擇 Dockerfile 的根目錄 ("." 表示為當前目錄)
+  
+  - --platform: linux/amd64,linux/arm64：此`--platform`標誌通知 buildx 為 x86 64 位元、ARM 64 位元架構 Linux 鏡像。
 
 ```bash
 docker build -f Dockerfile -t ming/centos1:1.0 . 
@@ -631,4 +634,35 @@ docker pull mysql:8.0.25
 # MYSQL_ROOT_PASSWORD=root : 表示 root 用戶的初始密碼
 # mysql:8.0.25 : 表示啟動的 mysql 版本，未指定則默認最新版
 docker run --name mymysql -e MYSQL_ROOT_PASSWORD=root -d -p 3306:3306 mysql:8.0.25
+```
+
+
+
+## Docker compost simple
+
+### postgres
+
+```yml
+version: "3.7"
+services:
+    db:
+        image: postgres
+        # restart: always
+        # platform: inux/amd64,linux/arm64
+        environment:
+            POSTGRES_DB: bpm_apis
+            POSTGRES_USER: postgres
+            POSTGRES_PASSWORD: hu5509222
+            PGDATA: /var/lib/postgresql/data
+        volumes:
+            - .db_data:/var/lib/postgresql/data
+        ports:
+            - 5432:5432
+
+    adminer:
+        image: adminer
+        # restart: always
+        # platform: inux/amd64,linux/arm64
+        ports:
+            - 8888:8080
 ```
