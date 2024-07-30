@@ -636,8 +636,6 @@ docker pull mysql:8.0.25
 docker run --name mymysql -e MYSQL_ROOT_PASSWORD=root -d -p 3306:3306 mysql:8.0.25
 ```
 
-
-
 ## Docker compost simple
 
 ### postgres
@@ -665,4 +663,12 @@ services:
         # platform: inux/amd64,linux/arm64
         ports:
             - 8888:8080
+```
+
+## Docker image simple
+
+### ubuntu vm
+
+```bash
+docker run -dt --name=pyhton3 -v /Users/chiaming/Documents/docker-share/python3:/root/share -p 5000:8080 ubuntu
 ```
