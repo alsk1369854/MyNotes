@@ -307,8 +307,6 @@
 
 ![img.png](imgs/img.png)
 
-
-
 ## Git constructor 架構
 
 ![](imgs/git架構.png)

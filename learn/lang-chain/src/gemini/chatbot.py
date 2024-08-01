@@ -1,6 +1,6 @@
 # https://python.langchain.com/v0.2/docs/tutorials/chatbot/
 import os
-from typing import Any, Dict
+from typing import Any, Dict, DefatulDict
 from operator import itemgetter
 from langchain_core.prompts import ChatPromptTemplate, MessagesPlaceholder
 from langchain_core.runnables import RunnablePassthrough, RunnableConfig, Runnable
