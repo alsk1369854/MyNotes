@@ -34,12 +34,12 @@ class PageResponse(BaseModel, Generic[PT]):
 
 class PageRequestParams(BaseModel):
     page_at: int
-    page_size: int
+    page_limit: int
 
     @classmethod
     def as_query(
         cls,
         page_at: int = Query(1, gt=0, description="Request page number"),
-        page_size: int = Query(10, gt=0, description="One page size")
+        page_limit: int = Query(10, gt=0, description="One page size")
     ) -> Self:
-        return cls(page_at=page_at, page_size=page_size)
+        return cls(page_at=page_at, page_limit=page_limit)
