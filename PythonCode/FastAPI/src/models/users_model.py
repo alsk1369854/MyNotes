@@ -9,7 +9,7 @@ class User(BaseModel):
     age: int
 
     class Config:
-        orm_mode = True
+        from_attributes = True
 
 CreateUserRequestBody = pydantic_utils.omit_model(User, ('id'))
 UpdateUserRequestBody = pydantic_utils.partial_model(pydantic_utils.omit_model(User, ('id')))
