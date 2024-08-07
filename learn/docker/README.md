@@ -671,4 +671,5 @@ services:
 
 ```bash
 docker run -dt --name=pyhton3 -v /Users/chiaming/Documents/docker-share/python3:/root/share -p 5000:8080 ubuntu
+docker run -dt --name=pyhton3 -v /home/wtleep2000/chiaming/python-workspace/docker-share:/root/share -p 7020:22 -p 8000:80 ubuntu
 ```
