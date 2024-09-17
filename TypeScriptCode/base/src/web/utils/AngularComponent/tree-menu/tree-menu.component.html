@@ -1,0 +1,51 @@
+<!-- 進入點 -->
+<ng-container *ngTemplateOutlet="nodesTemplate; context:{nodes}"></ng-container>
+
+<!-- 多 node 模板 -->
+<ng-template #nodesTemplate let-nodes="nodes">
+    <ul>
+        @for (node of nodes; track node) {
+        <ng-container *ngTemplateOutlet="nodeTemplate; context:{node}"></ng-container>
+        }
+    </ul>
+</ng-template>
+
+<!-- 單一 node 模板 -->
+<ng-template #nodeTemplate let-node="node">
+    @if(castToTreeNode(node); as node){
+    @if(visibleNodes.has(node)){
+    <li>
+        <div class="node" [ngClass]="{'focus-node': node === focusedNode || node === dragEnterNode}"
+            [draggable]="draggable" (click)="onNodeClick($event, node)" (dragover)="$event.preventDefault()"
+            (dragstart)="onNodeDragStart(node)" (dragenter)="dragEnterNode=node" (drop)="onNodeDrop()"
+            (dragend)="onNodeDragEnd()">
+            @if(hasChildren(node)){
+            <!-- 展開icon -->
+            <span class="node-expand-icon-container" (click)="onNodeExpandClick($event, node)">
+                @if(node.expanded){
+                <i class="bi bi-chevron-down expanded-icon"></i>
+                }@else{
+                <i class="bi bi-chevron-right expanded-icon"></i>
+                }
+            </span>
+            }@else{
+            <!-- 站位icon -->
+            <span class="node-padding-icon-container">
+                <i class="bi bi-app padding-icon"></i>
+            </span>
+            }
+            <div class="w-100 overflow-x-hidden">
+                @if(nodeTemplateRef){
+                <ng-container *ngTemplateOutlet="nodeTemplateRef; context:{node}"></ng-container>
+                }@else{
+                <span class="node-label">{{node.label}}</span>
+                }
+            </div>
+        </div>
+        @if(hasChildren(node) && node.expanded){
+        <ng-container *ngTemplateOutlet="nodesTemplate; context:{nodes:node.children}"></ng-container>
+        }
+    </li>
+    }
+    }
+</ng-template>

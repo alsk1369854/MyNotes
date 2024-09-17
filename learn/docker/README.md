@@ -673,3 +673,26 @@ services:
 docker run -dt --name=pyhton3 -v /Users/chiaming/Documents/docker-share/python3:/root/share -p 5000:8080 ubuntu
 docker run -dt --name=pyhton3 -v /home/wtleep2000/chiaming/python-workspace/docker-share:/root/share -p 7020:22 -p 8000:80 ubuntu
 ```
+
+### postgres
+
+```bash
+docker run --name test-postgresql \
+-p 15432:5432 \
+-v $(pwd)/postgresql_data:/var/lib/postgresql/data \
+-e POSTGRES_DB=default_db \
+-e POSTGRES_USER=admin \
+-e POSTGRES_PASSWORD=admin \
+-e PGDATA=/var/lib/postgresql/data \
+-d postgres
+```
+
+```bash
+docker run -d \
+--name test-postgres \
+-p 15432:5432 \
+-e POSTGRES_PASSWORD=admin \
+-e PGDATA=/var/lib/postgresql/data/pgdata \
+-v $(pwd)/postgresql_data:/var/lib/postgresql/data \
+postgres
+```

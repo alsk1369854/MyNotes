@@ -1,0 +1,90 @@
+// .dialog-header {
+//   // background-color: $primary;
+//   padding: 10px 20px;
+//   width: 100%;
+//   display: flex;
+//   align-items: center;
+//   justify-content: space-between;
+
+//   h2 {
+//     margin: 0;
+//     padding: 0;
+//     color: #fff;
+//     font-weight: bold;
+//     font-size: 20px;
+//     line-height: 24px;
+//   }
+
+//   .dialog-close {
+//     cursor: pointer;
+//     width: 24px;
+//     height: 24px;
+//     display: flex;
+//     align-items: center;
+//     justify-content: center;
+//     // padding: 10px;
+
+//     img {
+//       width: 14px;
+//     }
+
+//     svg-icon {
+//       width: 14px;
+//       height: 14px;
+//       display: flex;
+//       align-items: center;
+//       justify-content: center;
+
+//       svg {
+//         width: 14px;
+//         height: 14px;
+
+//         * {
+//           fill: #fff;
+//         }
+//       }
+//     }
+//   }
+// }
+
+// .btn {
+//   padding: 8px 25px;
+// }
+
+// ::ng-deep {
+//   .mat-mdc-dialog-surface {
+//     border-radius: 10px !important;
+//   }
+
+//   .mat-mdc-dialog-content {
+//     padding: 20px !important;
+//     padding-bottom: 0 !important;
+
+//     &::-webkit-scrollbar {
+//       width: 5px;
+//     }
+
+//     /* Track */
+//     &::-webkit-scrollbar-track {
+//       background: #fff;
+//     }
+
+//     /* Handle */
+//     &::-webkit-scrollbar-thumb {
+//       // background: $line-gray;
+//     }
+
+//     /* Handle on hover */
+//     &::-webkit-scrollbar-thumb:hover {
+//       // background: $primary;
+//     }
+//   }
+
+//   .mat-mdc-dialog-actions {
+//     padding: 10px !important;
+//     padding-bottom: 20px !important;
+//     display: flex;
+//     align-items: center;
+//     justify-content: center;
+//   }
+// }

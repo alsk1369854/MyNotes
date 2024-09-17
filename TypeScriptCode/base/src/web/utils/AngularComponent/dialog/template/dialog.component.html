@@ -1,0 +1,33 @@
+<app-loadable [isLoading]="isLoading">
+  <!-- header -->
+  @if(data.title){
+  <header class="p-3 d-flex align-items-center justify-content-center fs-3">
+    <span class="title">{{ data.title }}</span>
+  </header>
+  <hr class="p-0 m-0" />
+  }
+
+  <!-- content -->
+  <mat-dialog-content>
+    <ng-container *ngTemplateOutlet="data.templateRef; context:data.templateContext"></ng-container>
+  </mat-dialog-content>
+
+  <hr class="p-0 m-0" />
+  <!-- footer -->
+  @if(data.footerTemplateRef){
+  <!-- 自定義 footer -->
+  <ng-container *ngTemplateOutlet="data.footerTemplateRef; context:{onCloseClick, onConfirmClick}"></ng-container>
+  }@else{
+  <!-- 公版 footer -->
+  <footer class="p-3 d-flex align-items-center justify-content-center gap-2">
+    <button type="button" class="btn btn-outline-secondary" (click)="onCloseClick()">
+      {{data.closeLabelName ?? '取消'}}
+    </button>
+    @if(data.onConfirmClickCallback){
+    <button type="button" class="btn btn-primary" (click)="onConfirmClick()">
+      {{data.confirmLabelName ?? '確定'}}
+    </button>
+    }
+  </footer>
+  }
+</app-loadable>

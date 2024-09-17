@@ -1,0 +1,14 @@
+<div [class]="'input-group' + ' ' + className" [ngStyle]="{'min-width': this.enableTime ? '235px' : '190px'}">
+  <div class="input-group-text rounded-0" [ngClass]="{'cursor-pointer': !disabled}"
+    (click)="onCalenderIconClick($event)">
+    <i class="bi bi-calendar"></i>
+  </div>
+
+  <input #dateTimePicker [id]="inputID" class="form-control" [placeholder]="this.enableTime ? '年/月/日 --:--' : '年/月/日'"
+    [disabled]="disabled" [ngClass]="{'cursor-default': disabled}" />
+
+  <div class="input-group-text rounded-0" [ngClass]="{'cursor-pointer': !disabled}"
+    (click)="!disabled && onClearIconClick($event)">
+    <i class="bi bi-x-lg text-danger"></i>
+  </div>
+</div>

@@ -1,0 +1,29 @@
+<div class="d-flex flex-column w-100 overflow-hidden">
+    <!-- header -->
+    <div class="bg-primary text-white p-3 w-100 cursor-pointer"
+        [ngClass]="{'cursor-pointer': isSwitchable, 'bg-secondary': disabled}" (click)="onHeaderClick()">
+        <div class="d-flex align-items-center justify-content-end">
+            <span class="fs-5 fw-bold" [ngClass]="{
+                'me-auto': titlePosition === 'start',
+                'm-auto': titlePosition === 'center',
+                'ms-auto': titlePosition === 'end',
+            }">
+                {{title}}
+            </span>
+            @if(!disabled && isSwitchable){
+            <div class="mx-2">
+                @if(isOpen){
+                <i class="bi bi-caret-up-fill"></i>
+                }@else{
+                <i class="bi bi-caret-down-fill"></i>
+                }
+            </div>
+            }
+        </div>
+    </div>
+    <!-- content -->
+    <div [@openClose]="disabled?  'close' : isOpen ? 'open' : 'close'"
+        class="w-100 border-start border-end border-bottom rounded-0">
+        <ng-content></ng-content>
+    </div>
+</div>

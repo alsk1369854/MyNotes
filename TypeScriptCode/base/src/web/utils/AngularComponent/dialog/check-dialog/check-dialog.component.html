@@ -1,0 +1,27 @@
+<!-- header -->
+<header class="d-flex bg-primary p-2 fs-5 fw-bold text-white">
+  <span>{{ data.title }}</span>
+  <i class="bi bi-x-lg ms-auto" alt="close" mat-dialog-close></i>
+</header>
+
+<!-- content -->
+<mat-dialog-content>
+  <div class="p-2 flex-center fs-6">
+    {{ data.content }}
+  </div>
+</mat-dialog-content>
+
+<!-- footer -->
+<!-- @if(close || confirm){
+  <footer class="d-flex align-items-center gap-2">
+    @if(confirm){
+    <button class="btn btn-primary" mat-dialog-close="confirm">
+      {{ confirm }}
+    </button>
+    } @if(close){
+    <button class="btn btn-outline-secondary" mat-dialog-close="close">
+      {{ close }}
+    </button>
+    }
+  </footer>
+  } -->
